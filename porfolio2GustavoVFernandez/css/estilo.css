@@ -1,0 +1,198 @@
+* {
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none; /*Para quitarle el subrayado feo*/
+    color: inherit; /*Para que herede el color de la letra allí donde esté*/
+    display: inline-block; 
+}
+
+body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color:#DFA2DB;
+    justify-content: space-around;
+    align-items: center;
+}
+
+/*Cabecera*/
+.header {
+    width: 100%;
+    height: 65px;
+    background: #4D384C;
+    position: unset;
+    z-index: 1000;
+}
+
+.contenedor {
+    width: 80%;
+    margin: auto;
+}
+
+.menu {
+    float: right;
+    line-height: 65px;
+}
+
+.menu ul {
+    list-style: none;
+}
+
+.menu a {
+    display: block;
+    padding: 0px 20px;
+    text-decoration: none;
+    color: wheat;
+    transition: all 500ms ease;
+}
+
+.menu a:hover {
+    background: #94638E;
+    color: #B3741D;
+}
+
+.menu ul li a:hover + ul, .menu .submenu:hover {
+    display:block;
+}
+
+.menu .submenu {
+    background: #724C6E;
+    box-shadow: 3px 10px 10px rgba(0, 0, 0, 0.2);
+    display: none;
+}
+
+.nombre_web {
+    float: left;
+    line-height: 65px;
+    color:antiquewhite;
+    display: block;
+    cursor: default;
+}
+
+/*Div para contener las "tarjetas"*/
+.contingente {
+    width: 100%;
+    margin: 20px;
+    display: flex;
+    max-width: 1100px;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 73vh;
+   
+}
+
+/*Para cada tarjeta*/
+.targeta {
+    width: 100%;
+    margin: 20px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: antiquewhite;
+    box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.2);
+    cursor: default;
+    transition: all 400ms ease;
+}
+
+.targeta:hover {
+    box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.4);
+    transform: translateY(-3%);
+}
+
+.targeta img {
+    width: 100%;
+    height: 80%;
+}
+
+.texto {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h3 {
+    padding: 10px;
+    color: #B3741D;
+}
+
+.texto p {
+    margin: 0px 15px 10px 15px;
+    color:#4D384C;
+}
+
+/* CV y Trabajos realizados*/
+
+.tabla {
+    width: 100%;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    max-width: 1100px;
+    align-items: center;
+    justify-content: center;
+    min-height: 73vh;
+
+}
+
+.trabajos {
+    width: 100%;
+    margin: 20px;
+    display: flex;
+    flex-direction: row;
+    max-width: 1100px;
+    align-items: center;
+    justify-content: center;
+}
+
+.trabajos img {
+    width: 20%;
+    margin: 20px;
+    border-radius: 50%;
+    border-style: outset;
+    border-color:#724C6E;
+    display: flex;
+    float: left;
+}
+
+/* Footer */
+footer {
+    width: 100%;
+    display:grid;
+    background-color:#724C6E;
+    color:#B3741D;
+    height: auto;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.box h2 {
+    margin: 10px;
+}
+
+.redesSociales {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.redesSociales img{
+    width: 50px;
+    border-radius: 10px;
+}
+
+.pieDePagina .derechos {
+    color:#B3741D;
+    padding: 15px 10px;
+    text-align: center;
+}
+
+.pieDePagina .derechos small {
+    font-size: 15px;
+}

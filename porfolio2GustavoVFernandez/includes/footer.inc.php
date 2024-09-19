@@ -22,6 +22,6 @@
         </div>
     </div>
     <div class="derechos">
-        <small>&copy; 2024 <strong>Gustavo Victor Sociedad Alucinante</strong> - Todos los derechos reservados</small>
+        <small>&copy; 2024 <span class="negrita">Gustavo Victor Sociedad Alucinante</span> - Todos los derechos reservados</small>
     </div>
 </footer>

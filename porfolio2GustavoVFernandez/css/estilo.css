@@ -119,6 +119,10 @@ h3 {
     color: #B3741D;
 }
 
+.negrita {
+    font-weight: bold;
+}
+
 .texto p {
     margin: 0px 15px 10px 15px;
     color:#4D384C;

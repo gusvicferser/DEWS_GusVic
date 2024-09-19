@@ -18,7 +18,7 @@
 
 <body>
     <?php
-        require_once(__DIR__.'/includes/header.inc.php');
+        require_once($_SERVER['DOCUMENT_ROOT'].'/includes/header.inc.php');
     ?>
 
     <div class="contingente">
@@ -67,7 +67,7 @@
 
     <?php
     
-        require_once(__DIR__.'/includes/footer.inc.php');
+        require_once($_SERVER['DOCUMENT_ROOT'].'/includes/footer.inc.php');
     ?>
 </body>
 

@@ -10,6 +10,7 @@
     <div class="contenedor">
         <nav class="menu">
             <ul>
+                <h1><?=$title?></h1>
                 <li>Index</li>
                     <ul class="submenu">
                         <li><a href="/index.php">Inicio</a></li>

@@ -15,8 +15,8 @@
     <div class="derechos">
         <span class="negrita">Gustavo Victor Fernandez Serantes</span>
 
-        <!-- TO DO: PONER MI FOTO-->
-        <img src="" alt="Yo mismo, Gustavo"></img>
+        <!-- TO DO: <img src="" alt="Yo mismo, Gustavo"></img> PONER MI FOTO-->
+        
     </div>
 </footer>
 

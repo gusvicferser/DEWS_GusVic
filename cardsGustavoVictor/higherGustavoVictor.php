@@ -1,31 +1,60 @@
 <?php
-    /**
-     * Página reservada para el juego de la carta más alta de los juegos de cartas.
-     * @author: Gustavo Víctor
-     * @version: 1.0
-     */
 
-     $title = 'Higher';
+/**
+ * Página reservada para el juego de la carta más alta de los juegos de cartas.
+ * @author: Gustavo Víctor
+ * @version: 1.0
+ */
+
+$title = 'Higher';
 ?>
 
-     <!DOCTYPE html>
-     <html lang="es">
-     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title><?=$title?></title>
-     </head>
-     <body>
+<!DOCTYPE html>
+<html lang="es">
 
-        <?php
-        // Espacio reservado para la cabecera:
-            require_once($_SERVER['DOCUMENT_ROOT'].'/includes/cabeceraGustavoVictor.inc.php');  
-        ?>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $title ?></title>
+</head>
 
-        <?php
-        // Espacio reservado para el footer:
-            require_once($_SERVER['DOCUMENT_ROOT'].'/includes/footerGustavoVictor.inc.php');
-        ?>
+<body>
+
+    <?php
+    // Espacio reservado para la cabecera:
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/cabeceraGustavoVictor.inc.php');
+    ?>
+
+    <?php
+    // Crear el deck:
+    $deck = creacionBaraja();
+
+    // Repartir cartas:
+    for ($i = 0; $i < 10; $i++) {
+        if ($i % 2 == 0) {
+            $handPlayer1 = array_pop($deck);
+        } else {
+            $handPlayer2 = array_pop($deck);
+        }
+    
+        if ($handPlayer1['value']>$handPlayer2['value']) {
+            $p1Score +=2;
+        } else if ($handPlayer1['value']==$handPlayer2['value']){
+            $p1Score +=1;
+            $p2Score +=2;
+        } else {
+            $p2Score +=2;
+        }
         
-     </body>
-     </html>
+    }
+    ?>
+
+
+    <?php
+    // Espacio reservado para el footer:
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footerGustavoVictor.inc.php');
+    ?>
+
+</body>
+
+</html>

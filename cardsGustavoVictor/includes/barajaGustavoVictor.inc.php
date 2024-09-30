@@ -11,8 +11,7 @@
  * @author: chatGPT
  * @return: Un array de cartas con el palo, el valor y la imagen asociada.
  */
-function creacionBaraja(): array
-{
+function createDeck(): array {
 
     $suits = [
         "corazones" => "cor",
@@ -49,6 +48,8 @@ function creacionBaraja(): array
         }
     }
 
+    shuffle($deck);
+
     return $deck;
 }
 
@@ -56,13 +57,28 @@ function creacionBaraja(): array
  * Función para crear un array de jugadores con nombres y fotos:
  * @author: Gustavo Víctor
  * @param: int del número de jugadores.
- * @return: Tantos jugadores como pidan.
+ * @return: Tantos jugadores como pidan en un mismo array.
  */
 
- function jugadores(int $numJugadores): array {
+function createPlayers(int $playerNum): array {
 
-    // $jugadores = ['nombres' => ]
+    $possiblePlayers = [['nombre' => 'Agallas', 'punctuation' => 0, 'avatar' => 'agallas.jpg'], 
+                ['name' => 'Dexter', 'punctuation' => 0, 'avatar' => 'dexter.png'], 
+                ['name' => 'Ed, Edd y Eddy', 'punctuation' => 0, 'avatar' => 'eddies.jpg'], 
+                ['name' => 'Supernenas', 'punctuation' => 0, 'avatar' => 'supernenas.jpg'], 
+                ['name' => 'Jake el Perro', 'punctuation' => 0, 'avatar' => 'jake.jpg'], 
+                ['name' => 'Mandy', 'punctuation' => 0, 'avatar' => 'mandy.png'], 
+                ['name' => 'Samurai Jack', 'punctuation' => 0, 'avatar' => 'samurai.png'], 
+                ['name' => 'Jonnhy Bravo', 'punctuation' => 0, 'avatar' => 'bravo.jpg']
+    ];
 
+    shuffle($possiblePlayers);
 
-    return $jugadores;
- }
+    for ($i=0;$i<$playerNum;$i++) {
+
+        $players[] = array_pop($possiblePlayers);      
+        
+    }
+
+    return $players;
+}

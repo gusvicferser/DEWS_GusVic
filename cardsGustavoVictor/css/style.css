@@ -1,0 +1,14 @@
+* {
+    padding: 0px;
+    margin: 0px;
+}
+
+body {
+    background-image: url('images/1765659.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+img {
+   height: 200px;
+}

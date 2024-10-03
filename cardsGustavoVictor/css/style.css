@@ -4,11 +4,34 @@
 }
 
 body {
-    background-image: url('images/1765659.jpg');
+    background-image: url('/images/2031879.jpg');
     background-repeat: no-repeat;
-    background-position: center;
+    background-size: cover;
 }
 
 img {
    height: 200px;
+}
+
+.winner {
+    background-color: darkgreen;
+       padding: 10px;
+       transform: rotateZ(23deg);
+       border-radius: 10px;
+    
+}
+
+.even {
+
+    background-color: grey;
+    padding: 10px;
+    transform: rotateZ(348deg);
+    border-radius: 10px;
+
+}
+
+.player {
+    display:flex;
+    flex-direction: row;
+    
 }

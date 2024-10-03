@@ -11,7 +11,8 @@
  * @author: chatGPT
  * @return: Un array de cartas con el palo, el valor y la imagen asociada.
  */
-function createDeck(): array {
+function createDeck(): array
+{
 
     $suits = [
         "corazones" => "cor",
@@ -60,24 +61,25 @@ function createDeck(): array {
  * @return: Tantos jugadores como pidan en un mismo array.
  */
 
-function createPlayers(int $playerNum): array {
+function createPlayers(int $playerNum): array
+{
 
-    $possiblePlayers = [['nombre' => 'Agallas', 'punctuation' => 0, 'avatar' => 'agallas.jpg'], 
-                ['name' => 'Dexter', 'punctuation' => 0, 'avatar' => 'dexter.png'], 
-                ['name' => 'Ed, Edd y Eddy', 'punctuation' => 0, 'avatar' => 'eddies.jpg'], 
-                ['name' => 'Supernenas', 'punctuation' => 0, 'avatar' => 'supernenas.jpg'], 
-                ['name' => 'Jake el Perro', 'punctuation' => 0, 'avatar' => 'jake.jpg'], 
-                ['name' => 'Mandy', 'punctuation' => 0, 'avatar' => 'mandy.png'], 
-                ['name' => 'Samurai Jack', 'punctuation' => 0, 'avatar' => 'samurai.png'], 
-                ['name' => 'Jonnhy Bravo', 'punctuation' => 0, 'avatar' => 'bravo.jpg']
+    $possiblePlayers = [
+        ['name' => 'Agallas', 'score' => 0, 'avatar' => 'agallas.jpg'],
+        ['name' => 'Dexter', 'score' => 0, 'avatar' => 'dexter.png'],
+        ['name' => 'Ed, Edd y Eddy', 'score' => 0, 'avatar' => 'eddies.jpg'],
+        ['name' => 'Supernenas', 'score' => 0, 'avatar' => 'supernenas.jpg'],
+        ['name' => 'Jake el Perro', 'score' => 0, 'avatar' => 'jake.jpg'],
+        ['name' => 'Mandy', 'score' => 0, 'avatar' => 'mandy.png'],
+        ['name' => 'Samurai Jack', 'score' => 0, 'avatar' => 'samurai.png'],
+        ['name' => 'Jonnhy Bravo', 'score' => 0, 'avatar' => 'bravo.png']
     ];
 
     shuffle($possiblePlayers);
 
-    for ($i=0;$i<$playerNum;$i++) {
+    for ($i = 0; $i < $playerNum; $i++) {
 
-        $players[] = array_pop($possiblePlayers);      
-        
+        $players[] = array_pop($possiblePlayers);
     }
 
     return $players;

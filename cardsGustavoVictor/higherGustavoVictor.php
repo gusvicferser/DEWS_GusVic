@@ -62,7 +62,7 @@ const NUMBER_OF_PLAYERS = 2;
         }
     }
     for ($i = 0; $i < NUMBER_OF_PLAYERS; $i++) {
-        echo '<div><img src="/images/' . $players[$i]['avatar'] . '" alt="' . $players[$i]['avatar'] . '"><br><h1>' . $players[$i]['name'] . '</h1><br><div class="player" id="player' . ($i + 1) . '">';
+        echo '<div class="playerDisplay"><img src="/images/' . $players[$i]['avatar'] . '" alt="' . $players[$i]['avatar'] . '"><br><h1>' . $players[$i]['name'] . '</h1><br><div class="player" id="player' . ($i + 1) . '">';
         foreach ($players[$i]['hand'] as $card) {
             if ($card['winner'] == 1) {
                 echo '<img src="/images/baraja/' . $card['image'] . '" alt="' . $card['image'] . '" class="winner">';
@@ -79,29 +79,29 @@ const NUMBER_OF_PLAYERS = 2;
         $winner = $players[0]['name'];
         $avatar = $players[0]['avatar'];
     } else if ($players[0]['score'] == $players[1]['score']) {
-        $winner = 'Nadie';
-        $avatar = '';
+        $winner = 'nadie.jpg';
+        $avatar = 'nadie.jpg';
     } else {
         $winner = $players[1]['name'];
         $avatar = $players[1]['avatar'];
     }
 
     ?>
-
-    <div>
-        <h1>Puntuación:</h1><br>
+    <br><br>
+    <div class="winPlayer">
         <div>
-            <h3><?= $players[0]['name'] ?>: <?= $players[0]['score'] ?></h3><br>
-            <h3><?= $players[1]['name'] ?>: <?= $players[1]['score'] ?></h3><br>
+            <h1>Puntuación</h1><br>
+            <div>
+                <h3><?= $players[0]['name'] ?>: <?= $players[0]['score'] ?></h3><br>
+                <h3><?= $players[1]['name'] ?>: <?= $players[1]['score'] ?></h3><br>
+            </div>
+        </div>
+        <div>
+            <h1>El ganador es:</h1>
+            <img src="/images/<?= $avatar ?>" alt="<?= $winner ?>">
+            <h2><?= $winner ?><h2>
         </div>
     </div>
-
-    <div>
-        <h1>El ganador es:</h1>
-        <img src="/images/<?=$avatar?>" alt="<?=$winner?>">
-        <h2><?=$winner?><h2>
-    </div>
-
 
 
 

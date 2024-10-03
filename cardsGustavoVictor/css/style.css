@@ -1,18 +1,22 @@
+/* Ajustes generales: */
 * {
     padding: 0px;
     margin: 0px;
 }
 
+/* Ajustes para el body y el fondo */
 body {
-    background-image: url('/images/2031879.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-image: url('/images/fondo.jpg');
+    background-repeat: repeat-y;
+    color:goldenrod;
 }
 
 img {
-   height: 200px;
+    height: 200px;
 }
 
+
+/* Para enseñar la carta ganadora */
 .winner {
     background-color: darkgreen;
        padding: 10px;
@@ -21,17 +25,41 @@ img {
     
 }
 
+/* Para el estilo del empate */
 .even {
 
-    background-color: grey;
+    background-color: #ccc;
     padding: 10px;
     transform: rotateZ(348deg);
     border-radius: 10px;
 
 }
 
+/* Ajustes del jugador: */
 .player {
     display:flex;
     flex-direction: row;
     
+}
+
+.playerDisplay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.winPlayer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Ajustes para Footer: */
+footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }

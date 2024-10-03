@@ -6,7 +6,7 @@
  * @version: 1.0
  */
 
-$title = 'Index';
+$title = 'CaNsino';
 ?>
 
 <!DOCTYPE html>
@@ -26,7 +26,9 @@ $title = 'Index';
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/cabeceraGustavoVictor.inc.php');
     ?>
 
-
+    <div>
+        <img src="/images/blackJack.jpg" alt="black_jack">
+    </div>
 
 
     <?php

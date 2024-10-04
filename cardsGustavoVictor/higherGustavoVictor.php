@@ -62,24 +62,47 @@ const NUMBER_OF_PLAYERS = 2;
         }
     }
     for ($i = 0; $i < NUMBER_OF_PLAYERS; $i++) {
-        echo '<div class="playerDisplay"><img src="/images/' . $players[$i]['avatar'] . '" alt="' . $players[$i]['avatar'] . '"><br><h1>' . $players[$i]['name'] . '</h1><br><div class="player" id="player' . ($i + 1) . '">';
-        foreach ($players[$i]['hand'] as $card) {
-            if ($card['winner'] == 1) {
-                echo '<img src="/images/baraja/' . $card['image'] . '" alt="' . $card['image'] . '" class="winner">';
-            } else if ($card['winner'] == 0) {
-                echo '<img src="/images/baraja/' . $card['image'] . '" alt="' . $card['image'] . '" class="even">';
-            } else {
-                echo '<img src="/images/baraja/' . $card['image'] . '" alt="' . $card['image'] . '">';
-            }
-        }
-        echo '</div></div><br>';
+    ?>
+
+        <div class="playerDisplay">
+            <img src="/images/<?= $players[$i]['avatar'] ?>" alt="<?= $players[$i]['avatar'] ?>"><br>
+            <h1><?= $players[$i]['name'] ?></h1><br>
+            <div class="player" id="player<?= ($i + 1) ?>">;
+
+                <?php
+                foreach ($players[$i]['hand'] as $card) {
+                    if ($card['winner'] == 1) {
+                ?>
+
+                        <img src="/images/baraja/<?= $card['image'] ?>" alt="<?= $card['image'] ?>" class="winner">
+
+                    <?php
+                    } else if ($card['winner'] == 0) {
+                    ?>
+
+                        <img src="/images/baraja/<?= $card['image'] ?>" alt="<?= $card['image'] ?>" class="even">
+
+                    <?php
+                    } else {
+                    ?>
+
+                        <img src="/images/baraja/<?= $card['image'] ?>" alt="<?= $card['image'] ?>">';
+
+                <?php
+                    }
+                }
+                ?>
+            </div>
+        </div><br>
+
+    <?php
     }
 
     if ($players[0]['score'] > $players[1]['score']) {
         $winner = $players[0]['name'];
         $avatar = $players[0]['avatar'];
     } else if ($players[0]['score'] == $players[1]['score']) {
-        $winner = 'nadie.jpg';
+        $winner = 'Nadie';
         $avatar = 'nadie.jpg';
     } else {
         $winner = $players[1]['name'];
@@ -99,7 +122,7 @@ const NUMBER_OF_PLAYERS = 2;
         <div>
             <h1>El ganador es:</h1>
             <img src="/images/<?= $avatar ?>" alt="<?= $winner ?>">
-            <h2><?= $winner ?><h2>
+            <h2><?= $winner ?><h2><br>
         </div>
     </div>
 

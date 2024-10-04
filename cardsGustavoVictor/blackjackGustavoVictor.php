@@ -130,16 +130,41 @@ const NUMBER_OF_PLAYERS = 5;
         if ($players[$i]['score'] < 14) {
             $players[$i]['hand'] = array_pop($deck);
         }
-    } while ($points < 14);
+    } while ($algo < 14);
 
 
     // Luego desplegamos tanto las cartas como los contenedores de la misma, el nombre del jugador y su avatar: 
     for ($i = 0; $i < NUMBER_OF_PLAYERS; $i++) {
-        echo '<div class="playerDisplay"><img src="/images/' . $players[$i]['avatar'] . '" alt="' . $players[$i]['avatar'] . '"><br><h1>' . $players[$i]['name'] . '</h1><br><div class="player" id="player' . ($i + 1) . '">';
+
+        ?>
+
+        <div class="playerDisplay"><img src="/images/
+       
+       <?php
+        echo $players[$i]['avatar'] . '" alt="' . $players[$i]['avatar'];
+        ?>
+        
+        "><br><h1>
+        
+        <?php
+        echo $players[$i]['name'] .'</h1>';
+        ?>
+
+        <br><div class="player" id="player"
+
+        <?php
+        echo ''. ($i + 1) . '';
         foreach ($players[$i]['hand'] as $card) {
-            echo '<img src="/images/baraja/' . $card['image'] . '" alt="' . $card['image'] . '">';
+        ?>
+
+        ><img src="/images/baraja/
+
+        <?php
+            echo $card['image'] . '" alt="' . $card['image'];
         }
-        echo '</div></div><br>';
+        ?>
+        "></div></div><br>
+        <?php
     }
 
     // Aquí guardamos en una variable el ganador, su avatar y la puntuación:

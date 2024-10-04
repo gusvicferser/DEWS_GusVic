@@ -52,55 +52,72 @@ const NUMBER_OF_PLAYERS = 5;
         }
     }
 
+    shuffle($deck);
+
+    /*
+    echo '<pre>';
+    print_r($deck);
+    echo '<pre>';
+    */
+
 
     // Repartimos cartas:
     for ($i = 0; $i < NUMBER_OF_CARDS; $i++) {
         for ($j = 0; $j < NUMBER_OF_PLAYERS + 1; $j++) {
 
             $players[$j]['hand'][] = array_pop($deck); // Repartimos una carta
-            // $players[$j]['score'] += (int) $players[$j]['hand'][$i]['value']; // Sumamos el valor de la carta
+            $players[$j]['score'] += (int) $players[$j]['hand'][$i]['value']; // Sumamos el valor de la carta
 
             // Si hay un as, lo añadimos al contador de ases:
-            /* if ($players[$j]['hand'][$i]['value'] == 1) {
+            if ($players[$j]['hand'][$i]['value'] == 1) {
                 $players[$j]['asNum'] += 1;
-            }*/
+            }
         }
     }
 
     /*
+    echo '<pre>';
+    print_r($players);
+    echo '<pre>';
+    */
+
     // Ahora vamos a evaluar la mano de cada uno de los jugadores:
     for ($i = 0; $i < NUMBER_OF_PLAYERS + 1; $i++) {
 
-        $actualHand = $players[$i]['score'];
+        //do {
+            $handCards = count($players[$i]['hand']);
 
-        do {
+            echo 'Check';
 
-                if ($players[$i]['score'] < 14 && $players[$i]['asNum'] > 0) {
-                    $players[$i]['score'] += 10;
-                } 
-                
-                if ($players[$i]['score'] > 21 && $players[$i]['asNum'] > 0) {
-                    $players[$i]['score'] -=10;
-                    $players[$i]['asNum']-=1;
+            if ($players[$i]['asNum'] > 1) {
+
+                $players[$i]['score'] += 10;
+                $players[$i]['asNum'] -= 1;
+                echo 'As Checked';
+            }
+
+
+            if ($players[$i]['score'] < 14) {
+
+                $players[$i]['hand'][] = array_pop($deck);
+                $handCards++;
+
+                if ($players[$i]['hand'][$handCards] == 1) {
+
+                    $player[$i]['asNum'] += 1;
                 }
+            } else if ($players[$i]['score'] > 21 && $players[$i]['asNum'] > 0) {
 
-                if ($players[$i]['score'] < 14) {
-                    $players[$j]['hand'][] = array_pop($deck); // Repartimos una carta
-                    $$players[$i]['score'] += (int) $players[$j]['hand'][$i]['value']; // Sumamos el valor de la carta
-                    
-                    // Si hay un as, lo añadimos al contador de ases:
-                    if ($players[$j]['hand'][$i]['value'] == 1) {
-                        $players[$j]['asNum'] += 1;
-                    }
-                } 
+                $players[$i]['score'] -= 10;
+                $players[$i]['asNum'] -= 1;
+            }
+        //} while ($players[$i]['score'] < 14 || $players[$i]['score'] > 21);
 
-        } while ($players[$i]['score'] < 14 || $players[$i]['score'] > 21);
-
-        $players[$i]['score'] = $actualHand;
-    }*/
+        echo $players[$i]['name'] . ': ' . $players[$i]['score'];
+    }
 
 
-
+    /*
     for ($i = 0; $i < NUMBER_OF_PLAYERS; $i++) {
 
         do {
@@ -109,22 +126,21 @@ const NUMBER_OF_PLAYERS = 5;
 
             $num_as = 0;
 
-            foreach ($players[$i]['hand'] as $card) {
-                if ($card['value'] == 1) {
-                    $num_as++;
-                    $players[$i]['score'] += $card['value'];
-                }
+            if ($card['value'] == 1) {
+                $num_as++;
+                $players[$i]['score'] += $card['value'];
+            }
 
-                for ($i = 0; $i < $num_as; $i++) {
-                    if (($players[$i]['score'] + 10) < 21) {
-                        $players[$i]['score'] += 10;
-                    }
+            for ($i = 0; $i < $num_as; $i++) {
+                if (($players[$i]['score'] + 10) < 21) {
+                    $players[$i]['score'] += 10;
                 }
+            }
+
+            foreach ($players[$i]['hand'] as $card) {
 
                 if ($players[$i]['score'] < 14) {
                     $players[$i]['hand'] = array_pop($deck);
-                } else {
-                    $out = false;
                 }
             }
         } while ($players[$i]['score'] < 14);
@@ -199,7 +215,7 @@ const NUMBER_OF_PLAYERS = 5;
 
     <?php
     // Espacio reservado para el footer:
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footerGustavoVictor.inc.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footerGustavoVictor.inc.php');*/
     ?>
 
 </body>

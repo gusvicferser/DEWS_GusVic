@@ -65,14 +65,14 @@ function createPlayers(int $playerNum): array
 {
 
     $possiblePlayers = [
-        ['name' => 'Agallas', 'score' => 0, 'avatar' => 'agallas.jpg'],
-        ['name' => 'Dexter', 'score' => 0, 'avatar' => 'dexter.png'],
-        ['name' => 'Ed, Edd y Eddy', 'score' => 0, 'avatar' => 'eddies.jpg'],
-        ['name' => 'Supernenas', 'score' => 0, 'avatar' => 'supernenas.jpg'],
-        ['name' => 'Jake el Perro', 'score' => 0, 'avatar' => 'jake.jpg'],
-        ['name' => 'Mandy', 'score' => 0, 'avatar' => 'mandy.png'],
-        ['name' => 'Samurai Jack', 'score' => 0, 'avatar' => 'samurai.png'],
-        ['name' => 'Jonnhy Bravo', 'score' => 0, 'avatar' => 'bravo.png']
+        ['name' => 'Agallas', 'score' => 0, 'avatar' => 'agallas.jpg', 'asNum' => 0],
+        ['name' => 'Dexter', 'score' => 0, 'avatar' => 'dexter.png', 'asNum' => 0],
+        ['name' => 'Ed, Edd y Eddy', 'score' => 0, 'avatar' => 'eddies.jpg', 'asNum' => 0],
+        ['name' => 'Supernenas', 'score' => 0, 'avatar' => 'supernenas.jpg', 'asNum' => 0],
+        ['name' => 'Jake el Perro', 'score' => 0, 'avatar' => 'jake.jpg', 'asNum' => 0],
+        ['name' => 'Mandy', 'score' => 0, 'avatar' => 'mandy.png', 'asNum' => 0],
+        ['name' => 'Samurai Jack', 'score' => 0, 'avatar' => 'samurai.png', 'asNum' => 0],
+        ['name' => 'Jonnhy Bravo', 'score' => 0, 'avatar' => 'bravo.png', 'asNum' => 0]
     ];
 
     shuffle($possiblePlayers);

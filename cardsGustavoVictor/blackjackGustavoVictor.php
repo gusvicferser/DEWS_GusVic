@@ -42,12 +42,12 @@ const NUMBER_OF_PLAYERS = 5;
     $players[] = $banca;
 
     // Como los valores de las figuras son diez siempre en el BlackJack, los cambiaremos antes de repartir:
-    foreach ($deck as $card) {
+    foreach ($deck as $key => $card) {
         switch ($card['value']) {
             case 'J':
             case 'Q':
             case 'K':
-                $card['value'] = 10;
+                $deck[$key]['value'] = 10;
                 break;
         }
     }
@@ -136,7 +136,7 @@ const NUMBER_OF_PLAYERS = 5;
     // Luego desplegamos tanto las cartas como los contenedores de la misma, el nombre del jugador y su avatar: 
     for ($i = 0; $i < NUMBER_OF_PLAYERS; $i++) {
 
-        ?>
+    ?>
 
         <div class="playerDisplay"><img src="/images/
        
@@ -144,27 +144,28 @@ const NUMBER_OF_PLAYERS = 5;
         echo $players[$i]['avatar'] . '" alt="' . $players[$i]['avatar'];
         ?>
         
-        "><br><h1>
-        
+        "><br>
+            <h1>
+
+                <?php
+                echo $players[$i]['name'] . '</h1>';
+                ?>
+
+                <br>
+                <div class="player" id="player"
+
+                    <?php
+                    echo '' . ($i + 1) . '';
+                    foreach ($players[$i]['hand'] as $card) {
+                    ?>><img src="/images/baraja/
+
         <?php
-        echo $players[$i]['name'] .'</h1>';
+                        echo $card['image'] . '" alt="' . $card['image'];
+                    }
         ?>
-
-        <br><div class="player" id="player"
-
-        <?php
-        echo ''. ($i + 1) . '';
-        foreach ($players[$i]['hand'] as $card) {
-        ?>
-
-        ><img src="/images/baraja/
-
-        <?php
-            echo $card['image'] . '" alt="' . $card['image'];
-        }
-        ?>
-        "></div></div><br>
-        <?php
+        "></div>
+        </div><br>
+    <?php
     }
 
     // Aquí guardamos en una variable el ganador, su avatar y la puntuación:

@@ -21,8 +21,9 @@
  <body>
     
     <form action="/processGustavoVictor.php" method="post">
-        <legend>Pon aquí tus datos...</legend>
+        
         <fieldset>
+            <legend><h1>Pon aquí tus datos...</h1></legend>
             <label for="code">Código:</label>
             <input type="text" name="code" id="code"><br>
             <label for="name">Nombre:</label>
@@ -34,8 +35,8 @@
             <label for="maker">Fabricante:</label>
             <input type="text" name="maker" id="maker"><br>
             <label for="date">Fecha de adquisición:</label>
-            <input type="text" name="date" id="date"><br>
-            <input type="button" value="Envía" >
+            <input type="text" name="date" id="date"><br><br>
+            <input type="submit" value="Envía">
         </fieldset>
     </form>
 

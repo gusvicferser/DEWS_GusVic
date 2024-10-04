@@ -3,7 +3,7 @@
 /**
  * Página reservada para juego de blackjack.
  * @author: Gustavo Víctor
- * @version: 1.0
+ * @version: 1.8
  */
 
 $title = 'BlackJack';
@@ -99,24 +99,20 @@ const NUMBER_OF_PLAYERS = 5;
         $players[$i]['score'] = $actualHand;
     }*/
 
-    do {
 
-        for ($i = 0; $i < NUMBER_OF_PLAYERS; $i++) {
+
+    for ($i = 0; $i < NUMBER_OF_PLAYERS; $i++) {
+
+        do {
+
+            $out = true;
 
             $num_as = 0;
 
             foreach ($players[$i]['hand'] as $card) {
                 if ($card['value'] == 1) {
                     $num_as++;
-                    switch ($card['value']) {
-                        case 'J':
-                        case 'Q':
-                        case 'K':
-                            $players[$i]['score'] += 10;
-                            break;
-                        default:
-                            $players[$i]['score'] += $card['value'];
-                    }
+                    $players[$i]['score'] += $card['value'];
                 }
 
                 for ($i = 0; $i < $num_as; $i++) {
@@ -124,13 +120,15 @@ const NUMBER_OF_PLAYERS = 5;
                         $players[$i]['score'] += 10;
                     }
                 }
-            }
-        }
 
-        if ($players[$i]['score'] < 14) {
-            $players[$i]['hand'] = array_pop($deck);
-        }
-    } while ($algo < 14);
+                if ($players[$i]['score'] < 14) {
+                    $players[$i]['hand'] = array_pop($deck);
+                } else {
+                    $out = false;
+                }
+            }
+        } while ($players[$i]['score'] < 14);
+    }
 
 
     // Luego desplegamos tanto las cartas como los contenedores de la misma, el nombre del jugador y su avatar: 

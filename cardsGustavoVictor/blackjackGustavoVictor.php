@@ -3,13 +3,13 @@
 /**
  * Página reservada para juego de blackjack.
  * @author: Gustavo Víctor
- * @version: 1.8
+ * @version: 1.11
  */
 
 $title = 'BlackJack';
 
 const NUMBER_OF_CARDS = 2;
-const NUMBER_OF_PLAYERS = 5;
+const NUMBER_OF_PLAYERS = 6;
 ?>
 
 <!DOCTYPE html>
@@ -33,10 +33,10 @@ const NUMBER_OF_PLAYERS = 5;
     $deck = createDeck();
 
     // Asignamos el jugador 1 y el jugador 2:
-    $players = createPlayers(NUMBER_OF_PLAYERS);
+    $players = createPlayers(NUMBER_OF_PLAYERS - 1);
 
     // Creamos a la banca aquí, ya que sólo lo necesitaremos en esta página:
-    $banca = ['name' => 'La Banca', 'score' => 0, 'avatar' => 'banca.png'];
+    $banca = ['name' => 'La Banca', 'score' => 0, 'avatar' => 'banca.png', 'asNum' => 0];
 
     // La añadimos al lugar de los jugadores para repartirle cartas:
     $players[] = $banca;
@@ -54,7 +54,7 @@ const NUMBER_OF_PLAYERS = 5;
 
     shuffle($deck);
 
-    /*
+    /* // Traza
     echo '<pre>';
     print_r($deck);
     echo '<pre>';
@@ -63,7 +63,7 @@ const NUMBER_OF_PLAYERS = 5;
 
     // Repartimos cartas:
     for ($i = 0; $i < NUMBER_OF_CARDS; $i++) {
-        for ($j = 0; $j < NUMBER_OF_PLAYERS + 1; $j++) {
+        for ($j = 0; $j < NUMBER_OF_PLAYERS; $j++) {
 
             $players[$j]['hand'][] = array_pop($deck); // Repartimos una carta
             $players[$j]['score'] += (int) $players[$j]['hand'][$i]['value']; // Sumamos el valor de la carta
@@ -75,147 +75,116 @@ const NUMBER_OF_PLAYERS = 5;
         }
     }
 
-    /*
+    /* // Traza:
     echo '<pre>';
     print_r($players);
     echo '<pre>';
     */
 
+
     // Ahora vamos a evaluar la mano de cada uno de los jugadores:
-    for ($i = 0; $i < NUMBER_OF_PLAYERS + 1; $i++) {
+    for ($i = 0; $i < (NUMBER_OF_PLAYERS); $i++) {
 
-        //do {
-            $handCards = count($players[$i]['hand']);
+        do {
 
-            echo 'Check';
+            $handCards = count($players[$i]['hand']) - 1; // ¡¡He de restarle uno o si no se sale del índice del array!!
 
-            if ($players[$i]['asNum'] > 1) {
+            // echo ' Cards in Hand: '. count($players[$i]['hand']) .'. Check '; // Traza
+
+            // Si tiene más de un as, se añade 10 a la puntuación y se resta el as. Nunca dos ases juntos sumarán 10:
+            if ($players[$i]['asNum'] > 0) {
 
                 $players[$i]['score'] += 10;
                 $players[$i]['asNum'] -= 1;
-                echo 'As Checked';
+                // echo ' As Checked '; // Traza
             }
 
-
+            // Si el jugador tiene menos de 14, después de calcular los ases, roba carta:
             if ($players[$i]['score'] < 14) {
 
                 $players[$i]['hand'][] = array_pop($deck);
                 $handCards++;
+                $players[$i]['score'] += $players[$i]['hand'][$handCards]['value'];
 
-                if ($players[$i]['hand'][$handCards] == 1) {
+                // Si la carta que ha robado es un as, añadimos uno al contador de ases:
+                if ($players[$i]['hand'][$handCards]['value'] == 1) {
 
-                    $player[$i]['asNum'] += 1;
+                    $players[$i]['asNum'] += 1;
                 }
+                // Además, si está por encima y tiene un as, restamos diez y quitamos un as del contador:
             } else if ($players[$i]['score'] > 21 && $players[$i]['asNum'] > 0) {
 
                 $players[$i]['score'] -= 10;
                 $players[$i]['asNum'] -= 1;
             }
-        //} while ($players[$i]['score'] < 14 || $players[$i]['score'] > 21);
-
-        echo $players[$i]['name'] . ': ' . $players[$i]['score'];
-    }
-
-
-    /*
-    for ($i = 0; $i < NUMBER_OF_PLAYERS; $i++) {
-
-        do {
-
-            $out = true;
-
-            $num_as = 0;
-
-            if ($card['value'] == 1) {
-                $num_as++;
-                $players[$i]['score'] += $card['value'];
-            }
-
-            for ($i = 0; $i < $num_as; $i++) {
-                if (($players[$i]['score'] + 10) < 21) {
-                    $players[$i]['score'] += 10;
-                }
-            }
-
-            foreach ($players[$i]['hand'] as $card) {
-
-                if ($players[$i]['score'] < 14) {
-                    $players[$i]['hand'] = array_pop($deck);
-                }
-            }
+            // Reiniciamos el contador por si las moscas:
+            unset($handCards);
         } while ($players[$i]['score'] < 14);
+
+
+        /* // Traza
+        echo $players[$i]['name'] . ': ' . $players[$i]['score'];
+        echo '<pre>';
+        print_r($players[$i]);
+        echo '<pre>';
+        */
     }
 
-
-    // Luego desplegamos tanto las cartas como los contenedores de la misma, el nombre del jugador y su avatar: 
-    for ($i = 0; $i < NUMBER_OF_PLAYERS; $i++) {
-
+    // Mostramos a la banca primero:
     ?>
-
-        <div class="playerDisplay"><img src="/images/
-       
-       <?php
-        echo $players[$i]['avatar'] . '" alt="' . $players[$i]['avatar'];
-        ?>
-        
-        "><br>
-            <h1>
-
-                <?php
-                echo $players[$i]['name'] . '</h1>';
-                ?>
-
-                <br>
-                <div class="player" id="player"
+    <div class="headContainer">
+        <div class="tableGame">
+            <div class="playerDisplay">
+                <img src="/images/banca.png" alt="banca"><br>
+                <h1>La Banca: <?= $players[5]['score'] ?></h1><br>
+                <div class="player" id="banca">
 
                     <?php
-                    echo '' . ($i + 1) . '';
-                    foreach ($players[$i]['hand'] as $card) {
-                    ?>><img src="/images/baraja/
+                    foreach ($players[5]['hand'] as $key => $card) {
+                    ?>
+                        <img src="/images/baraja/<?= $card['image'] ?>" alt="<?= $card['image'] ?>">
 
-        <?php
-                        echo $card['image'] . '" alt="' . $card['image'];
+                    <?php
                     }
-        ?>
-        "></div>
-        </div><br>
-    <?php
-    }
-
-    // Aquí guardamos en una variable el ganador, su avatar y la puntuación:
-    if ($players[0]['score'] > $players[1]['score']) {
-        $winner = $players[0]['name'];
-        $avatar = $players[0]['avatar'];
-    } else if ($players[0]['score'] == $players[1]['score']) {
-        $winner = 'nadie.jpg';
-        $avatar = 'nadie.jpg';
-    } else {
-        $winner = $players[1]['name'];
-        $avatar = $players[1]['avatar'];
-    }
-
-    ?>
-
-    <br><br>
-    <div class="winPlayer">
-        <div>
-            <h1>Puntuación</h1><br>
-            <div>
-                <h3><?= $players[0]['name'] ?>: <?= $players[0]['score'] ?></h3><br>
-                <h3><?= $players[1]['name'] ?>: <?= $players[1]['score'] ?></h3><br>
+                    ?>
+                </div><br>
             </div>
         </div>
-        <div>
-            <h1>El ganador es:</h1>
-            <img src="/images/<?= $avatar ?>" alt="<?= $winner ?>">
-            <h2><?= $winner ?><h2>
-        </div>
-    </div>
 
+        <div class="tableGame">
+
+            <?php
+
+            // Luego desplegamos tanto las cartas como los contenedores de la misma, el nombre del jugador y su avatar: 
+            for ($i = 0; $i < (NUMBER_OF_PLAYERS - 1); $i++) {
+            ?>
+
+                <div class="playerDisplay">
+                    <img src="/images/<?= $players[$i]['avatar'] ?>" alt="<?= $players[$i]['avatar'] ?>"><br>
+                    <h1><?= $players[$i]['name'] ?>: <?= $players[$i]['score'] ?></h1><br>
+                    <div class="player" id="player<?= ($i + 1) ?>">
+
+                        <?php
+                        foreach ($players[$i]['hand'] as $key => $card) {
+                        ?>
+                            <img src="/images/baraja/<?= $card['image'] ?>" alt="<?= $card['image'] ?>">
+
+                        <?php
+                        }
+                        ?>
+                    </div><br>
+                </div>
+
+
+            <?php
+            }
+            ?>
+        </div><br>
+    </div>
 
     <?php
     // Espacio reservado para el footer:
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footerGustavoVictor.inc.php');*/
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footerGustavoVictor.inc.php');
     ?>
 
 </body>

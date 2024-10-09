@@ -4,6 +4,14 @@
     margin: 0px;
 }
 
+h1 {
+    min-height: 30px;
+}
+
+h1::first-letter {
+    text-transform: uppercase;
+}
+
 /* Ajustes para el body y el fondo */
 body {
     background-image: url('/images/fondo.jpg');
@@ -11,8 +19,12 @@ body {
     color:goldenrod;
 }
 
-img {
-    max-height: 200px;
+/*img {
+    max-height: 150px;
+}*/
+
+img{
+    max-height: 150px;
 }
 
 
@@ -68,11 +80,37 @@ img {
     padding: 10px;
 }
 
+.playerBanca {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 250px;
+}
+
 .winPlayer {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+/* Ajustes para BlackJack: */
+.wins {
+    border: 10px solid darkgreen;
+    border-radius: 20px;
+
+}
+
+.ties {
+    border: 10px solid darkorange;
+    border-radius: 20px;
+
+}
+
+.loses {
+    border: 10px solid darkred;
+    border-radius: 20px;
 }
 
 /* Ajustes para Footer: */

@@ -3,7 +3,7 @@
 /**
  * Página reservada para juego de blackjack.
  * @author: Gustavo Víctor
- * @version: 1.11
+ * @version: 1.13
  */
 
 $title = 'BlackJack';
@@ -112,73 +112,125 @@ const NUMBER_OF_PLAYERS = 6;
                     $players[$i]['asNum'] += 1;
                 }
                 // Además, si está por encima y tiene un as, restamos diez y quitamos un as del contador:
-            } else if ($players[$i]['score'] > 21 && $players[$i]['asNum'] > 0) {
+            }
+
+            if ($players[$i]['score'] > 21 && $players[$i]['asNum'] > 0) {
 
                 $players[$i]['score'] -= 10;
                 $players[$i]['asNum'] -= 1;
             }
             // Reiniciamos el contador por si las moscas:
             unset($handCards);
-        } while ($players[$i]['score'] < 14);
+        } while ($players[$i]['score'] < 14 && $players[$i]['asNum'] > 0);
+    }
+
+    // Comparar resultados y escoger al ganador:
+    if ($players[5]['score'] > 21) {
+
+        for ($i = 0; $i < 5; $i++) {
+
+            if ($players[$i]['score'] <= 21) {
+
+                $players[$i]['status'] = 'wins';
+            } else {
+
+                $players[$i]['status'] = 'loses';
+            }
+        }
+    } else {
+
+        for ($i = 0; $i < 5; $i++) {
+            if ($players[$i]['score'] < $players[5]['score']) {
+
+                $players[$i]['status'] = 'loses';
+            } else if ($players[$i]['score'] == $players[5]['score']) {
+
+                $players[$i]['status'] = 'ties';
+            } else {
+
+                if ($players[$i]['score'] <= 21) {
+
+                    $players[$i]['status'] = 'wins';
+                } else {
+                    $players[$i]['status'] = 'loses';
+                }
+            }
+        }
+    }
 
 
-        /* // Traza
+    /* // Traza
         echo $players[$i]['name'] . ': ' . $players[$i]['score'];
         echo '<pre>';
         print_r($players[$i]);
         echo '<pre>';
         */
-    }
-
-    // Mostramos a la banca primero:
     ?>
+
+
     <div class="headContainer">
         <div class="tableGame">
-            <div class="playerDisplay">
-                <img src="/images/banca.png" alt="banca"><br>
-                <h1>La Banca: <?= $players[5]['score'] ?></h1><br>
-                <div class="player" id="banca">
-
-                    <?php
-                    foreach ($players[5]['hand'] as $key => $card) {
-                    ?>
-                        <img src="/images/baraja/<?= $card['image'] ?>" alt="<?= $card['image'] ?>">
-
-                    <?php
-                    }
-                    ?>
-                </div><br>
-            </div>
-        </div>
-
-        <div class="tableGame">
 
             <?php
-
             // Luego desplegamos tanto las cartas como los contenedores de la misma, el nombre del jugador y su avatar: 
             for ($i = 0; $i < (NUMBER_OF_PLAYERS - 1); $i++) {
+
+                // Mostramos a la banca entre el primer y el segundo jugador:
+                if ($i == 1) {
             ?>
 
-                <div class="playerDisplay">
-                    <img src="/images/<?= $players[$i]['avatar'] ?>" alt="<?= $players[$i]['avatar'] ?>"><br>
-                    <h1><?= $players[$i]['name'] ?>: <?= $players[$i]['score'] ?></h1><br>
-                    <div class="player" id="player<?= ($i + 1) ?>">
+                    <div class="playerBanca">
+                        <figure>
+                            <img src="/images/banca.png" alt="banca"><br>
+                        </figure>
+                        <h1>La Banca: <?= $players[5]['score'] ?></h1>
+                        <div class="player" id="banca">
 
-                        <?php
-                        foreach ($players[$i]['hand'] as $key => $card) {
-                        ?>
-                            <img src="/images/baraja/<?= $card['image'] ?>" alt="<?= $card['image'] ?>">
+                            <?php
+                            foreach ($players[5]['hand'] as $key => $card) {
+                            ?>
+                                <img src="/images/baraja/<?= $card['image'] ?>" alt="<?= $card['image'] ?>">
 
-                        <?php
-                        }
-                        ?>
-                    </div><br>
-                </div>
+                            <?php
+                            }
+                            ?>
+                        </div><br>
+                    </div>
+
+                <?php
+
+                }
+                if ($i == 2) {
+                ?>
+        </div>
+        <div class="tableGame">
+        <?php
+                }
+        ?>
+
+        <div class="playerDisplay <?= $players[$i]['status'] ?>">
+            <h1><?= $players[$i]['status'] ?></h1>
+            <figure>
+                <img src="/images/<?= $players[$i]['avatar'] ?>" alt="<?= $players[$i]['name'] ?>"><br>
+            </figure>
+            <h1><?= $players[$i]['name'] ?>: <?= $players[$i]['score'] ?></h1>
+            <div class="player" id="player<?= ($i + 1) ?>">
+
+                <?php
+                foreach ($players[$i]['hand'] as $key => $card) {
+                ?>
+                    <img src="/images/baraja/<?= $card['image'] ?>" alt="<?= $card['image'] ?>">
+
+                <?php
+                }
+                ?>
+            </div><br>
+        </div>
 
 
-            <?php
+    <?php
             }
-            ?>
+    ?>
         </div><br>
     </div>
 

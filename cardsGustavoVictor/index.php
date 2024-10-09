@@ -26,7 +26,7 @@ $title = 'CaNsino';
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/cabeceraGustavoVictor.inc.php');
     ?>
 
-    <div>
+    <div class="headContainer">
         <img src="/images/blackJack.jpg" alt="black_jack">
     </div>
 

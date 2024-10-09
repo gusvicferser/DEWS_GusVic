@@ -10,12 +10,12 @@
     <div class="box">
         <h1>Gustavo Víctor</h1>
 
-        </div>
     </div>
+    <img src="/images/gus.jpg" alt="Yo mismo, Gustavo"></img>
+</div>
     <div class="derechos">
         <span class="negrita">Gustavo Victor Fernandez Serantes</span>
 
-        <!-- TO DO: <img src="" alt="Yo mismo, Gustavo"></img> PONER MI FOTO-->
         
     </div>
 </footer>

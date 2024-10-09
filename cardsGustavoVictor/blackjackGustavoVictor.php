@@ -3,7 +3,7 @@
 /**
  * Página reservada para juego de blackjack.
  * @author: Gustavo Víctor
- * @version: 1.13
+ * @version: 1.15
  */
 
 $title = 'BlackJack';
@@ -66,7 +66,7 @@ const NUMBER_OF_PLAYERS = 6;
         for ($j = 0; $j < NUMBER_OF_PLAYERS; $j++) {
 
             $players[$j]['hand'][] = array_pop($deck); // Repartimos una carta
-            $players[$j]['score'] += (int) $players[$j]['hand'][$i]['value']; // Sumamos el valor de la carta
+            $players[$j]['score'] += $players[$j]['hand'][$i]['value']; // Sumamos el valor de la carta
 
             // Si hay un as, lo añadimos al contador de ases:
             if ($players[$j]['hand'][$i]['value'] == 1) {
@@ -89,7 +89,7 @@ const NUMBER_OF_PLAYERS = 6;
 
             $handCards = count($players[$i]['hand']) - 1; // ¡¡He de restarle uno o si no se sale del índice del array!!
 
-            // echo ' Cards in Hand: '. count($players[$i]['hand']) .'. Check '; // Traza
+            
 
             // Si tiene más de un as, se añade 10 a la puntuación y se resta el as. Nunca dos ases juntos sumarán 10:
             if ($players[$i]['asNum'] > 0) {
@@ -111,9 +111,9 @@ const NUMBER_OF_PLAYERS = 6;
 
                     $players[$i]['asNum'] += 1;
                 }
-                // Además, si está por encima y tiene un as, restamos diez y quitamos un as del contador:
+                
             }
-
+            // Además, si está por encima y tiene un as, restamos diez y quitamos un as del contador:
             if ($players[$i]['score'] > 21 && $players[$i]['asNum'] > 0) {
 
                 $players[$i]['score'] -= 10;
@@ -121,7 +121,10 @@ const NUMBER_OF_PLAYERS = 6;
             }
             // Reiniciamos el contador por si las moscas:
             unset($handCards);
-        } while ($players[$i]['score'] < 14 && $players[$i]['asNum'] > 0);
+
+            // echo ' Name: '. $players[$i]['name']. ' Cards in Hand: '. count($players[$i]['hand']) .'. Score: '. $players[$i]['score']; // Traza
+
+        } while ($players[$i]['score'] < 14 || $players[$i]['asNum'] > 0);
     }
 
     // Comparar resultados y escoger al ganador:

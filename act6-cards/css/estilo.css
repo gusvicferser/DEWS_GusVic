@@ -1,0 +1,74 @@
+body {
+    background-color: rgb(248, 238, 188);
+}
+
+#cartasPrincipal {
+    height: 400px;
+    width: auto;
+}
+
+img.jugada.alta {
+    height: 120px;
+    width: auto;
+    border: .5em solid transparent;
+    border-radius: .5em;
+    margin: 0 .2em;
+}
+
+img.jugada.alta.gana {
+    border-color: rgb(53, 238, 53);
+}
+
+img.jugada.alta.empata {
+    border-color: rgb(107, 219, 253);
+}
+
+img.jugada.j21 {
+    height: 100px;
+    width: auto;
+}
+
+img.perfilJugador {
+    border: .5em solid black;
+    height: 120px;
+    width: auto;
+    margin-right: .5em;
+}
+
+.jugador {
+    display: inline-block;
+    /*border: 1px solid black;
+    border-radius: .5em;*/
+    margin: .3em;
+    padding: .5em;
+}
+.jugador h3 {
+    margin: 0 0.4em;
+    text-align: center;
+}
+
+.puntos {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}
+
+.banca {
+    border: .5em solid #7b7b7b;
+    border-radius: .8em;
+}
+
+.gana {
+    border: .5em solid #49fb40;
+    border-radius: .8em;
+}
+
+.empata {
+    border: .5em solid #ffa215;
+    border-radius: .8em;
+}
+
+.pierde {
+    border: .5em solid #fa3a3a;
+    border-radius: .8em;
+}

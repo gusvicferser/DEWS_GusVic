@@ -88,17 +88,17 @@ if (!empty($_POST)) {
                     <h1>Pon aquí tus datos...</h1>
                 </legend>
                 <label for="code">Código:</label>
-                <input type="text" name="code" id="code" value="<?=$_POST['code']??''?>"><br>
+                <input type="text" name="code" id="code" value="<?= $_POST['code'] ?? '' ?>"><br>
                 <label for="name">Nombre:</label>
-                <input type="text" name="name" id="name" value="<?=$_POST['name']??''?>"><br>
+                <input type="text" name="name" id="name" value="<?= $_POST['name'] ?? '' ?>"><br>
                 <label for="cost">Precio:</label>
-                <input type="text" name="cost" id="cost" value="<?=$_POST['cost']??''?>"><br>
+                <input type="text" name="cost" id="cost" value="<?= $_POST['cost'] ?? '' ?>"><br>
                 <label for="descrip">Descripción:</label>
-                <input type="text" name="descrip" id="descrip" value="<?=$_POST['descrip']??''?>"><br>
+                <input type="text" name="descrip" id="descrip" value="<?= $_POST['descrip'] ?? '' ?>"><br>
                 <label for="maker">Fabricante:</label>
-                <input type="text" name="maker" id="maker" value="<?=$_POST['maker']??''?>"><br>
+                <input type="text" name="maker" id="maker" value="<?= $_POST['maker'] ?? '' ?>"><br>
                 <label for="date">Fecha de adquisición:</label>
-                <input type="text" name="date" id="date" value="<?=$_POST['date']??''?>"><br><br>
+                <input type="text" name="date" id="date" value="<?= $_POST['date'] ?? '' ?>"><br><br>
                 <input type="submit" value="Envía">
             </fieldset>
         </form>

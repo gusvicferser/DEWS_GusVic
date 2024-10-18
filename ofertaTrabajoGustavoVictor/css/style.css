@@ -7,17 +7,49 @@ body {
     display:flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-items: center;
+    justify-content: space-between;
     width: 80%;
+    height: 100vh;
     margin:auto;
 }
+
+form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 
 fieldset {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding:50px;
+    padding: 25px 60px;
+}
+
+fieldset div {
     width: 100%;
+    margin: 8px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+fieldset div:last-child {
+    align-items: center;
+    justify-content: center;
+}
+
+input {
+    padding: 5px;
+    margin-left: 15px;
+}
+
+#button {
+    align-self: center;
+    padding: 10px 20px;
+    margin: 0px;
 }
 
 footer {

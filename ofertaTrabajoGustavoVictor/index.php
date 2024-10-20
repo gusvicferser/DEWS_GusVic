@@ -1,13 +1,11 @@
 <?php
 
 /**
- * Actividad 03 del tema 3: Introduciendo datos en el almacén.
- * 
  * Aplicación para guardar los datos de un candidato para una oferta de trabajo
  * (Usuario, nombre, apellidos, DNI, dirección, mail, teléfono y fecha de nacimiento)
  * 
  * @author = Gustavo Víctor
- * @version = 1.0
+ * @version = 1.2
  */
 
 // Si el array de $_POST NO está vacío, chequeamos si hay errores:

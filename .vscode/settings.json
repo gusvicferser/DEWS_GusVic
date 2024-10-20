@@ -1,0 +1,7 @@
+{
+    // Set the default
+  "editor.formatOnSave": true, //para que formatee al guardar
+  "editor.defaultFormatter": "esbenp.prettier-vscode", // usamos pretier
+  "prettier.semi": true, // acabamos frases en ;
+  "prettier.singleQuote": true, //cambiamos " por '
+}

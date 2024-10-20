@@ -6,7 +6,7 @@
  * Página con el formulario
  * 
  * @author = Gustavo Víctor
- * @version = 2.2
+ * @version = 2.3
  */
 
 // Si el array de $_POST NO está vacío, chequeamos si hay errores:
@@ -32,7 +32,7 @@ if (!empty($_POST)) {
     }
 
     if (preg_match($regex_patterns['cost'], $_POST['cost']) == 0) {
-        $errors['cost'] = 'El precio debe ser un número con 1 o 2 decimales.';
+        $errors['cost'] = 'El precio debe ser un número con 1 o 2 decimales después de un punto.';
     }
 
     if (preg_match($regex_patterns['descrip'], $_POST['descrip']) == 0) {

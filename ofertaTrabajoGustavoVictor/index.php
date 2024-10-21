@@ -3,9 +3,10 @@
 /**
  * Aplicación para guardar los datos de un candidato para una oferta de trabajo
  * (Usuario, nombre, apellidos, DNI, dirección, mail, teléfono y fecha de nacimiento)
+ * Se añade la foto y el cv en pdf.
  * 
  * @author = Gustavo Víctor
- * @version = 1.2
+ * @version = 1.3
  */
 
 // Si el array de $_POST NO está vacío, chequeamos si hay errores:
@@ -60,6 +61,118 @@ if (!empty($_POST)) {
     if (preg_match($regex_patterns['birthDate'], $_POST['birthDate']) == 0) {
         $errors['birthDate'] = 'La fecha ha de estar en formato dd/mm/aaaa';
     }
+
+    // Vamos a hacer un if para los errores que puedan tener las fotos o currículum:
+    // print_r($_FILES);
+
+    if (!empty($_FILES)) {
+
+        // Si $_FILES no está vacío, hemos de comprobar si existe algún error posible de subida:
+        if ($_FILES['photo']['error'] != UPLOAD_ERR_OK) {
+
+            echo '¡Error! ';
+            switch ($_FILES['photo']['error']) {
+                case UPLOAD_ERR_INI_SIZE:
+                case UPLOAD_ERR_FORM_SIZE:
+                    $errors['photo'] = 'Fichero demasiado grande';
+                    break;
+                case UPLOAD_ERR_PARTIAL:
+                    $errors['photo'] = 'El fichero no se ha podido subir entero';
+                    break;
+                case UPLOAD_ERR_NO_FILE:
+                    $errors['photo'] = 'No se ha encontrado fichero';
+                    break;
+                default:
+                    $errors['photo'] = 'Error indeterminado';
+            }
+        }
+
+        if ($_FILES['photo']['type'] != 'image/jpeg' && $_FILES['photo']['type'] != 'image/png') {
+            $errors['photo'] = 'El tipo de archivo no es el correcto, debe ser .jpg/.jpeg o .png';
+        }
+
+        // Hacemos ahora otro if para detectar errores en el cv. Creo que es importante separar los dos if
+        // ya que si no, no tendríamos forma de saber qué archivo da error.
+        if ($_FILES['cv']['error'] != UPLOAD_ERR_OK) {
+            echo '¡Error! ';
+            switch ($_FILES['cv']['error']) {
+                case UPLOAD_ERR_INI_SIZE:
+                case UPLOAD_ERR_FORM_SIZE:
+                    $errors['cv'] = 'Fichero demasiado grande';
+                    break;
+                case UPLOAD_ERR_PARTIAL:
+                    $errors['cv'] = ' El fichero no se ha podido subir entero';
+                    break;
+                case UPLOAD_ERR_NO_FILE:
+                    $errors['cv'] = ' No se ha encontrado fichero';
+                    break;
+                case UPLOAD_ERR_EXTENSION:
+                    $errors['cv'] = 'El tipo de archivo no es correcto';
+                    break;
+                default:
+                    $errors['cv'] = 'Error indeterminado';
+            }
+        }
+
+        // Comprobamos si es del tipo que necesitamos
+        if ($_FILES['cv']['type'] != 'application/pdf') {
+            $errors['cv'] = 'El tipo de archivo no es el correcto, debe ser .pdf';
+        }
+
+        // Vamos a almacenar la imagen. Para ello creamos el nombre de la ruta:
+        $route = $_SERVER['DOCUMENT_ROOT'] . '/cvs';
+        $candidates = $_SERVER['DOCUMENT_ROOT'] . '/images/candidates';
+
+        //  Comprobamos si la foto que nos han pasado existe o no:
+        if (is_uploaded_file($_FILES['photo']['tmp_name']) === true) {
+
+            // Si no existe, creamos dos directorios. Uno para los cvs, otro para las fotos:
+            if (is_dir($route) === false) {
+                mkdir($route);
+            }
+
+            if (is_dir($candidates) === false) {
+                mkdir($candidates);
+            }
+
+            // Creamos el nombre de la imagen y su ruta:
+            $photoName = $_POST['dni'] . '.png';
+            $routePhoto = $candidates . '/' . $photoName;
+
+            // Movemos el archivo a una dirección permanente y si no ha podido, guardamos un mensaje de error:
+            if (!move_uploaded_file($_FILES['photo']['tmp_name'], $routePhoto) === true) {
+                $errors['move'] = 'No se ha podido mover el archivo ' . $photoName;
+            }
+        } else {
+            // En cualquier caso que el archivo no se haya subido al servidor, lanzamos un aviso:
+            $errors['hack'] = 'Posible ataque. Nombre ' . $_FILES['photo']['tmp_name'];
+        }
+
+        //  Comprobamos si el cv que nos han pasado existe o no:
+        if (is_uploaded_file($_FILES['cv']['tmp_name']) === true) {
+
+            // Comprobamos si la carpeta no existe, y si es así, creamos dos directorios. Uno para los cvs, otro para las fotos:
+            if (is_dir($route) === false) {
+                mkdir($route, 0700);
+                mkdir($candidates, 0700);
+            }
+
+            // Creamos el nombre del cv y su ruta:
+            $cvName = $_POST['dni'] . '-' . $_POST['name'] . '-' . $_POST['lastName1'] . '.pdf';
+            $routeCV = $route . '/' . $cvName;
+
+            // Movemos el archivo a una dirección permanente y si no ha podido, guardamos un mensaje de error:
+            if (!move_uploaded_file($_FILES['cv']['tmp_name'], $routeCV) === true) {
+                $errors['move'] = 'No se ha podido mover el archivo ' . $cvName;
+            }
+        } else {
+            // En cualquier caso que el archivo no se haya subido al servidor, lanzamos un aviso:
+            $errors['hack'] = 'Posible ataque. Nombre ' . $_FILES['cv']['tmp_name'];
+        }
+    } else {
+        // Si $_FILES está vacío, hemos de lanzar un error para que vuelva al formulario:
+        $errors['files'] = '¡Ha de adjuntar los archivos!';
+    }
 }
 
 ?>
@@ -86,6 +199,11 @@ if (!empty($_POST)) {
         <div><?= $errors['mail'] ?? '' ?></div>
         <div><?= $errors['tlf'] ?? '' ?></div>
         <div><?= $errors['birthDate'] ?? '' ?></div>
+        <div><?= $errors['photo'] ?? '' ?></div>
+        <div><?= $errors['cv'] ?? '' ?></div>
+        <div><?= $errors['files'] ?? '' ?></div>
+        <div><?= $errors['move'] ?? '' ?></div>
+        <div><?= $errors['hack'] ?? '' ?></div>
     </div>
 
     <?php
@@ -96,12 +214,12 @@ if (!empty($_POST)) {
      * formulario con la información que ya han puesto, para que la corrijan.
      */
 
-    if (empty($errors) && !empty($_POST)) {
+    if (empty($errors) && !empty($_POST) && !empty($_FILES)) {
         echo '<h1>Usuario registrado correctamente</h1>';
         echo '<a href=index.php target=_self>Vuelve a comenzar</a>';
     } else {
     ?>
-        <form action="#" method="post">
+        <form action="#" method="post" enctype="multipart/form-data">
             <fieldset>
                 <legend>
                     <h1>Pon aquí tus datos...</h1>
@@ -142,6 +260,15 @@ if (!empty($_POST)) {
                     <label for="birthDate">Fecha de nacimiento:</label>
                     <input type="text" name="birthDate" id="birthDate" placeholder="23/10/1900" value="<?= $_POST['birthDate'] ?? '' ?>">
                 </div>
+                <div>
+                    <label for="photo">Incluye una foto (.png o .jpg):</label>
+                    <input type="file" name="photo" id="photo">
+                </div>
+                <div>
+                    <label for="cv">Adjunta tu currículum (solo .pdf):</label>
+                    <input type="file" name="cv" id="cv">
+                </div>
+                <input type="hidden" name="MAX_FILE_SIZE" value="20MB">
                 <div>
                     <input id="button" type="submit" value="Envía">
                 </div>

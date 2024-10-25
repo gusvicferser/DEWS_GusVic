@@ -40,6 +40,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/checksGustavoVictor.inc.php'
         <div><?= $errors['cv'] ?? '' ?></div>
         <div><?= $errors['files'] ?? '' ?></div>
         <div><?= $errors['move'] ?? '' ?></div>
+        <div><?= $errors['resize'] ?? '' ?></div>
         <div><?= $errors['moveSmall'] ?? '' ?></div>
         <div><?= $errors['hack'] ?? '' ?></div>
     </div>

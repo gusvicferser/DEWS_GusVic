@@ -61,6 +61,8 @@ if (!empty($_POST)) {
         $errors['birthDate'] = 'La fecha ha de estar en formato dd/mm/aaaa';
     }
 
+    // Trazas:
+    
     // echo '<pre>';
     // print_r($_POST);
     // echo '</pre>';

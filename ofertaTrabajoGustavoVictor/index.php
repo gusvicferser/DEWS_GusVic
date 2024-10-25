@@ -6,7 +6,7 @@
  * Se añade la foto y el cv en pdf.
  * 
  * @author = Gustavo Víctor
- * @version = 1.4
+ * @version = 1.5
  */
 
 // Aquí enlazamos con un include para tener separada la lógica de la visualización y tenerlo todo más limpio:
@@ -15,7 +15,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/checksGustavoVictor.inc.php'
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
@@ -117,6 +117,10 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/checksGustavoVictor.inc.php'
     <?php
     }
     ?>
+
+    <div>
+        <a href="candidates.php" target="_blank">Candidatos</a>
+    </div>
 
     <?php
 

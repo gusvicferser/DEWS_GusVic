@@ -40,3 +40,4 @@ imagepng($image);
 imagedestroy($image);
 imagedestroy($watermark);
 unset($watermarkHeight, $watermarkWidth, $imageWidth, $imageHeight);
+

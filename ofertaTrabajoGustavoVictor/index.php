@@ -22,6 +22,9 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/checksGustavoVictor.inc.php'
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CV</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -54,8 +57,10 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/checksGustavoVictor.inc.php'
      */
 
     if (empty($errors) && !empty($_POST) && !empty($_FILES)) {
+        echo '<div class="titulo">';
         echo '<h1>Usuario registrado correctamente</h1>';
         echo '<a href=index.php target=_self>Vuelve a comenzar</a>';
+        echo '</div>';
     } else {
     ?>
         <form action="#" method="post" enctype="multipart/form-data">
@@ -118,7 +123,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/checksGustavoVictor.inc.php'
     }
     ?>
 
-    <div>
+    <div class="titulo">
         <a href="candidates.php" target="_blank">Candidatos</a>
     </div>
 

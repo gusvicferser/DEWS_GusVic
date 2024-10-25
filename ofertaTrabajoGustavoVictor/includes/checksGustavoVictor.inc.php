@@ -62,7 +62,15 @@ if (!empty($_POST)) {
     }
 
     // echo '<pre>';
+    // print_r($_POST);
+    // echo '</pre>';
+    
+    // echo '<pre>';
     // print_r($_FILES);
+    // echo '</pre>';
+
+    // echo '<pre>';
+    // print_r($errors);
     // echo '</pre>';
 
     // Vamos a hacer un if para los errores que puedan tener las fotos o currículum:

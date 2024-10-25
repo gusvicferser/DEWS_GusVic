@@ -9,7 +9,8 @@
  * @version = 1.4
  */
 
-    require_once($_SERVER['DOCUMENT_ROOT']. '/includes/checksGustavoVictor.inc.php');
+// Aquí enlazamos con un include para tener separada la lógica de la visualización y tenerlo todo más limpio:
+require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/checksGustavoVictor.inc.php');
 
 ?>
 
@@ -39,6 +40,7 @@
         <div><?= $errors['cv'] ?? '' ?></div>
         <div><?= $errors['files'] ?? '' ?></div>
         <div><?= $errors['move'] ?? '' ?></div>
+        <div><?= $errors['moveSmall'] ?? '' ?></div>
         <div><?= $errors['hack'] ?? '' ?></div>
     </div>
 

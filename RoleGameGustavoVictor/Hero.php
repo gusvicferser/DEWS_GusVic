@@ -6,12 +6,11 @@
  * abajo:
  * 
  * @author: Gustavo Víctor
- * @version: 1.1
+ * @version: 1.3
  */
 
 class Hero
 {
-
     private string $name;
     private string $species;
     private string $class;
@@ -35,40 +34,49 @@ class Hero
 
         /* Hemos de chequear que la especie esté entre las opciones disponibles:
          y si no se encuentra entre ellas, será 'Humano' la clase por defecto:*/
-        if ($this->checkSpecies($species)) {
-            $this->species = $species;
-        } else {
-            $this->species = 'Humano';
-        }
+        /* if ($this->checkSpecies($species)) {
+                $this->species = $species;
+            } else {
+                $this->species = 'Humano';
+            }*/
+
+        $this->species = $this->checkSpecies($species) ? $species : 'Humano';
 
         /* También hemos de verificar que la clase sea la correcta y si no, 
          ponemos que es ninguna:*/
-        if ($this->checkClass($class)) {
-            $this->class = $class;
-        } else {
-            $this->class = 'Ninguna';
-        }
+        /* if ($this->checkClass($class)) {
+                $this->class = $class;
+            } else {
+                $this->class = 'Ninguna';
+            }*/
 
+        $this->class = $this->checkClass($class) ? $class : 'Ninguna';
         /* La salud no será ni un número negativo ni cero:*/
-        if ($health > 0) {
+        /*if ($health > 0) {
             $this->health = $health;
         } else {
             $this->health = 1;
-        }
+        }*/
+
+        $this->health = ($health > 0) ? $health : 1;
 
         /* El ataque base no puede ser negativo (al crear el objeto héroe): */
-        if ($baseAttack > 0) {
-            $this->baseAtack = $baseAttack;
-        } else {
-            $this->baseAtack = 0;
-        }
+        /*if ($baseAttack > 0) {
+                $this->baseAtack = $baseAttack;
+            } else {
+                $this->baseAtack = 0;
+        }*/
+
+        $this->baseAttack = ($baseAttack > 0) ? $baseAttack : 0;
 
         /* La defensa tampoco (al crear el héroe):*/
-        if ($baseDefense > 0) {
+        /*if ($baseDefense > 0) {
             $this->baseDefense = $baseDefense;
         } else {
             $this->baseDefense = 0;
-        }
+        }*/
+
+        $this->baseDefense = ($baseDefense > 0) ? $baseDefense : 0;
     }
 
     function __get($property)
@@ -80,7 +88,7 @@ class Hero
 
     function __set($property, $value)
     {
-        if (isset($property) && is_int($value)) {
+        if (isset($property)) {
             $this->$property = $value;
         }
     }
@@ -145,8 +153,6 @@ class Hero
         return in_array($class, $classes);
     }
 
-
-
     /**
      * Función pública para añadir armas al héroe siempre que no lleve ya dos
      * (Que es el máximo permitido):
@@ -175,7 +181,7 @@ class Hero
      * @param: Weapon $weapon
      * @return: bool (true si lo ha hecho, false si no)
      */
-    function rmvWeapon(Weapon $weapon): bool
+    function removeWeapon(Weapon $weapon): bool
     {
 
         if (in_array($weapon, $this->weapons)) {
@@ -223,35 +229,15 @@ class Hero
     function defense(int $dmg): int
     {
 
-        
+
 
         if (count($this->weapons) > 0) {
             foreach ($this->weapons as $weapon) {
-                $dmg += $weapon->get('attack');
+                $dmg += $weapon->attack;
             }
         }
 
         return $dmg;
-    }
-
-
-    /**
-     * Función pública para añadir armadura al héroe siempre que no lleve ya una
-     * (Que es el máximo permitido):
-     * 
-     * @author: Gustavo Víctor
-     * @version: 1.0
-     * @param: Armor $armor
-     * @return: bool (true si lo ha hecho, false si no)
-     */
-    function addArmor(Armor $armor): bool
-    {
-        if ($this->armor != null) {
-            $this->armor = $armor;
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**
@@ -261,7 +247,7 @@ class Hero
      * @version: 1.0
      * @return: bool (true si lo ha hecho, false si no)
      */
-    function rmvArmor(): bool
+    function removeArmor(): bool
     {
 
         if ($this->armor != null) {
@@ -284,7 +270,26 @@ class Hero
     function addPotion(Potion $potion): bool
     {
         if (count($this->potions) < 3) {
-            array_push($this->potions, $potion);
+            //array_push($this->potions, $potion);
+            $this->potions[] = $potion;
+
+            for ($i=0; $i<count($this->potions); $i++) {
+                $minPosition = $i;
+                $minValue=$this->potions[$i];
+                for ($j=$i+1; $j<count($this->potions); $j++) {
+                    if ($this->potions[$j]<$minValue) {
+                        $minValue = $this->potions[$j];
+                        $minPosition = $j;
+                    }
+                }
+
+                if ($i!=$minPosition) {
+                    $aux = $this->potions[$i];
+                    $this->potions[$minPosition] = $this->potions[$i];
+                    $this->potions[$i] = $aux;
+                }
+            }
+
             return true;
         } else {
             return false;
@@ -296,16 +301,14 @@ class Hero
      * tener varias, usará la que más HP cure:
      * 
      * @author: Gustavo Víctor
-     * @version: 1.0
+     * @version: 1.1
      * @return: bool (true si lo ha hecho, false si no)
      */
     function usePotion()
     {
         if (count($this->potions) > 0) {
-            sort($this->potions);
             $usedPotion = array_pop($this->potions);
-            $this->health += $usedPotion->get('health');
-            unset($usedPotion);
+            $this->health += $usedPotion->health;
         }
     }
 

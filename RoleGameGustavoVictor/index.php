@@ -81,18 +81,14 @@ foreach ($heroAragorn->potions as $potion){
 
 echo "<br>Información inicial del héroe:<br>";
 echo $heroPrueba . ', '. $heroPrueba->baseAttack . ', '. $heroPrueba->baseDefense;
-echo '<br><br>Armas:<br>';
-foreach ($heroPrueba->weapons as $weapon){
-    echo $weapon;
-    echo '<br>';
-}
-echo '<br>Armadura:<br>';
-echo $heroPrueba->armor;
-echo '<br><br>Pociones:<br>';
-foreach ($heroPrueba->potions as $potion){
-    echo $potion;
-    echo '<br>';
-}
+
+$heroPrueba->species = 'Dunmer';
+$heroPrueba->class = 'Ladrón';
+
+echo '<br><br>';
+echo $heroPrueba;
+echo '<br><br>';
+
 
 // Realiza un ataque
 $attackGandalf = $heroGandalf->attack();

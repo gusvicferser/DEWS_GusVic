@@ -6,7 +6,7 @@
  * abajo:
  * 
  * @author: Gustavo Víctor
- * @version: 1.4
+ * @version: 1.5
  */
 
 class Hero
@@ -51,7 +51,7 @@ class Hero
 
         /* Inicializo aquí una armadura con un valor de 0 para que no de error
          si se trata de invocar armadura pero no hay:*/
-        $this->armor = new Armor("Ninguna", 0);
+        $this->armor = new Armor('Ninguna', 0);
     }
 
     function __get($property)
@@ -64,8 +64,16 @@ class Hero
     function __set($property, $value)
     {
         // Se pueden editar todos los atributos menos los que ya tienen método:
-        if (isset($property) && $property != 'weapons' && $property != 'potions') {
-            $this->$property = $value;
+        if (isset($property) && $property!='weapons' && $property!='potions') {
+            switch($property) {
+                case 'species':
+                    $this->$property = $this->checkSpecies($value) ? $value : 'Humano';
+                    break;
+                case 'class':
+                    $this->$property = $this->checkClass($value) ? $value : 'Ninguna';
+                    break;
+            }
+            
         }
     }
 
@@ -226,7 +234,7 @@ class Hero
     {
 
         if (!empty($this->armor)) {
-            $this->armor = new Armor("Ninguna", 0);
+            $this->armor = new Armor('Ninguna', 0);
             return true;
         }
 

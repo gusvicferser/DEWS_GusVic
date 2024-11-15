@@ -5,7 +5,7 @@
  * abajo:
  * 
  * @author: Gustavo Víctor
- * @version: 1.0
+ * @version: 1.1
  */
 
  class Armor{
@@ -33,6 +33,6 @@
     }
 
     function __toString(){
-        return $this -> name . ' (' . $this->defense . ' DEF)';
+        return $this -> name . ' (+' . $this->defense . ' DEF)';
     }
  }

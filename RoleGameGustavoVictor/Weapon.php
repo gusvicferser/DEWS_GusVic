@@ -5,7 +5,7 @@
  * abajo:
  * 
  * @author: Gustavo Víctor
- * @version: 1.0
+ * @version: 1.1
  */
 
  class Weapon{
@@ -33,6 +33,6 @@
     }
 
     function __toString(){
-        return $this -> name . ' (' . $this->attack . ' ATK)';
+        return $this -> name . ' (+' . $this->attack . ' ATK)';
     }
  }

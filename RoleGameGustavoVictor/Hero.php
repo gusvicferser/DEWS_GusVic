@@ -6,7 +6,7 @@
  * abajo:
  * 
  * @author: Gustavo Víctor
- * @version: 1.3
+ * @version: 1.5
  */
 
 class Hero
@@ -17,9 +17,9 @@ class Hero
     private int $health;
     private int $baseAttack;
     private int $baseDefense;
-    private array $weapons;
+    private array $weapons = []; // Hay que inicializar el array o da error luego
     private Armor $armor;
-    private array $potions;
+    private array $potions = []; // Hay que inicializar el array o da error luego
 
     function __construct(
         $name,
@@ -34,49 +34,24 @@ class Hero
 
         /* Hemos de chequear que la especie esté entre las opciones disponibles:
          y si no se encuentra entre ellas, será 'Humano' la clase por defecto:*/
-        /* if ($this->checkSpecies($species)) {
-                $this->species = $species;
-            } else {
-                $this->species = 'Humano';
-            }*/
-
         $this->species = $this->checkSpecies($species) ? $species : 'Humano';
 
         /* También hemos de verificar que la clase sea la correcta y si no, 
          ponemos que es ninguna:*/
-        /* if ($this->checkClass($class)) {
-                $this->class = $class;
-            } else {
-                $this->class = 'Ninguna';
-            }*/
-
         $this->class = $this->checkClass($class) ? $class : 'Ninguna';
-        /* La salud no será ni un número negativo ni cero:*/
-        /*if ($health > 0) {
-            $this->health = $health;
-        } else {
-            $this->health = 1;
-        }*/
 
+        /* La salud no será ni un número negativo ni cero:*/
         $this->health = ($health > 0) ? $health : 1;
 
         /* El ataque base no puede ser negativo (al crear el objeto héroe): */
-        /*if ($baseAttack > 0) {
-                $this->baseAtack = $baseAttack;
-            } else {
-                $this->baseAtack = 0;
-        }*/
-
         $this->baseAttack = ($baseAttack > 0) ? $baseAttack : 0;
 
         /* La defensa tampoco (al crear el héroe):*/
-        /*if ($baseDefense > 0) {
-            $this->baseDefense = $baseDefense;
-        } else {
-            $this->baseDefense = 0;
-        }*/
-
         $this->baseDefense = ($baseDefense > 0) ? $baseDefense : 0;
+
+        /* Inicializo aquí una armadura con un valor de 0 para que no de error
+         si se trata de invocar armadura pero no hay:*/
+        $this->armor = new Armor('Ninguna', 0);
     }
 
     function __get($property)
@@ -88,8 +63,17 @@ class Hero
 
     function __set($property, $value)
     {
-        if (isset($property)) {
-            $this->$property = $value;
+        // Se pueden editar todos los atributos menos los que ya tienen método:
+        if (isset($property) && $property!='weapons' && $property!='potions') {
+            switch($property) {
+                case 'species':
+                    $this->$property = $this->checkSpecies($value) ? $value : 'Humano';
+                    break;
+                case 'class':
+                    $this->$property = $this->checkClass($value) ? $value : 'Ninguna';
+                    break;
+            }
+            
         }
     }
 
@@ -177,7 +161,7 @@ class Hero
      * al héroe en cuestión:
      * 
      * @author: Gustavo Víctor
-     * @version: 1.0
+     * @version: 1.1
      * @param: Weapon $weapon
      * @return: bool (true si lo ha hecho, false si no)
      */
@@ -187,7 +171,7 @@ class Hero
         if (in_array($weapon, $this->weapons)) {
             $key = array_search($weapon, $this->weapons);
             if (is_int($key)) {
-                $this->weapons = array_splice($this->weapons, $key, $key);
+                $this->weapons = array_splice($this->weapons, $key, 1);
                 return true;
             }
         }
@@ -210,7 +194,7 @@ class Hero
 
         if (count($this->weapons) > 0) {
             foreach ($this->weapons as $weapon) {
-                $dmg += $weapon->get('attack');
+                $dmg += $weapon->attack;
             }
         }
 
@@ -222,36 +206,35 @@ class Hero
      * daño hecho:
      * 
      * @author: Gustavo Víctor
-     * @version: 1.0
+     * @version: 1.2
      * @param:int (daño realizado)
      * @return: int (el daño recibido)
      */
     function defense(int $dmg): int
     {
+        $totalDmg = $dmg - ($this->baseDefense + $this->armor->defense);
 
+        if ($totalDmg <= 0) {
 
-
-        if (count($this->weapons) > 0) {
-            foreach ($this->weapons as $weapon) {
-                $dmg += $weapon->attack;
-            }
+            return 0;
         }
 
-        return $dmg;
+        return $totalDmg;
     }
 
     /**
-     * Función pública para eliminar la armadura al héroe en cuestión:
+     * Función pública para eliminar la armadura al héroe en cuestión. No hay
+     * función para añadir armadura porque se hace a través del set:
      * 
      * @author: Gustavo Víctor
-     * @version: 1.0
+     * @version: 1.2
      * @return: bool (true si lo ha hecho, false si no)
      */
     function removeArmor(): bool
     {
 
-        if ($this->armor != null) {
-            $this->armor = null;
+        if (!empty($this->armor)) {
+            $this->armor = new Armor('Ninguna', 0);
             return true;
         }
 
@@ -263,7 +246,7 @@ class Hero
      * tres (Que es el máximo permitido):
      * 
      * @author: Gustavo Víctor
-     * @version: 1.0
+     * @version: 1.1
      * @param: Potion $potion
      * @return: bool (true si lo ha hecho, false si no)
      */
@@ -273,20 +256,20 @@ class Hero
             //array_push($this->potions, $potion);
             $this->potions[] = $potion;
 
-            for ($i=0; $i<count($this->potions); $i++) {
+            for ($i = 0; $i < count($this->potions); $i++) {
                 $minPosition = $i;
-                $minValue=$this->potions[$i];
-                for ($j=$i+1; $j<count($this->potions); $j++) {
-                    if ($this->potions[$j]<$minValue) {
+                $minValue = $this->potions[$i];
+                for ($j = $i + 1; $j < count($this->potions); $j++) {
+                    if ($this->potions[$j] < $minValue) {
                         $minValue = $this->potions[$j];
                         $minPosition = $j;
                     }
                 }
 
-                if ($i!=$minPosition) {
+                if ($i != $minPosition) {
                     $aux = $this->potions[$i];
-                    $this->potions[$minPosition] = $this->potions[$i];
-                    $this->potions[$i] = $aux;
+                    $this->potions[$i] = $this->potions[$minPosition];
+                    $this->potions[$minPosition] = $aux;
                 }
             }
 

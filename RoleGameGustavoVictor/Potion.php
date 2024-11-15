@@ -6,7 +6,7 @@
  * abajo:
  * 
  * @author: Gustavo Víctor
- * @version: 1.0
+ * @version: 1.1
  */
 
 class Potion
@@ -16,7 +16,13 @@ class Potion
 
     function __construct($health)
     {
-        $this->health = $health;
+        /* A menos que no sea una poción de veneno, no tiene sentido que quite
+         vida, así que lo dejo a cero:*/
+        if ($health > 0) {
+            $this->health = $health;
+        } else {
+            $this->health = 0;
+        }
     }
 
     function __get($property)

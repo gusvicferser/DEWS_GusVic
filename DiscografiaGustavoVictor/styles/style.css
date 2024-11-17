@@ -62,6 +62,7 @@ h3 {
 
 .groups {
     width: 80%;
+    min-height: 58vh;
     margin:auto;
     display:flex;
     flex-wrap: wrap;
@@ -101,8 +102,8 @@ footer {
     width: 100%;
     background-color:rgb(162, 118, 185);
     bottom: 0;
-    position: absolute;
-
+    position: relative;
+    margin-top: 20px;
 }
 
 small {

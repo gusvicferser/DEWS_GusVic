@@ -40,17 +40,23 @@ if (empty($_GET)) {
 
 	// En el caso de que la conexión no sea nula, obtenemos los grupos.
 	if ($connection != null) {
-		$results = $connection->query(
-			'SELECT id, name, photo FROM groups ORDER BY name ASC;'
-		); // La consulta está entregada por el ejercicio.
+		try {
+			$results = $connection->query(
+				'SELECT id, name, photo FROM groups ORDER BY name ASC;'
+			); // La consulta está entregada por el ejercicio.
 
-		/* Obtenemos todos los resultados como objetos y los guardamos en un
+			/* Obtenemos todos los resultados como objetos y los guardamos en un
 		 array de objetos:*/
-		$groups = $results->fetchAll(PDO::FETCH_OBJ);
+			$groups = $results->fetchAll(PDO::FETCH_OBJ);
+		} catch (Exception $exc) {
+			$errors[] = $exc;
+		}
 
 		// Deshacemos las variables para cortar la conexión a la base de datos:
 		unset($results);
 		unset($connection);
+	} else {
+		$errors[] = 'Ha habido un error con la conexión';
 	}
 } else {
 
@@ -68,7 +74,7 @@ if (empty($_GET)) {
 
 		// bindParam() no admite comodines, por lo que creamos una variable donde
 		// los introducimos:
-		$key = '%'. trim($_GET['search']) . '%';
+		$key = '%' . trim($_GET['search']) . '%';
 
 		// Y ahora sí, ligamos los parámetros a la consulta:
 		$results->bindParam(':search', $key);
@@ -79,10 +85,16 @@ if (empty($_GET)) {
 		// Almacenamos la consulta como un array de objetos:
 		$groups = $results->fetchAll(PDO::FETCH_OBJ);
 
+		if (empty($groups)) {
+			$errors[] =
+				'No existe el grupo "' .
+				$_GET['search'] .
+				'", lo lamentamos.';
+		}
+
 		// Quitamos las variables que conectan a la base de datos:
 		unset($results);
 		unset($connection);
-
 	}
 }
 
@@ -94,20 +106,25 @@ if (empty($_GET)) {
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="/styles/style.css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Bangers&family=Kablammo&display=swap"
+		rel="stylesheet">
+	<link rel="stylesheet" href="styles/style.css">
 	<title>Discografía</title>
 </head>
 
 <body>
 	<?php
 	require_once(
-		$_SERVER['DOCUMENT_ROOT'] . 
+		$_SERVER['DOCUMENT_ROOT'] .
 		'/DiscografiaGustavoVictor/includes/headerGustavoVictor.inc.php'
 	);
 	?>
 
 	<form action="#" method="get">
-		<label for="">Búsqueda</label>
+		<label for="search">Búsqueda</label>
 		<input
 			type="text"
 			name="search"
@@ -116,18 +133,26 @@ if (empty($_GET)) {
 		<input type="submit" value="Buscar">
 	</form>
 
-	<h2>Grupos:</h2>
+	<h2>Grupos:</h2><br>
 	<?php
-		echo '<div class="groups>';
-		foreach ($groups as $group) {
-			echo '<div class="group">';
-			echo '<div class="gPhoto">';
-			echo '<img href"'. $group->img . '"/>';
-			echo '</div>';
-			echo '<h2>'. $group->name . '</h2>';
-			echo '</div>';
+	if (!empty($errors)) {
+		foreach ($errors as $error) {
+			echo '<div class="error gold"><pre>' . $error . '</pre></div>';
 		}
+	}
+	echo '<div class="groups gold">';
+	foreach ($groups as $group) {
+		echo '<div class="group">';
+		echo
+		'<img src="img/grupos/' .
+			$group->photo .
+			'" alt="' .
+			$group->photo .
+			'">';
+		echo '<h3>' . $group->name . '</h3>';
 		echo '</div>';
+	}
+	echo '</div>';
 
 	?>
 	<footer>

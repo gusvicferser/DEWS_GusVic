@@ -1,0 +1,110 @@
+*{
+    margin:0;
+    padding:0;
+    font-family: "Bangers";
+    text-decoration: none;
+}
+
+body {
+    text-align: center;
+}
+
+nav{
+    width: 100%;
+    display: flex;
+    float:left;
+    background-color:rgb(162, 118, 185);
+    
+}
+
+span {
+    padding:30px; 
+}
+
+form {
+    width: 40%;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 40px;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+label {
+    font-size: xx-large;
+    padding: 10px;
+}
+
+input {
+    padding: 10px;
+}
+
+h2 {
+    font-size: xx-large;
+    padding:30px;
+    cursor: default;
+}
+
+h3 {
+    font-size: x-large;
+    padding: 10px;
+    background-color:darkslategrey;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    cursor:default;
+}
+
+.gold {
+    color:goldenrod;
+    text-shadow: 1px 3px 3px rgb(10, 8, 8);
+}
+
+.groups {
+    width: 80%;
+    margin:auto;
+    display:flex;
+    flex-wrap: wrap;
+    gap: 50px;
+    align-items: center;
+    justify-content: center;
+}
+
+.groups img {
+    width: 300px;
+    min-width: 300px;
+    overflow: hidden;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+.group {
+    display: flex;
+    flex-direction: column;
+}
+
+.error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    width: 40%;
+    margin: auto;
+    padding: 40px;
+    background-color: darkred;
+    font-size: larger;
+}
+
+footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color:rgb(162, 118, 185);
+    bottom: 0;
+    position: absolute;
+
+}
+
+small {
+    padding: 30px;
+}

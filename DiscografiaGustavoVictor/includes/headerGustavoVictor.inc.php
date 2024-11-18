@@ -4,7 +4,7 @@
  * Header creado para la actividad "Discografía"
  * 
  * @author: Gustavo Víctor
- * @version: 1.0
+ * @version: 1.1
  */
 ?>
 <header>

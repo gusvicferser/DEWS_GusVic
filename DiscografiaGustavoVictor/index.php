@@ -4,43 +4,27 @@
  * Aplicación web para mostrar grupos y discografía. Permite buscar a los grupos.
  * 
  * @author: Gustavo Víctor 
- * @version: 1.0
+ * @version: 1.4
  */
 
-/**
- * Función para conectar con la base de datos:
- *
- * @author: Gustavo Víctor
- * @version: 1.0
- * 
- * @return: Mixed: 'PDO' (Un objeto Php Data Object) si lo consigue, 
- * o 'null' si no.
- */
-function connectDB(): mixed
-{
+// Primero llamamos a las variables y luego a la conexión a la base de datos:
+$raiz = $_SERVER['DOCUMENT_ROOT'];
 
-	$options = [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"];
-	try {
-		return new PDO(
-			'mysql:host=localhost;dbname=discografia',
-			'vetustamorla',
-			'15151',
-			$options
-		);
-	} catch (Exception $exc) {
-		return null;
-	}
-}
+require_once($raiz . '/includes/env.inc.php');
+require_once($raiz . '/includes/connection.inc.php');
 
-// Si el formulario está vacío, mostramos todos los grupos con sus covers:
-if (empty($_GET)) {
+
+try {
 
 	// Establecemos la conexión con la función que hemos creado.
 	$connection = connectDB();
 
 	// En el caso de que la conexión no sea nula, obtenemos los grupos.
 	if ($connection != null) {
-		try {
+
+		// Si el formulario está vacío, mostramos todos los grupos con sus covers:
+		if (empty($_GET)) {
+
 			$results = $connection->query(
 				'SELECT id, name, photo FROM groups ORDER BY name ASC;'
 			); // La consulta está entregada por el ejercicio.
@@ -48,54 +32,48 @@ if (empty($_GET)) {
 			/* Obtenemos todos los resultados como objetos y los guardamos en un
 		 array de objetos:*/
 			$groups = $results->fetchAll(PDO::FETCH_OBJ);
-		} catch (Exception $exc) {
-			$errors[] = $exc;
-		}
 
-		// Deshacemos las variables para cortar la conexión a la base de datos:
-		unset($results);
-		unset($connection);
-	} else {
-		$errors[] = 'Ha habido un error con la conexión';
-	}
-} else {
+			// Si no está vació el formulario, nos aseguramos de la consulta:
+		} else {
 
-	$connection = connectDB();
-
-	if ($connection != null) {
-		// Como en este caso el usuario introduce datos, hemos de asegurarnos de
-		// que su consulta no sea un injecto de sql:
-		$results = $connection->prepare(
-			'SELECT id,name,photo 
+			// Como en este caso el usuario introduce datos, hemos de asegurarnos de
+			// que su consulta no sea un injecto de sql:
+			$results = $connection->prepare(
+				'SELECT id,name,photo 
 			FROM groups 
 			WHERE name LIKE :search 
 			ORDER BY name ASC;'
-		);
+			);
 
-		// bindParam() no admite comodines, por lo que creamos una variable donde
-		// los introducimos:
-		$key = '%' . trim($_GET['search']) . '%';
+			// bindParam() no admite comodines, por lo que creamos una variable donde
+			// los introducimos:
+			$key = '%' . trim($_GET['search']) . '%';
 
-		// Y ahora sí, ligamos los parámetros a la consulta:
-		$results->bindParam(':search', $key);
+			// Y ahora sí, ligamos los parámetros a la consulta:
+			$results->bindParam(':search', $key);
 
-		// Y ahora sí, ejecutamos la consulta:
-		$results->execute();
+			// Y ahora sí, ejecutamos la consulta:
+			$results->execute();
 
-		// Almacenamos la consulta como un array de objetos:
-		$groups = $results->fetchAll(PDO::FETCH_OBJ);
+			// Almacenamos la consulta como un array de objetos:
+			$groups = $results->fetchAll(PDO::FETCH_OBJ);
 
-		if (empty($groups)) {
-			$errors[] =
-				'No existe el grupo "' .
-				$_GET['search'] .
-				'", lo lamentamos.';
+			if (empty($groups)) {
+				$errors[] =
+					'No existe el grupo "' .
+					$_GET['search'] .
+					'", lo lamentamos.';
+			}
 		}
-
-		// Quitamos las variables que conectan a la base de datos:
-		unset($results);
-		unset($connection);
+	} else {
+		$errors[] = 'Ha habido un error con la conexión';
 	}
+
+	// Quitamos las variables que conectan a la base de datos:
+	unset($results);
+	unset($connection);
+} catch (Exception $exc) {
+	$errors[] = $exc;
 }
 
 ?>
@@ -119,11 +97,11 @@ if (empty($_GET)) {
 	<?php
 	require_once(
 		$_SERVER['DOCUMENT_ROOT'] .
-		'/DiscografiaGustavoVictor/includes/headerGustavoVictor.inc.php'
+		'/includes/headerGustavoVictor.inc.php'
 	);
 	?>
 
-	<form action="#" method="get">
+	<form class="flex" action="#" method="get">
 		<label for="search">Búsqueda</label>
 		<input
 			type="text"
@@ -137,25 +115,29 @@ if (empty($_GET)) {
 	<?php
 	if (!empty($errors)) {
 		foreach ($errors as $error) {
-			echo '<div class="error gold"><pre>' . $error . '</pre></div>';
+			echo '<div class="error gold flex"><pre>' . $error . '</pre></div>';
 		}
 	}
-	echo '<div class="groups gold">';
+	echo '<div class="groups gold flex">';
 	foreach ($groups as $group) {
 		echo '<div class="group">';
 		echo
-		'<img src="img/grupos/' .
+		'<img src="/img/grupos/' .
 			$group->photo .
 			'" alt="' .
 			$group->photo .
 			'">';
-		echo '<h3>' . $group->name . '</h3>';
+		echo '<h3><a class="gold" href="songs.php?search=' .
+			$group->name .
+			'">' .
+			$group->name .
+			'</a></h3>';
 		echo '</div>';
 	}
 	echo '</div>';
 
 	?>
-	<footer>
+	<footer class="flex">
 		<small>Gustavo Víctor &copy; 2024</small>
 	</footer>
 </body>

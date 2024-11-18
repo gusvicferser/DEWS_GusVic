@@ -66,16 +66,29 @@ h3 {
     gap: 50px;
 }
 
+.groups a {
+    flex-direction: column;
+}
+
+.groups a h3 {
+    width:100%;
+    padding: 15px 0px;
+}
+
 .groups img {
     width: 300px;
     min-width: 300px;
-    overflow: hidden;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
+    background-color: darkslategray;
 }
 .group {
     display: flex;
     flex-direction: column;
+}
+
+.group h3 {
+    cursor: pointer !important;
 }
 
 .error {

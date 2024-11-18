@@ -4,7 +4,7 @@
  * Aplicación web para mostrar grupos y discografía. Permite buscar a los grupos.
  * 
  * @author: Gustavo Víctor 
- * @version: 1.4
+ * @version: 1.5
  */
 
 // Primero llamamos a las variables y luego a la conexión a la base de datos:
@@ -89,7 +89,7 @@ try {
 	<link
 		href="https://fonts.googleapis.com/css2?family=Bangers&family=Kablammo&display=swap"
 		rel="stylesheet">
-	<link rel="stylesheet" href="styles/style.css">
+	<link rel="stylesheet" href="/styles/style.css">
 	<title>Discografía</title>
 </head>
 
@@ -122,16 +122,17 @@ try {
 	foreach ($groups as $group) {
 		echo '<div class="group">';
 		echo
-		'<img src="/img/grupos/' .
+		'<a class="gold flex" href="groups.php?id=' .
+			$group->id .
+			'">
+		<img src="/img/grupos/' .
 			$group->photo .
 			'" alt="' .
 			$group->photo .
 			'">';
-		echo '<h3><a class="gold" href="songs.php?search=' .
+		echo '<h3>' .
 			$group->name .
-			'">' .
-			$group->name .
-			'</a></h3>';
+			'</h3></a>';
 		echo '</div>';
 	}
 	echo '</div>';

@@ -4,7 +4,7 @@
  * Página para las canciones de la aplicación de la actividad 'Discografia'
  * 
  * @author: Gustavo Víctor
- * @version: 1.2
+ * @version: 1.3
  */
 
 // Primero llamamos a las variables y luego a la conexión a la base de datos:
@@ -91,36 +91,6 @@ try {
 
 				// Almacenamos la consulta como un array de objetos:
 				$songs = $results->fetchAll(PDO::FETCH_OBJ);
-
-			} else if (!empty($_GET['search']) ) {
-
-				// Como en este caso el usuario introduce datos, hemos de asegurarnos de
-			// que su consulta no sea un injecto de sql:
-			$results = $connection->prepare(
-				'SELECT 
-					s.id, 
-					s.title AS "title", 
-					length, 
-					a.title AS "album", 
-					g.name AS "group" 
-				FROM 
-					songs s, albums a, groups g
-				WHERE album_id=a.id AND group_id=g.id AND g.name LIKE :search 
-			ORDER BY a.title, s.title ASC;'
-			);
-
-			// bindParam() no admite comodines, por lo que creamos una variable donde
-			// los introducimos:
-			$key = '%' . trim($_GET['search']) . '%';
-
-			// Y ahora sí, ligamos los parámetros a la consulta:
-			$results->bindParam(':search', $key);
-
-			// Y ahora sí, ejecutamos la consulta:
-			$results->execute();
-
-			// Almacenamos la consulta como un array de objetos:
-			$songs = $results->fetchAll(PDO::FETCH_OBJ);
 
 			} else {
 				$errors[] = 'No se han introducido campos válidos de búsqueda';

@@ -25,64 +25,90 @@ try {
     if (!empty($_GET)) {
 
         // Si el id enviado no es un int, enviamos al usuario al index:
-        if (is_int($_GET['id'])) {
+        if (is_int(intval($_GET['id']))) {
 
-            // Preparamos la query porque los datos son introducidos por el usuario:
-            $results = $connection->prepare(
+             // Preparamos la query porque los datos son introducidos por el usuario:
+             $query = $connection->prepare(
                 'SELECT 
-                    g.id, 
-                    g.name, 
-                    g.photo AS "photo", 
-                    a.title AS "title", 
-                    a.year, 
-                    a.price
+                    id, 
+                    name, 
+                    photo
                 FROM 
-                    groups g, albums a 
+                    groups
                 WHERE 
-                    a.group_id=g.id AND g.id= :group 
-                ORDER BY 
-                    a.title ASC;'
+                    id= :group ;'
             );
 
             // Vinculamos la variable a la variable enviada para evitar SQL injection:
-            $results->bindParam(':group', $_GET['id']);
+            $query->bindParam(':group', $_GET['id']);
 
             // Ejecutamos la query:
-            $results->execute();
+            $query->execute();
+
+            // Lo guardo como objeto en una variable para el grupo:
+            $group = $query->fetchObject();
+
+            // Preparamos la siguiente query porque los datos siguen siendo introducidos por el usuario:
+            $query = $connection->prepare(
+                'SELECT  
+                    title, 
+                    year, 
+                    price
+                FROM 
+                    albums
+                WHERE 
+                    group_id = :group 
+                ORDER BY 
+                    title ASC;'
+            );
+
+            // Vinculamos la variable a la variable enviada para evitar SQL injection:
+            $query->bindParam(':group', $_GET['id']);
+
+            // Ejecutamos la query:
+            $query->execute();
 
             // Lo guardamos en una variable como array de objetos:
-            $groups = $results->fetch(PDO::FETCH_OBJ);
+            $albums = $query->fetchAll(PDO::FETCH_OBJ);
 
-            if (!empty($_POST)) {
+            // Quitamos la conexión de la base de datos al no saber si continuaremos:
+            unset($query);
+            unset($connection);
 
-                switch($_POST['action']){
-                    case 'cancel':
-                        header('location:/groups?id='. $_GET['id']);
-                        break;
+            // Si la acción no está vacía:
+            if (!empty($_GET['action'])) {
+
+                // Un swith para los casos, en lugar de un if else:
+                switch ($_GET['action']) {
                     case 'confirm':
-                        // header();
+                        $confirm = true;
+                        break;
+                    case 'delete':
+                        // Debemos volver a conectar si entramos por aquí:
+                        $connection = connectDB();
 
+                        // Preparamos la query:
+                        $query = $connection->query(
+                            'DELETE FROM albums 
+                                WHERE title = :album ;');
 
+                        // Hay que vincular la consulta con un bindParam():
+                        $query->bindParam(':album', $_GET['id']);
+
+                        // Ejecutamos la query:
+                        $query->execute();
+
+                        // Para la confirmación:
+                        $deleted = true;       
                 }
-
             }
-
         } else {
             header('location:/'); // Así enviamos al directorio raíz.
         }
-
-
-
     }
 } catch (Exception $exc) {
     $errors[] = 'No se ha podido conectar a la base de datos';
 }
-
-// header('location:/'); // Para redireccionar al directorio raíz.
-
-
-
-
 
 ?>
 
@@ -109,18 +135,36 @@ try {
     );
     ?>
 
-    <h2>Grupo:</h2><br>
+    <h2>Grupos:</h2><br>
     <?php
     if (!empty($errors)) {
         foreach ($errors as $error) {
             echo '<div class="error gold flex"><pre>' . $error . '</pre></div>';
         }
     }
+
+    if (isset($deleted) && $deleted) {
+        echo '<div class="confirmation gold flex">';
+        echo '<h3>El album ha sido borrado con éxito</h3>';
+        echo '</div>';
+    }
+
+    if (isset($confirm) && $confirm) {
+       echo '<div class="error gold flex">';
+       echo '<h3>Está a punto de borrar este álbum, ¿está seguro?</h3>';
+       echo '
+        <a href="/groups.php?id=' . $_GET['id'] .'">
+        <button type="button">Cancelar</button></a>';
+       echo '
+        <a href="/groups.php?id=' . $_GET['id'] . '&action=delete">
+        <button type="button">Confirmar</button>
+        </a>';
+       echo '</div>';
+    }
+
     echo '<div class="group">';
     echo
-    '<a class="gold flex" href="songs.php?search=' .
-        $group->id .
-        '">
+    '<div class="gold flex">
 		<img src="/img/grupos/' .
         $group->photo .
         '" alt="' .
@@ -128,11 +172,67 @@ try {
         '">';
     echo '<h3>' .
         $group->name .
-        '</h3></a>';
-    echo '</div>';
-    echo '</div>';
-
+        '</h3>';
     ?>
+    </div>
+    <div class="albums flex">
+        <table>
+            <thead class="gold">
+                <tr>
+                    <th>Título</th>
+                    <th>Año</th>
+                    <th>Precio</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($albums as $album) {
+                    echo '<tr>';
+                    echo '<td>' . $album->title . '</td>';
+                    echo '<td>' . $album->year . '</td>';
+                    echo '<td>' . $album->price . ' €</td>';
+                    echo '<td>
+                        <a href="localhost/groups.php?id=' .
+                        $_GET['id'] . 
+                        '&album=' . 
+                        $album->title .
+                        '&action=confirm">
+                        <img src="/img/papelera.png" alt="erase">
+                        </a>
+                        </td>
+                        </tr>';
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+
+    <form class="flex" action="#" method="post" enctype="multipart/form-data">
+        <legend>AÑADE UN ALBUM</legend>
+        <fieldset>
+            <label for="title">Título:</label><br>
+            <input type="text" name="title" id="title"><br>
+            <label for="year">Año:</label><br>
+            <input type="text" name="year" id="year"><br>
+            <label for="format">Formato:</label><br>
+            <select name="format" id="format">
+                <option value="cd">CD</option>
+                <option value="dvd">DVD</option>
+                <option value="mp3">MP3</option>
+                <option value="vynil">Vinilo</option>
+            </select><br>
+            <label for="buyDate">Fecha de adquisición:</label><br>
+            <input type="date" name="buyDate" id="buyDate"><br>
+            <label for="price">Precio:</label><br>
+            <input type="text" name="price" id="price"><br>
+            <label for="photo">Foto del álbum:</label><br>
+            <input type="file" name="photo" id="photo"><br>
+            <input type="hidden" name="gId" id="gId" value="<?= $_GET['id'] ?>">
+            <input type="submit" value="Añade">
+
+        </fieldset>
+    </form>
     <footer class="flex">
         <small>Gustavo Víctor &copy; 2024</small>
     </footer>

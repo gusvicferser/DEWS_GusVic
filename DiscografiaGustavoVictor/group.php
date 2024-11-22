@@ -5,7 +5,7 @@
  * para la aplicación de la actividad 'Discografia'
  * 
  * @author: Gustavo Víctor
- * @version: 1.2
+ * @version: 1.4
  */
 
 // Si no está seteado el id o está vacío redireccionamos al index:
@@ -97,45 +97,64 @@ try {
                         // Debemos volver a conectar si entramos por aquí:
                         $connection = connectDB();
 
-                        // Preparamos la query:
-                        $query = $connection->query(
-                            'DELETE FROM albums 
-                                WHERE id = :id_album ;'
+                        // Preparamos la query porque los datos son introducidos por el usuario:
+                        $query = $connection->prepare(
+                            'SELECT 
+                                id
+                            FROM 
+                                albums
+                            WHERE 
+                                id= :id ;'
                         );
 
-                        // Hay que vincular la consulta con un bindParam():
-                        $query->bindParam(':id_album', $_GET['album']);
+                        // Vinculamos la variable a la variable enviada para evitar SQL injection:
+                        $query->bindParam(':id', $_GET['album']);
 
                         // Ejecutamos la query:
                         $query->execute();
 
-                        // Para la confirmación:
-                        $deleted = true;
+                        // $trazas[] = $query->debugDumpParams();
+
+                        if ($query->rowCount() > 0) {
+
+                            $trazas[] = 'Entra';
+
+                            // Preparamos la query:
+                            $query = $connection->prepare(
+                                'DELETE FROM 
+                                    albums 
+                                WHERE 
+                                id=:id_album ;'
+                            );
+
+                            // Hay que vincular la consulta con un bindParam():
+                            $idAlbum = intval($_GET['album']);
+                            $query->bindParam(':id_album', $idAlbum);
+
+                            // Ejecutamos la query:
+                            $query->execute();
+
+                            // $trazas[] = $query->debugDumpParams();
+
+                        }
 
                         // Cerramos la conexión:
                         unset($query);
                         unset($connection);
+
+                        // Volvemos al grupo:
+                        header('location:/group.php?id=' . $_GET['id'] . '&feedback=deleted');
+                        exit;
                 }
             }
 
             // Ahora trataremos la forma de incluir un álbum en ese grupo:
             if (!empty($_POST)) {
                 if (
-                    isset($_POST['title']) &&
-                    isset($_POST['year']) &&
-                    isset($_POST['format']) &&
-                    isset($_POST['buyDate']) &&
-                    isset($_POST['price']) &&
+                    isset($_POST['title']) && $_POST['title'] != '' &&
+                    isset($_POST['price']) && $_POST['price'] != '' &&
                     $_GET['id'] == $_POST['gId']
                 ) {
-
-                    // Formatos posibles del album:
-                    $formats = [
-                        'cd',
-                        'dvd',
-                        'vinilo',
-                        'mp3'
-                    ];
 
                     // Establecer la conexión con la base de datos de nuevo:
                     $connection = connectDB();
@@ -155,7 +174,7 @@ try {
                         :group_id, 
                         :year, 
                         :format, 
-                        2024, 
+                        CURDATE(), 
                         :price, 
                         :photo);'
                     );
@@ -164,9 +183,14 @@ try {
                     // evitar inserciones SQL:
                     $query->bindParam(':title', $_POST['title']);
                     $query->bindParam(':group_id', $_POST['gId']);
-                    $query->bindParam(':year', $_POST['year']);
+                    $year = intval($_POST['year']);
+                    $query->bindParam(':year', $year);
                     $query->bindParam(':format', $_POST['format']);
-                    $query->bindParam(':price', $_POST['price']);
+                    /*Hemos de asegurarnos de que sea un float y además de que 
+                      no haya comas, sino puntos para hacer el float. De lo 
+                      contrario lo trunca:*/
+                    $price = floatval(str_replace(",", ".", $_POST['price']));
+                    $query->bindParam(':price', $price);
                     // Por si no hay foto subida:
                     if (isset($_POST['photo'])) {
                         $query->bindParam(':photo', $_POST['photo']);
@@ -178,12 +202,16 @@ try {
                     // Ejecutamos entonces la consulta:
                     $query->execute();
 
-                    // Confirmamos:
-                    $inserted = true;
+                    // $trazas[] = $query->debugDumpParams();
 
                     // Cerramos la conexión:
                     unset($query);
                     unset($connection);
+                    unset($_POST); // Vaciamos $_POST
+
+                    // Recargamos la página:
+                    header('location:/group.php?id=' . $_GET['id'] . '&feedback=added');
+                    exit;
                 }
             } else {
                 $error['info'] = 'Ha de introducir un album';
@@ -194,7 +222,7 @@ try {
         }
     }
 } catch (Exception $exc) {
-    $errors[] = $exc;
+    $errors[] = 'Ha habido un error crítico';
 }
 
 ?>
@@ -230,29 +258,37 @@ try {
         }
     }
 
-    // Si hemos eliminado un mensaje, damos feedback:
-    if (isset($deleted) && $deleted) {
-        echo '<div class="confirmation gold flex">';
-        echo '<h3>El album ha sido borrado con éxito</h3>';
-        echo '</div>';
+    if (!empty($trazas)) {
+        foreach ($trazas as $traza) {
+            echo '<pre>' . $traza . '</pre>';
+        }
     }
 
-    // Si un album ha sido insertado, damos feedback:
-    if (isset($inserted) && $inserted) {
-        echo '<div class="confirmation gold flex">';
-        echo '<h3>El album ha sido añadido con éxito</h3>';
-        echo '</div>';
+    // Si hemos eliminado un mensaje, damos feedback:
+    if (isset($_GET['feedback'])) {
+        if ($_GET['feedback'] == 'deleted') {
+            echo '<div class="confirmation gold flex">';
+            echo '<h2>El album ha sido borrado con éxito</h2>';
+            echo '</div>';
+
+
+            // Si un album ha sido insertado, damos feedback:
+        } else if ($_GET['feedback'] == 'added') {
+            echo '<div class="confirmation gold flex">';
+            echo '<h2>El album ha sido añadido con éxito</h2>';
+            echo '</div>';
+        }
     }
 
     // Mensaje de confirmación para borrar un album:
     if (isset($confirm) && $confirm) {
         echo '<div class="error gold flex">';
-        echo '<h3>Está a punto de borrar este álbum, ¿está seguro?</h3>';
+        echo '<h2>Está a punto de borrar este álbum, ¿está seguro?</h2>';
         echo '
         <a href="/group.php?id=' . $_GET['id'] . '">
         <button type="button">Cancelar</button></a>';
         echo '
-        <a href="/group.php?id=' . $_GET['id'] . '&album=' . $GET['album'] . '&action=delete">
+        <a href="/group.php?id=' . $_GET['id'] . '&album=' . $_GET['album'] . '&action=delete">
         <button type="button">Confirmar</button>
         </a>';
         echo '</div>';
@@ -271,6 +307,7 @@ try {
         '</h3>';
     ?>
     </div>
+
     <div class="albums flex">
         <table>
             <thead class="gold">
@@ -289,7 +326,7 @@ try {
                     echo '<td>' . $album->year . '</td>';
                     echo '<td>' . $album->price . ' €</td>';
                     echo '<td>
-                        <a href="localhost/group.php?id=' .
+                        <a href="/group.php?id=' .
                         $_GET['id'] .
                         '&album=' .
                         $album->id .
@@ -311,8 +348,7 @@ try {
             <input
                 type="text"
                 name="title"
-                id="title"
-                value="<?= $_POST['title'] ?? '' ?>"><br>
+                id="title"><br>
             <label for="year">Año:</label><br>
             <select name="year" id="year">
                 <?php
@@ -334,14 +370,12 @@ try {
             <input
                 type="text"
                 name="price"
-                id="price"
-                value="<?= $_POST['title'] ?? '' ?>"><br>
+                id="price"><br>
             <label for="photo">Foto del álbum:</label><br>
             <input
                 type="file"
                 name="photo"
-                id="photo"
-                value="<?= $_POST['title'] ?? '' ?>"><br>
+                id="photo"><br>
             <input type="hidden" name="gId" id="gId" value="<?= $_GET['id'] ?>">
             <input type="submit" value="Añade">
         </fieldset>

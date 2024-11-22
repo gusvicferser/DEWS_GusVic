@@ -122,7 +122,7 @@ try {
 	foreach ($groups as $group) {
 		echo '<div class="group">';
 		echo
-		'<a class="gold flex" href="groups.php?id=' .
+		'<a class="gold flex" href="group.php?id=' .
 			$group->id .
 			'">
 		<img src="/img/grupos/' .

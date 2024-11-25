@@ -4,7 +4,7 @@
  * Aplicación web para mostrar grupos y discografía. Permite buscar a los grupos.
  * 
  * @author: Gustavo Víctor 
- * @version: 1.5
+ * @version: 1.6
  */
 
 // Primero llamamos a las variables y luego a la conexión a la base de datos:

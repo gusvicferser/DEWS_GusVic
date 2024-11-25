@@ -5,7 +5,7 @@
  * para la aplicación de la actividad 'Discografia'
  * 
  * @author: Gustavo Víctor
- * @version: 1.4
+ * @version: 1.5
  */
 
 // Si no está seteado el id o está vacío redireccionamos al index:
@@ -63,7 +63,8 @@ try {
                     id, 
                     title, 
                     year, 
-                    price
+                    price,
+                    photo
                 FROM 
                     albums
                 WHERE 
@@ -143,13 +144,61 @@ try {
                         unset($connection);
 
                         // Volvemos al grupo:
-                        header('location:/group.php?id=' . $_GET['id'] . '&feedback=deleted');
+                        header(
+                            'location:/group.php?id=' .
+                            $_GET['id'] .
+                            '&feedback=deleted');
                         exit;
                 }
             }
 
             // Ahora trataremos la forma de incluir un álbum en ese grupo:
             if (!empty($_POST)) {
+
+                // Vamos a hacer un if para los errores que pueda tener la portada del álbum:
+                if (!empty($_FILES)) {
+
+                    // Si $_FILES no está vacío, hemos de comprobar si existe 
+                    // algún error posible de subida:
+                    if ($_FILES['photo']['error'] != UPLOAD_ERR_OK) {
+
+                        switch ($_FILES['photo']['error']) {
+                            case UPLOAD_ERR_INI_SIZE:
+                            case UPLOAD_ERR_FORM_SIZE:
+                                $errors['photo'] = 'Portada demasiado grande';
+                                break;
+                            case UPLOAD_ERR_PARTIAL:
+                                $errors['photo'] = 
+                                'La portada no se ha podido subir entera';
+                                break;
+                            case UPLOAD_ERR_NO_FILE:
+                                $errors['photo'] = 
+                                'No se ha encontrado la portada';
+                                break;
+                            default:
+                                $errors['photo'] = 'Error indeterminado';
+                        }
+                    }
+
+                    // Si los errores están vacíos, entramos por aquí:
+                    if (empty($errors['photo'])) {
+
+                        // Si no hay errores, pasaremos a comprobar si es el tipo de archivo que requerimos:
+                        if (
+                            $_FILES['photo']['type'] != 'image/jpeg' && 
+                            $_FILES['photo']['type'] != 'image/png') {
+
+                            $errors['photo'] = 
+                            'El tipo de archivo de la foto no es el correcto, debe ser .jpg/.jpeg o .png';
+                        } else {
+                            // Para añadir la foto, lo hacemos en otro include:
+                            require_once(
+                                $_SERVER['DOCUMENT_ROOT'] .
+                                '/includes/addPhotoGustavoVictor.inc.php');
+                        }
+                    }
+                }
+
                 if (
                     isset($_POST['title']) && $_POST['title'] != '' &&
                     isset($_POST['price']) && $_POST['price'] != '' &&
@@ -186,6 +235,7 @@ try {
                     $year = intval($_POST['year']);
                     $query->bindParam(':year', $year);
                     $query->bindParam(':format', $_POST['format']);
+
                     /*Hemos de asegurarnos de que sea un float y además de que 
                       no haya comas, sino puntos para hacer el float. De lo 
                       contrario lo trunca:*/
@@ -258,6 +308,7 @@ try {
         }
     }
 
+    // Para mostrar las trazas:
     if (!empty($trazas)) {
         foreach ($trazas as $traza) {
             echo '<pre>' . $traza . '</pre>';
@@ -284,19 +335,25 @@ try {
     if (isset($confirm) && $confirm) {
         echo '<div class="error gold flex">';
         echo '<h2>Está a punto de borrar este álbum, ¿está seguro?</h2>';
+        echo '<div class="buttons flex">';
         echo '
-        <a href="/group.php?id=' . $_GET['id'] . '">
-        <button type="button">Cancelar</button></a>';
+            <a href="/group.php?id=' . $_GET['id'] . '">
+            <button type="button" class="flex">Cancelar</button></a>';
         echo '
-        <a href="/group.php?id=' . $_GET['id'] . '&album=' . $_GET['album'] . '&action=delete">
-        <button type="button">Confirmar</button>
+            <a 
+            href="/group.php?id=' .
+            $_GET['id'] . '&album=' .
+            $_GET['album'] .
+            '&action=delete"
+            >
+        <button type="button" class="flex">Confirmar</button>
         </a>';
+        echo '</div>';
         echo '</div>';
     }
 
-    echo '<div class="group">';
-    echo
-    '<div class="gold flex">
+    echo '<div class="single gold flex">';
+    echo '<div class="group">
 		<img src="/img/grupos/' .
         $group->photo .
         '" alt="' .
@@ -307,11 +364,13 @@ try {
         '</h3>';
     ?>
     </div>
+    </div>
 
     <div class="albums flex">
         <table>
             <thead class="gold">
                 <tr>
+                    <th>Portada</th>
                     <th>Título</th>
                     <th>Año</th>
                     <th>Precio</th>
@@ -322,6 +381,14 @@ try {
                 <?php
                 foreach ($albums as $album) {
                     echo '<tr>';
+                    echo '
+                    <td>
+                        <img src="/img/albumes/' .
+                        $album->photo .
+                        '" alt="' .
+                        $album->photo .
+                        '">
+                    </td>';
                     echo '<td>' . $album->title . '</td>';
                     echo '<td>' . $album->year . '</td>';
                     echo '<td>' . $album->price . ' €</td>';
@@ -331,7 +398,7 @@ try {
                         '&album=' .
                         $album->id .
                         '&action=confirm">
-                        <img src="/img/papelera.png" alt="erase">
+                        <img src="/img/papelera.png" alt="erase" class="trash">
                         </a>
                         </td>
                         </tr>';
@@ -342,8 +409,9 @@ try {
     </div>
 
     <form class="flex" action="#" method="post" enctype="multipart/form-data">
-        <legend>AÑADE UN ALBUM</legend>
+
         <fieldset>
+            <legend>AÑADE UN ALBUM</legend>
             <label for="title">Título:</label><br>
             <input
                 type="text"
@@ -375,7 +443,9 @@ try {
             <input
                 type="file"
                 name="photo"
-                id="photo"><br>
+                id="photo" 
+                ><br>
+            <input type="hidden" name="MAX_FILE_SIZE" value="20MB">
             <input type="hidden" name="gId" id="gId" value="<?= $_GET['id'] ?>">
             <input type="submit" value="Añade">
         </fieldset>

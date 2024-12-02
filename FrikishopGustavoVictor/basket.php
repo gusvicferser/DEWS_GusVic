@@ -4,7 +4,7 @@
  * Aplicación web corregida para la actividad FrikiShop:
  * 
  * @author Gustavo Víctor
- * @version 1.0
+ * @version 1.1
  */
 
 // Cambiamos el nombre de la cookie de la sesión:

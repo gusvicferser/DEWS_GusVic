@@ -4,7 +4,7 @@
  * Aplicación web corregida para la actividad FrikiShop:
  * 
  * @author Gustavo Víctor
- * @version 1.0
+ * @version 1.1
  */
 
 // Cambiamos el nombre de la cookie de la sesión:
@@ -14,7 +14,7 @@ ini_set('session.name', 'SessionGustavoVictor');
 ini_set('session.cookie_httponly', 1);
 
 // Modificamos la cookie para que expire en 5 min:
-ini_set('session.cache_expire', 5);
+ini_set('session.cookie_lifetime', 300); // 300 segundos = 5 min
 
 // Iniciamos sesión:
 session_start();
@@ -29,13 +29,41 @@ try {
 	} else {
 		throw new Exception('Error en la conexión a la BBDD');
 	}
-	unset($query);
-	unset($connection);
+
+	// Necesito comprobar si los ids que nos pasan por get existen en la base de datos:
+	foreach ($products as $key => $product) {
+		$ids[$products[$key]->id] = $products[$key]->stock;
+	}
+
+	if(!isset($_SESSION['artTotal'])) {
+		$_SESSION['artTotal']=0;
+	}
+
+	// Hemos de gestionar el carrito. Hay tres opciones, 'add', 'sustract' y 'remove':
+	if (isset($_GET['add']) && array_key_exists($_GET['add'], $ids)) {
+		if($ids[$_GET['add']] > 0) {
+			$_SESSION['basket'][$_GET['add']]+=1;
+			--$products[$_GET['add']]->stock;
+		}
+		$_SESSION['artTotal']++;
+	}
+	if (isset($_GET['subtract']) && array_key_exists($_GET['subtract'], $ids)) {
+		if($_SESSION['basket'][$_GET['subtract']] > 0) {
+			$_SESSION['basket'][$_GET['subtract']]+=1;
+			++$products[$_GET['subtract']]->stock;
+		}
+		if($_SESSION['artTotal']>0){
+			$_SESSION['artTotal']--;
+		} else {
+			$_SESSION['artTotal'] = 0;
+		}
+	}
 } catch (Exception $exception) {
 	$dbError = true;
-	unset($query);
-	unset($connection);
+	var_dump($exception);
 }
+unset($query);
+unset($connection);
 ?>
 <!doctype html>
 <html lang="es">
@@ -50,6 +78,13 @@ try {
 <body>
 	<?php
 	require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
+
+	// Traza de comprobación:
+
+	echo '<pre>';
+	print_r($ids);
+	echo '</pre>';
+
 
 	//Si el usuario no está logueado (no existe su variable de sesión) -->
 	?>
@@ -84,7 +119,7 @@ try {
 	// Si el usuario está logueado (existe su variable de sesión): -->
 	?>
 	<div id="carrito">
-		X
+		<?= $_SESSION['artTotal'] ?? 0 ?>
 		productos en el carrito.
 		<a href="/basket" class="boton">Ver carrito</a>
 	</div>
@@ -100,8 +135,8 @@ try {
 				echo '<span>' . $product->price . ' €</span><br>';
 				if ($product->stock > 0) {
 					echo '<span class="botonesCarrito">';
-					echo '<a href="" class="productos"><img src="/img/mas.png" alt="añadir 1"></a>';
-					echo '<a href="" class="productos"><img src="/img/menos.png" alt="quitar 1"></a>';
+					echo '<a href="/add/' . $product->id . '" class="productos"><img src="/img/mas.png" alt="añadir 1"></a>';
+					echo '<a href="/subtract/'. $product->id .'" class="productos"><img src="/img/menos.png" alt="quitar 1"></a>';
 					echo '<a href="" class="productos"><img src="/img/papelera.png" alt="quitar todos"></a>';
 					echo '</span>';
 					echo '<span>Stock: ' . $product->stock . '</span>';

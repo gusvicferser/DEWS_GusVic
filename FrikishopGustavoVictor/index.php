@@ -1,10 +1,13 @@
 <?php
 
 /**
- * Aplicación web corregida para la actividad FrikiShop:
+ * Aplicación web Frikishop página principal donde se pueden visionar los 
+ * productos, añadirlos al carrito, quitar los que ya se han añadido (no se 
+ * puede quitar un producto que no se haya añadido previamente al carro),
+ * o quitar todos los productos que hubieras añadido. 
  * 
  * @author Gustavo Víctor
- * @version 1.1
+ * @version 1.4
  */
 
 // Cambiamos el nombre de la cookie de la sesión:
@@ -97,6 +100,7 @@ try {
 	// Con este apartado contamos cuántos objetos totales hay en el carrito 
 	// cada vez:
 	if (isset($_SESSION['basket'])) {
+		$artTotal = 0;
 		foreach ($_SESSION['basket'] as $product) {
 			$artTotal += $product;
 		}

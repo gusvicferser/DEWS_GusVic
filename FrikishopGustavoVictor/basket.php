@@ -1,10 +1,12 @@
 <?php
 
 /**
- * Aplicación web corregida para la actividad FrikiShop:
+ * Apartado de la cesta de productos donde se pueden ver los artículos, la 
+ * cantidad, el total de la cesta, se puede volver a la página inicial o 
+ * descartar todo lo que haya en el carrito:
  * 
  * @author Gustavo Víctor
- * @version 1.1
+ * @version 1.2
  */
 
 // Cambiamos el nombre de la cookie de la sesión:

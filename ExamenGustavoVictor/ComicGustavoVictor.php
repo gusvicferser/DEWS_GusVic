@@ -14,7 +14,8 @@ class Comic
     private string $ended;
     private array $characters = [];
 
-    public function __constructor($author, $title = '', $ended = false)
+    // Estaba mal la palabra del constructor. Era construct, no constructor:
+    public function __construct($author, $title = '', $ended = false)
     {
         $this->author = $author;
         $this->title = $title;
@@ -37,13 +38,19 @@ class Comic
 
     public function __toString()
     {
+        // Añadido después del examen para mostrar los personajes:
+        $showCarac = join(', ', $this->characters);
+
         return
             'Autor: ' .
             $this->author .
             '. Comic: ' .
             $this->title .
             '. ¿Está finalizada? ' .
-            ($this->ended ? 'Sí' : 'No');
+            ($this->ended ? 'Sí ' : 'No ').
+            // Añadido después del exámen:
+            'Personajes de la obra: '.
+            $showCarac;
     }
 
     // Función para añadir personajes al array:
@@ -69,6 +76,6 @@ class Comic
     // Función para devolver si un personaje está en el array o no:
     public function hasCharacter(string $character): bool
     {
-        return in_array($character, $this->caracters);
+        return in_array($character, $this->characters); // Por las prisas tenía una letra menos
     }
 }

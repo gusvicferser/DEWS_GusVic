@@ -2,7 +2,6 @@
 IndexIgnore *
 Options All -Indexes
 
-
 RewriteEngine on
 
 RewriteRule ^add/(.+)$ index.php?add=$1 [L]
@@ -12,7 +11,6 @@ RewriteRule ^basket/delete$ basket.php?basket=delete [L]
 RewriteRule ^login/signup/(.+)$ login.php?signup=$1 [L]
 
 ERRORDOCUMENT 404 /404
-
 
 # Eliminar .php de las URL
 RewriteCond %{REQUEST_FILENAME} !-d

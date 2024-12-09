@@ -6,9 +6,9 @@
     
 ?>
 <header>
-    <h1><a href="/FrikishopGustavoVictor/">MerchaShop</a></h1>
+    <h1><a href="/">MerchaShop</a></h1>
 
-    <a href="/FrikishopGustavoVictor/">Principal</a>
+    <a href="/">Principal</a>
 
     <div id="zonausuario">
     <!-- Si el usuario no está logueado (no existe su variable de sesión): -->

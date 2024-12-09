@@ -1,13 +1,12 @@
 <?php
-
-
-
-
+/**
+ * Aplicación modificada para poder loguearse:
+ * 
+ * @author Gustavo Víctor
+ * @version 1.0
+ */
 
 // Si el usuario ya está logueado se le redirigirá a index
-
-
-
 
 
 

@@ -7,28 +7,15 @@
  * o quitar todos los productos que hubieras añadido. 
  * 
  * @author Gustavo Víctor
- * @version 1.4
+ * @version 2.1
  */
 
-// Cambiamos el nombre de la cookie de la sesión:
-ini_set('session.name', 'SessionGustavoVictor');
+// Sesión (hacemos los cambios en la cookie e iniciamos sesión):
+require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/session.inc.php');
 
-// Le decimos al servidor que las cookies se han de obtener a través de http:
-ini_set('session.cookie_httponly', 1);
-
-// Modificamos la cookie para que expire en 5 min:
-ini_set('session.cookie_lifetime', 300); // 300 segundos = 5 min
-
-// Iniciamos sesión:
-session_start();
-
-require_once(
-	$_SERVER['DOCUMENT_ROOT'] . '/FrikishopGustavoVictor/includes/env.inc.php'
-);
-require_once(
-	$_SERVER['DOCUMENT_ROOT'] .
-	'/FrikishopGustavoVictor/includes/connection.inc.php'
-);
+// Aquí invocamos las variables globales y la conexión a la base de datos:
+require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/env.inc.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/connection.inc.php');
 
 try {
 
@@ -119,14 +106,12 @@ try {
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>MerchaShop</title>
-	<link rel="stylesheet" href="/FrikishopGustavoVictor/css/style.css">
+	<link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
 	<?php
-	require_once(
-		$_SERVER['DOCUMENT_ROOT'] .
-		'/FrikishopGustavoVictor/includes/header.inc.php');
+	require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
 
 	// Trazas de comprobación:
 
@@ -142,30 +127,18 @@ try {
 	// print_r($_SESSION['basket']);
 	// echo '</pre>';
 
-	//Si el usuario no está logueado (no existe su variable de sesión) -->
+	// Para poner el formulario si no está registrado:
+
+	if (!isset($_SERVER['userName'])) {
+		require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/signup.inc.php');
+	}
+
 	?>
-	<div class="loginContainer">
-		<h2>Regístrate para poder comprar en la tienda</h2>
-
-		<form action="signup" method="post">
-			<label for="user">Usuario</label>
-			<input type="text" name="user" id="user">
-			<br>
-			<label for="email">Email</label>
-			<input type="email" name="email" id="email">
-			<br>
-			<label for="password">Contraseña</label>
-			<input type="password" name="password" id="password">
-			<br>
-			<label></label>
-			<input type="submit" value="Registrarse">
-		</form>
-
-		<span>¿Ya tienes cuenta? <a href="/login">Loguéate aquí</a>.</span>
+	
 	</div>
 	<div id="ofertas">
-		<a href="/FrikishopGustavoVictor/sales">
-			<img src="/FrikishopGustavoVictor/img/ofertas.png"
+		<a href="/sales">
+			<img src="/img/ofertas.png"
 				alt="Imagen acceso ofertas">
 		</a>
 	</div>
@@ -181,7 +154,7 @@ try {
 	<div id="carrito">
 		<?= $artTotal ?? 0 ?>
 		productos en el carrito.
-		<a href="/FrikishopGustavoVictor/basket" class="boton">Ver carrito</a>
+		<a href="/basket" class="boton">Ver carrito</a>
 	</div>
 
 	<section class="productos">
@@ -192,7 +165,7 @@ try {
 				echo '<h2>' . $product->name . '</h2>';
 				echo '<span>(' . $product->category . ')</span>';
 				echo
-				'<img src="/FrikishopGustavoVictor/img/products/' .
+				'<img src="/img/products/' .
 					$product->image .
 					'" alt="' .
 					$product->name .
@@ -202,24 +175,24 @@ try {
 				if ($product->stock > 0) {
 					echo '<span class="botonesCarrito">';
 					echo
-					'<a href="/FrikishopGustavoVictor/add/' .
+					'<a href="/add/' .
 						$product->id .
 						'" class="productos">
-							<img src="/FrikishopGustavoVictor/img/mas.png" 
+							<img src="/img/mas.png" 
 							alt="añadir 1">
 						</a>';
 					echo
-					'<a href="/FrikishopGustavoVictor/subtract/' .
+					'<a href="/subtract/' .
 						$product->id .
 						'" class="productos">
-							<img src="/FrikishopGustavoVictor/img/menos.png" 
+							<img src="/img/menos.png" 
 							alt="quitar 1">
 						</a>';
 					echo
-					'<a href="/FrikishopGustavoVictor/remove/' .
+					'<a href="/remove/' .
 						$product->id .
 						'" class="productos">
-							<img src="/FrikishopGustavoVictor/img/papelera.png" 
+							<img src="/img/papelera.png" 
 							alt="quitar todos">
 						</a>';
 					echo '</span>';
@@ -229,10 +202,10 @@ try {
 					// Queremos dar la posibilidad de devolver los objetos cuando
 					// han adquirido alguno pero nos hemos quedado sin stock:
 					echo
-					'<a href="/FrikishopGustavoVictor/remove/' .
+					'<a href="/remove/' .
 						$product->id .
 						'" class="productos">
-							<img src="/FrikishopGustavoVictor/img/papelera.png" 
+							<img src="/img/papelera.png" 
 							alt="quitar todos">
 						</a>';
 				}

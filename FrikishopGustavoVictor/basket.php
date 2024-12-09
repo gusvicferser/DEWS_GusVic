@@ -6,20 +6,11 @@
  * descartar todo lo que haya en el carrito:
  * 
  * @author Gustavo Víctor
- * @version 1.2
+ * @version 2.1
  */
 
-// Cambiamos el nombre de la cookie de la sesión:
-ini_set('session.name', 'SessionGustavoVictor',);
-
-// Le decimos al servidor que las cookies se han de obtener a través de http:
-ini_set('session.cookie.httponly', 1);
-
-// Modificamos la cookie para que expire en 5 min:
-ini_set('session.cache.expire', 5);
-
 // Iniciamos sesión:
-session_start();
+require_once($_SERVER['DOCUMENT_ROOT']. '/includes/session.inc.php');
 
 // Si se recibe la variable basket por get y su valor es delete se debe borrar todo el carrito
 if (isset($_GET['basket']) && $_GET['basket'] === 'delete') {
@@ -29,7 +20,7 @@ if (isset($_GET['basket']) && $_GET['basket'] === 'delete') {
 		unset($_SESSION['basket']);
 	}
 	// Tras borrar el carrito se redirige al propio script para no mostrar la URL: basket/delete
-	header('location: /FrikishopGustavoVictor/basket');
+	header('location: /basket');
 	exit;
 }
 
@@ -38,13 +29,8 @@ if (isset($_GET['basket']) && $_GET['basket'] === 'delete') {
 
 
 // Si hay elementos en el carrito se obtiene su información de la BBDD
-require_once(
-	$_SERVER['DOCUMENT_ROOT'] . 
-	'/FrikishopGustavoVictor/includes/env.inc.php'
-);
-require_once(
-	$_SERVER['DOCUMENT_ROOT'] . 
-	'/FrikishopGustavoVictor/includes/connection.inc.php'
+require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/env.inc.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/connection.inc.php'
 );
 try {
 	if ($connection = getDBConnection(DB_NAME, DB_USERNAME, DB_PASSWORD)) {
@@ -83,12 +69,12 @@ unset($connection);
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>MerchaShop - carrito</title>
-	<link rel="stylesheet" href="/FrikishopGustavoVictor/css/style.css">
+	<link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
 	<?php
-	require_once($_SERVER['DOCUMENT_ROOT'] . '/FrikishopGustavoVictor/includes/header.inc.php');
+	require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
 
 	// Traza:
 	// echo '<pre>';
@@ -97,7 +83,7 @@ unset($connection);
 	?>
 
 	<h2>Carrito</h2>
-	<a href="/FrikishopGustavoVictor/basket/delete" class="boton">Vaciar carrito</a>
+	<a href="/basket/delete" class="boton">Vaciar carrito</a>
 	<br>
 	<br>
 	<section>
@@ -125,7 +111,7 @@ unset($connection);
 	}
 		?>
 		<br><br>
-		<a href="/FrikishopGustavoVictor/" class="boton">Volver</a>
+		<a href="/" class="boton">Volver</a>
 	</section>
 </body>
 

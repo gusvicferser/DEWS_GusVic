@@ -5,8 +5,8 @@
  * cantidad, el total de la cesta, se puede volver a la página inicial o 
  * descartar todo lo que haya en el carrito:
  * 
- * @author Gustavo Víctor
- * @version 2.1
+ * @author (Corrección) Gustavo Víctor
+ * @version 2.2
  */
 
 // Iniciamos sesión:

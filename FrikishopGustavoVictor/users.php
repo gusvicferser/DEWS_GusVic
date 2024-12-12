@@ -1,8 +1,13 @@
 <?php
+/**
+ * Aplicación para ver los usuarios:
+ * 
+ * @author (Correccion) Gustavo Victor
+ * @version 1.0
+ */
 
-
-
-
+ // Sesión (hacemos los cambios en la cookie e iniciamos sesión):
+require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/session.inc.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/env.inc.php');
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/connection.inc.php');

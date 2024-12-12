@@ -1,9 +1,13 @@
 <?php
-    
 
+/**
+ * Aplicación web para mostrar la cabecera modificada para que sea vea 
+ * una parte o toda en función de la cuenta que tenga el usuario:
+ * 
+ * @author (Corrección) Gustavo Víctor
+ * @version 1.0
+ */
 
-
-    
 ?>
 <header>
     <h1><a href="/">MerchaShop</a></h1>
@@ -11,20 +15,30 @@
     <a href="/">Principal</a>
 
     <div id="zonausuario">
-    <!-- Si el usuario no está logueado (no existe su variable de sesión): -->
-        <span>¿Ya tienes cuenta? <a href="/login">Loguéate aquí</a>.</span>
-    <!-- Fin usuario no logueado -->
+        <?php
+        // Si el usuario no está logueado (no existe su variable de sesión): -->
+        if (!isset($_SESSION['userName'])) {
+            echo
+            '<span>¿Ya tienes cuenta? 
+                    <a href="/login">Loguéate aquí</a>
+                </span>';
+            // Fin usuario no logueado -->
+        } else {
 
+            //Si el usuario está logueado (existe su variable de sesión): -->
+            echo '<div id="usuario">' . $_SESSION['userName'] . '</div>';
+            // Solo si el usuario es administrador -->
+            if ($_SESSION['rol'] === 'admin') {
+                echo '<a href="/users">Ver usuarios</a>';
 
-        <!-- quitar estos br --><br><br>
+                echo '<br>';
+            }
+            echo '<span id="logout">';
+            echo '<a href="/logout">Desconectar</a>';
+            echo '</span>';
+            // Fin usuario logueado -->
+        }
+        ?>
 
-
-    <!-- Si el usuario está logueado (existe su variable de sesión): -->
-        <span id="usuario">NOMBRE_USUARIO</span>
-        <!-- Solo si el usuario es administrador -->
-        <a href="/users">Ver usuarios</a>
-        <br>
-        <span id="logout"><a href="/logout">Desconectar</a></span>
-    <!-- Fin usuario logueado -->
     </div>
 </header>

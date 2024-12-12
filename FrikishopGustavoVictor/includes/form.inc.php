@@ -3,7 +3,7 @@
 /**
  * Include para el formulario de registro y login:
  * 
- * @author Gustavo Víctor
+ * @author (Corrección) Gustavo Víctor
  * @version 1.1
  */
 
@@ -12,7 +12,7 @@
 <div class="loginContainer">
     <h2>Regístrate para poder comprar en la tienda</h2>
 
-    <form action="#" method="post">
+    <form action="/signup" method="post">
         <label for="user">Usuario</label>
         <input type="text" name="user" id="user">
         <br>

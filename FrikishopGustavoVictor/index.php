@@ -6,8 +6,8 @@
  * puede quitar un producto que no se haya añadido previamente al carro),
  * o quitar todos los productos que hubieras añadido. 
  * 
- * @author Gustavo Víctor
- * @version 2.1
+ * @author (Corrección) Gustavo Víctor
+ * @version 2.2
  */
 
 // Sesión (hacemos los cambios en la cookie e iniciamos sesión):
@@ -129,12 +129,14 @@ try {
 
 	// Para poner el formulario si no está registrado:
 
-	if (!isset($_SERVER['userName'])) {
-		require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/signup.inc.php');
+	if (!isset($_SESSION['userName'])) {
+		require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/form.inc.php');
 	}
 
+	// Si el usuario está logueado (existe su variable de sesión): -->
+	if (isset($_SESSION['userName'])) {
 	?>
-	
+
 	</div>
 	<div id="ofertas">
 		<a href="/sales">
@@ -143,21 +145,13 @@ try {
 		</a>
 	</div>
 
-	<?php
-	// Fin usuario no logueado
+		<div id="carrito">
+			<?= $artTotal ?? 0 ?>
+			productos en el carrito.
+			<a href="/basket" class="boton">Ver carrito</a>
+		</div>
 
-	// Eliminar estos br:
-	echo '<br><br>';
-
-	// Si el usuario está logueado (existe su variable de sesión): -->
-	?>
-	<div id="carrito">
-		<?= $artTotal ?? 0 ?>
-		productos en el carrito.
-		<a href="/basket" class="boton">Ver carrito</a>
-	</div>
-
-	<section class="productos">
+		<section class="productos">
 		<?php
 		if (count($products) > 0) {
 			foreach ($products as $product) {
@@ -214,11 +208,10 @@ try {
 		} else {
 			echo '<h2>Vendemos mucho y ahora mismo no hay productos, visítanos más tarde.</h2>';
 		}
+		echo '</section>';
+		// Fin usuario logueado -->
+	}
 		?>
-	</section>
-	<?php
-	// Fin usuario logueado -->
-	?>
 
 </body>
 

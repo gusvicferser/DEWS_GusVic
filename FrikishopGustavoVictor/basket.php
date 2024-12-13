@@ -6,27 +6,33 @@
  * descartar todo lo que haya en el carrito:
  * 
  * @author (Corrección) Gustavo Víctor
- * @version 2.2
+ * @version 2.3
  */
 
 // Iniciamos sesión:
-require_once($_SERVER['DOCUMENT_ROOT']. '/includes/session.inc.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/session.inc.php');
 
-// Si se recibe la variable basket por get y su valor es delete se debe borrar todo el carrito
+// Si se recibe la variable basket por get y su valor es delete se debe borrar 
+// todo el carrito
 if (isset($_GET['basket']) && $_GET['basket'] === 'delete') {
 
 	// Comprobamos si existe la variable 'basket' y si es así, la eliminamos:
 	if (isset($_SESSION['basket'])) {
 		unset($_SESSION['basket']);
 	}
-	// Tras borrar el carrito se redirige al propio script para no mostrar la URL: basket/delete
+	// Tras borrar el carrito se redirige al propio script para no mostrar la 
+	// URL: basket/delete
 	header('location: /basket');
 	exit;
 }
 
 
-// Si el usuario no está logueado se le redirigirá a index porque no puede ver esta parte de la aplicación
-
+// Si el usuario no está logueado se le redirigirá a index porque no puede ver 
+// esta parte de la aplicación
+if (!isset($_SESSION['userName'])) {
+	header('location: /');
+	exit;
+}
 
 // Si hay elementos en el carrito se obtiene su información de la BBDD
 require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/env.inc.php');
@@ -88,27 +94,36 @@ unset($connection);
 	<br>
 	<section>
 		<?php
-		if (!isset($products)){
-		// Si el carrito está vacío: -->
-		echo '<div>El carrito está vacío</div>';
+		if (!isset($products)) {
+			// Si el carrito está vacío: -->
+			echo '<div>El carrito está vacío</div>';
 		} else {
-		// Si el carrito tiene productos: -->
-		$basketTotal = 0;
+			// Si el carrito tiene productos: -->
+			$basketTotal = 0;
 
-		echo '<table>';
-		echo '<tr><td>Producto</td><td>Unidades</td><td>Precio</td><td>Subtotal</td></tr>';
-		foreach ($products as $product) {
-			echo '<tr>';
-			echo '<td>' . $product['info']->name . '</td>';
-			echo '<td>' . $product['quantity'] . '</td>';
-			echo '<td>' . $product['info']->price . ' €/unidad</td>';
-			echo '<td>' . $product['quantity'] * $product['info']->price . ' €</td>';
-			$basketTotal += $product['quantity'] * $product['info']->price;
-			echo '</tr>';
+			echo '<table>';
+			echo
+			'<tr>
+				<td>Producto</td>
+				<td>Unidades</td>
+				<td>Precio</td>
+				<td>Subtotal</td>
+			</tr>';
+			foreach ($products as $product) {
+				echo '<tr>';
+				echo '<td>' . $product['info']->name . '</td>';
+				echo '<td>' . $product['quantity'] . '</td>';
+				echo '<td>' . $product['info']->price . ' €/unidad</td>';
+				echo
+				'<td>' .
+					$product['quantity'] * $product['info']->price .
+					' €</td>';
+				$basketTotal += $product['quantity'] * $product['info']->price;
+				echo '</tr>';
+			}
+			echo '<tr><td></td><td></td><td>Total</td><td>' . $basketTotal . ' €</td></tr>';
+			echo '</table>';
 		}
-		echo '<tr><td></td><td></td><td>Total</td><td>' . $basketTotal . ' €</td></tr>';
-		echo '</table>';
-	}
 		?>
 		<br><br>
 		<a href="/" class="boton">Volver</a>

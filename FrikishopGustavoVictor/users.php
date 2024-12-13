@@ -3,7 +3,7 @@
  * Aplicación para ver los usuarios:
  * 
  * @author (Correccion) Gustavo Victor
- * @version 1.1
+ * @version 1.2
  */
 
  // Sesión (hacemos los cambios en la cookie e iniciamos sesión):
@@ -11,6 +11,13 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/session.inc.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/env.inc.php');
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/connection.inc.php');
+
+// Si el usuario no es admin, no puede ver esta página:
+if(!isset($_SESSION['rol']) || $_SESSION['rol']!='admin'){
+    header('location:/');
+    exit;
+}
+
 try {
 	if ($connection = getDBConnection(DB_NAME, DB_USERNAME, DB_PASSWORD)) {
 		$query = 'SELECT user, email, rol FROM users;';

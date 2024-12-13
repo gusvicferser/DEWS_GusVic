@@ -3,7 +3,7 @@
  * Aplicación para mostrar las ofertas (sólo si estás logeado):
  * 
  * @author Gustavo Víctor
- * @version 1.1
+ * @version 1.2
  */
 
 // Ha de iniciarse sesión:
@@ -37,11 +37,13 @@ unset($connection);
 	<body>
 		<?php
 			require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/header.inc.php');
+			
+			
 
 			// Si el usuario no está logueado (no existe su variable de sesión) se mostrará la siguiente línea
 			if(!isset($_SESSION['userName'])){
-			echo '<div class="center"><a href="/signup">Regístrate aquí</a></div>';
-			} else {
+			require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/form.inc.php');
+			}
 		
 			echo '<h1>Artículos en oferta</h1>';
 			
@@ -56,7 +58,7 @@ unset($connection);
 					echo '</article>';
 				}
 			echo '</section>';
-			}
+			// }
 		?>
 		
 	</body>

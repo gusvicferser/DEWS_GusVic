@@ -6,8 +6,11 @@
  * puede quitar un producto que no se haya añadido previamente al carro),
  * o quitar todos los productos que hubieras añadido. 
  * 
+ * Además uno se puede registrar, acceder a la zona de login, ver las ofertas si
+ * no está logueado y si es administrador, ver la lista de usuarios en la db:
+ * 
  * @author (Corrección) Gustavo Víctor
- * @version 2.2
+ * @version 2.3
  */
 
 // Sesión (hacemos los cambios en la cookie e iniciamos sesión):
@@ -94,7 +97,7 @@ try {
 	}
 } catch (Exception $exception) {
 	$dbError = true;
-	var_dump($exception);
+	// var_dump($exception);
 }
 
 
@@ -113,37 +116,22 @@ try {
 	<?php
 	require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
 
-	// Trazas de comprobación:
-
-	// echo '<pre>';
-	// print_r($_SESSION['products']);
-	// echo '</pre>';
-
-	// echo '<pre>';
-	// print_r($ids);
-	// echo '</pre>';
-
-	// echo '<pre>';
-	// print_r($_SESSION['basket']);
-	// echo '</pre>';
-
 	// Para poner el formulario si no está registrado:
-
 	if (!isset($_SESSION['userName'])) {
 		require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/form.inc.php');
+	?>
+		</div>
+		<div id="ofertas">
+			<a href="/sales">
+				<img src="/img/ofertas.png"
+					alt="Imagen acceso ofertas">
+			</a>
+		</div>
+	<?php
 	}
-
 	// Si el usuario está logueado (existe su variable de sesión): -->
 	if (isset($_SESSION['userName'])) {
 	?>
-
-	</div>
-	<div id="ofertas">
-		<a href="/sales">
-			<img src="/img/ofertas.png"
-				alt="Imagen acceso ofertas">
-		</a>
-	</div>
 
 		<div id="carrito">
 			<?= $artTotal ?? 0 ?>

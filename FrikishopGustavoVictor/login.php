@@ -4,17 +4,11 @@
  * Aplicación modificada para poder loguearse:
  * 
  * @author (Corrección) Gustavo Víctor
- * @version 1.1
+ * @version 1.2
  */
 
 // Sesión (hacemos los cambios en la cookie e iniciamos sesión):
 require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/session.inc.php');
-
-// Si el usuario ya está logueado se le redirigirá a index
-if (isset($_SESSION['userName'])) {
-    header('location/');
-    exit;
-}
 
 // Si llegan datos del formulario hay que intentar hacer el login
 if (!empty($_POST)) {
@@ -35,7 +29,14 @@ if (!empty($_POST)) {
             require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/connection.inc.php');
             if ($connection = getDBConnection(DB_NAME, DB_USERNAME, DB_PASSWORD)) {
                 // Se accede obtienen los datos del usuario desde la base de datos
-                $query = $connection->prepare('SELECT user, rol, password FROM users WHERE (user=:user OR email=:mail);');
+                $query = $connection->prepare(
+                    'SELECT 
+                        user, rol, password 
+                    FROM 
+                        users 
+                    WHERE 
+                        (user=:user OR email=:mail);');
+
                 $query->bindParam(':user', $_POST['user']);
                 $query->bindParam(':mail', $_POST['user']);
                 $query->execute();
@@ -49,10 +50,12 @@ if (!empty($_POST)) {
                     $user = $query->fetchObject();
 
                     // Se comprueba si la contraseña es correcta
-                    //  Si es correcta se almacenan los datos del usuario en la sesión y se redirige a index
+                    // Si es correcta se almacenan los datos del usuario en la 
+                    // sesión y se redirige a index
                     if (password_verify($_POST['password'], $user->password)) {
 
-                        session_regenerate_id();
+                        // Regeneramos la sesión para que no puedan robar la cuenta:
+                        session_regenerate_id(); // SUPER IMPORTANTE:
                         $_SESSION['userName'] = $user->user;
                         $_SESSION['rol'] = $user->rol;
 
@@ -61,19 +64,10 @@ if (!empty($_POST)) {
                         header('location: /');
                         exit;
                     } else {
-                        // Si es incorrecto se almacena el error para mostrarlo en el body
+                        // Si es incorrecto se almacena el error para mostrarlo 
+                        // en el body:
                         $errors['password'] = 'Contraseña incorrecta';
 
-                        // Llevamos la cuenta de los errores:
-                        if (!isset($_SESSION['try'])) {
-                            $_SESSION['try'] = 8;
-                        } else {
-                            if ($_SESSION['try'] < 0) {
-                                $_SESSION['try'] = 0;
-                            } else {
-                                $_SESSION['try']--;
-                            }
-                        }
                     }
                 }
             } else {
@@ -106,21 +100,39 @@ if (!empty($_POST)) {
 
         <?php
         if (isset($_GET['signup']) && $_GET['signup'] == 1) {
-            echo '<h3>Se ha registrado correctamente ya puede acceder a la aplicación.</h3>';
+            echo '<h3>';
+            echo 
+                'Se ha registrado correctamente ya puede acceder a la aplicación.';
+            echo '</h3>';
         } else {
-            echo isset($errors['login']) ? '<h3>Error en el acceso, inténtelo más tarde.</h3>' : '';
+            echo 
+                isset($errors['login']) ? 
+                    '<h3>Error en el acceso, inténtelo más tarde.</h3>' : '';
         ?>
 
             <form action="#" method="post">
                 <label for="user">Usuario o mail</label>
-                <input type="text" name="user" id="user" placeholder="usuario o mail" value="<?= $_POST['user'] ?? "" ?>">
+                <input 
+                    type="text" 
+                    name="user" 
+                    id="user" 
+                    placeholder="usuario o mail" 
+                    value="<?= $_POST['user'] ?? "" ?>"
+                >
                 <br>
-                <?= isset($errors['user']) ? '<span class="error">' . $errors['user'] . '</span>' : "" ?>
+                <?= isset($errors['user']) ? 
+                    '<span class="error">' . $errors['user'] . '</span>' : "" ?>
                 <br>
                 <label for="password">Contraseña</label>
-                <input type="password" name="password" id="password" value="<?= $_POST['password'] ?? "" ?>">
+                <input 
+                    type="password" 
+                    name="password" 
+                    id="password" 
+                    value="<?= $_POST['password'] ?? "" ?>"
+                >
                 <br>
-                <?= isset($errors['password']) ? '<span class="error">' . $errors['password'] . '</span>' : "" ?>
+                <?= isset($errors['password']) ? 
+                    '<span class="error">' . $errors['password'] . '</span>' : "" ?>
                 <br>
                 <!-- <label></label>
                 <input type="checkbox" name="autologin" id="autologin">

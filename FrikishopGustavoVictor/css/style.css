@@ -11,9 +11,10 @@ header {
 	flex-direction: column;
 	width: 50%;
 	margin-left: 10%;
+	margin-bottom: 10%;
 	/* Final del cambio */
 
-	margin-bottom: 1.5em;
+	/* margin-bottom: 1.5em; */
 }
 
 h1, h2 {
@@ -123,4 +124,8 @@ label {
 	display:flex;
 	align-items: center;
 	justify-content: center;
+}
+
+.column {
+	flex-direction: column;
 }

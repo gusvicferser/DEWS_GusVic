@@ -1,9 +1,15 @@
 <?php
+/**
+ * Aplicación para mostrar las ofertas (sólo si estás logeado):
+ * 
+ * @author Gustavo Víctor
+ * @version 1.1
+ */
 
+// Ha de iniciarse sesión:
+require_once($_SERVER['DOCUMENT_ROOT']. '/includes/session.inc.php');
 
-
-
-
+// Invocamos las variables globales y de conexión:
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/env.inc.php');
 require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/connection.inc.php');
 try {
@@ -33,8 +39,9 @@ unset($connection);
 			require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/header.inc.php');
 
 			// Si el usuario no está logueado (no existe su variable de sesión) se mostrará la siguiente línea
-			echo '<a href="/">Regístrate aquí</a>';
-			
+			if(!isset($_SESSION['userName'])){
+			echo '<div class="center"><a href="/signup">Regístrate aquí</a></div>';
+			} else {
 		
 			echo '<h1>Artículos en oferta</h1>';
 			
@@ -49,6 +56,7 @@ unset($connection);
 					echo '</article>';
 				}
 			echo '</section>';
+			}
 		?>
 		
 	</body>

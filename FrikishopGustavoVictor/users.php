@@ -3,7 +3,7 @@
  * Aplicación para ver los usuarios:
  * 
  * @author (Correccion) Gustavo Victor
- * @version 1.0
+ * @version 1.1
  */
 
  // Sesión (hacemos los cambios en la cookie e iniciamos sesión):
@@ -36,7 +36,7 @@ unset($connection);
     <?php
         require_once($_SERVER['DOCUMENT_ROOT'] .'/includes/header.inc.php');
 
-        
+        echo '<div class="center">';
         echo '<table>';
             echo '<tr>';
                 echo '<td>Usuario</td><td>Email</td><td>Rol</td>';
@@ -49,6 +49,7 @@ unset($connection);
                 echo '</tr>';
             }
         echo '</table>';
+        echo '</div>';
     ?>
 </body>
 </html>

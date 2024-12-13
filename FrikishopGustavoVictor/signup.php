@@ -3,8 +3,7 @@
  * Página para el registro de los nuevos usuarios:
  * 
  * @author (Corrección) Gustavo Víctor
- * @version 1.1
- * 
+ * @version 1.2
  */
 
 // Sesión (hacemos los cambios en la cookie e iniciamos sesión):
@@ -44,21 +43,23 @@ if(!empty($_POST)) {
                 // Si no está en el array, lo añadimos a la base de datos:
                 if(!in_array($_POST['user'], $results) && !in_array($_POST['email'], $results)) {
 
+                    // Como nosotros encriptamos la contraseña, le especificamos
+                    // que es un string con las comillas: 
                     $query = $connection->prepare(
                         'INSERT INTO users (user, email, password, rol) 
-                        VALUES (:user, :email, :password, "customer");'
+                        VALUES (:user, :email, "'.
+                         password_hash($_POST['password'], PASSWORD_DEFAULT) .
+                         '", "customer");'
                     );
 
                     $query->bindParam(':user', $_POST['user']);
                     $query->bindParam(':email', $_POST['email']);
-                    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-                    $query->bindParam(':password', $password);
-
                     $query->execute();
 
                     // Hay que regenerar la sesión (si no, al robar alguien la sesión 
                     // tendrá iniciada la sesión en otro ordenador):
                     session_regenerate_id(); //SUPER IMPORTANTE
+                    
                     // Especificamos el nombre de usuario y el rol:
                     $_SESSION['userName'] = $_POST['user'];
                     $_SESSION['rol'] = 'customer';
@@ -74,7 +75,9 @@ if(!empty($_POST)) {
                 throw new Exception('Error en la conexión a la BBDD');
             }
         } catch (Exception $exception) {
-            var_dump($exception);
+            // echo '<pre>';
+            // var_dump($exception);
+            // echo '</pre>';
             $dbError = true;
         } 
         unset($query);

@@ -4,7 +4,7 @@
  * Aplicación modificada para poder loguearse:
  * 
  * @author (Corrección) Gustavo Víctor
- * @version 1.0
+ * @version 1.1
  */
 
 // Sesión (hacemos los cambios en la cookie e iniciamos sesión):
@@ -63,10 +63,16 @@ if (!empty($_POST)) {
                     } else {
                         // Si es incorrecto se almacena el error para mostrarlo en el body
                         $errors['password'] = 'Contraseña incorrecta';
+
+                        // Llevamos la cuenta de los errores:
                         if (!isset($_SESSION['try'])) {
-                            $_SESSION['try'] = 1;
+                            $_SESSION['try'] = 8;
                         } else {
-                            $_SESSION['try']++;
+                            if ($_SESSION['try'] < 0) {
+                                $_SESSION['try'] = 0;
+                            } else {
+                                $_SESSION['try']--;
+                            }
                         }
                     }
                 }
@@ -95,37 +101,38 @@ if (!empty($_POST)) {
     <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
     ?>
-    <h2>Accede a la aplicación</h2>
+    <div class="loginContainer">
+        <h2>Accede a la aplicación</h2>
 
-    <?php
-    if (isset($_GET['signup']) && $_GET['signup'] == 1) {
-        echo '<h3>Se ha registrado correctamente ya puede acceder a la aplicación.</h3>';
-    } else {
-        echo isset($errors['login']) ? '<h3>Error en el acceso, inténtelo más tarde.</h3>' : '';
-    ?>
-        <form action="#" method="post">
-            <label for="user">Usuario o mail</label>
-            <input type="text" name="user" id="user" placeholder="usuario o mail" value="<?= $_POST['user'] ?? "" ?>">
-            <?= isset($errors['user']) ? '<span class="error">' . $errors['user'] . '</span>' : "" ?>
-            <br>
-            <label for="password">Contraseña</label>
-            <input type="password" name="password" id="password" value="<?= $_POST['password'] ?? "" ?>">
-            <?= isset($errors['password']) ? '<span class="error">' . $errors['password'] . '</span>' : "" ?>
-            <br>
-            <!-- <label></label>
+        <?php
+        if (isset($_GET['signup']) && $_GET['signup'] == 1) {
+            echo '<h3>Se ha registrado correctamente ya puede acceder a la aplicación.</h3>';
+        } else {
+            echo isset($errors['login']) ? '<h3>Error en el acceso, inténtelo más tarde.</h3>' : '';
+        ?>
+
+            <form action="#" method="post">
+                <label for="user">Usuario o mail</label>
+                <input type="text" name="user" id="user" placeholder="usuario o mail" value="<?= $_POST['user'] ?? "" ?>">
+                <br>
+                <?= isset($errors['user']) ? '<span class="error">' . $errors['user'] . '</span>' : "" ?>
+                <br>
+                <label for="password">Contraseña</label>
+                <input type="password" name="password" id="password" value="<?= $_POST['password'] ?? "" ?>">
+                <br>
+                <?= isset($errors['password']) ? '<span class="error">' . $errors['password'] . '</span>' : "" ?>
+                <br>
+                <!-- <label></label>
                 <input type="checkbox" name="autologin" id="autologin">
                 <label for="autologin">Recordarme</label>
                 <br> -->
-            <label></label>
-            <?php
-            if (!isset($_SESSION['tries']) || $_SESSION['tries'] < 8) {
-                echo '<input type="submit" value="Accede">';
-            }
-            ?>
-        </form>
-    <?php
-    }
-    ?>
+                <label></label>
+                <input type="submit" value="Accede">
+            </form>
+        <?php
+        }
+        ?>
+    </div>
 </body>
 
 </html>

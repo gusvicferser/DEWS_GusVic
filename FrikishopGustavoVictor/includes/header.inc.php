@@ -5,7 +5,7 @@
  * una parte o toda en función de la cuenta que tenga el usuario:
  * 
  * @author (Corrección) Gustavo Víctor
- * @version 1.0
+ * @version 1.1
  */
 
 ?>
@@ -30,7 +30,6 @@
             // Solo si el usuario es administrador -->
             if ($_SESSION['rol'] === 'admin') {
                 echo '<a href="/users">Ver usuarios</a>';
-
                 echo '<br>';
             }
             echo '<span id="logout">';

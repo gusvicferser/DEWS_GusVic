@@ -118,3 +118,9 @@ label {
 	width: 40%;
 	margin: auto;
 }
+
+.center {
+	display:flex;
+	align-items: center;
+	justify-content: center;
+}

@@ -11,7 +11,7 @@
  * Función para conectar con la base de datos:
  *
  * @author: Gustavo Víctor
- * @version: 1.0
+ * @version: 2.0
  * 
  * @return: Mixed: 'PDO' (Un objeto Php Data Object) si lo consigue, 
  * o 'null' si no.

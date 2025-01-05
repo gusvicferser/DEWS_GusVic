@@ -1,0 +1,23 @@
+#Para que no liste directorios sin index
+IndexIgnore *
+Options All -Indexes
+
+RewriteEngine on
+
+RewriteRule ^user/(.+)$ user.php?user_id=$1 [L]
+RewriteRule ^results/(.+)$ results.php?search=$1 [L]
+RewriteRule ^entry/(.+)$ entry.php?search=$1 [L]
+RewriteRule ^entry/(.+)$ entry.php?like=$1 [L]
+RewriteRule ^comment/(.+)$ comment.php?entry_id=$1 [L]
+
+ERRORDOCUMENT 404 /404
+
+# Eliminar .php de las URL
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]
+
+# Redirige las URLs con extensión .php a la versión sin la extensión
+# Cortesía de ChatGPT:
+RewriteCond %{THE_REQUEST} \s([^\s]+)\.php [NC]
+RewriteRule ^ %1 [R=301,L]

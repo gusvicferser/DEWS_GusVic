@@ -1,9 +1,14 @@
 <?php
 /**
- * Aplicación web para mostrar al autor. Es decir, yo.
+ * Aplicación web para mostrar al autor. Es decir, yo. Ha de incluir:
+ * 
+ * Nombre del creador
+ * Foto de mí
+ * 
+ * (FINALIZADA)
  * 
  * @author Gustavo Víctor
- * @version 1.0
+ * @version 1.1
  */
 
  ?>
@@ -15,7 +20,14 @@
     <title>Author</title>
  </head>
  <body>
+   <?php
+   require_once($_SERVER['DOCUMENT_ROOT']. '/includes/header.inc.php');
+   ?>
     <h1>Gustavo Víctor (El creador)</h1>
     <img src="/img/gus.jpg" alt="gus.jpg">
+
+    <?php
+    require_once($_SERVER['DOCUMENT_ROOT']. '/includes/footer.inc.php');
+    ?>
  </body>
  </html>

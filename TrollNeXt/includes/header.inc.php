@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Aplicación web para mostrar la cabecera. Ha de incluír:
  * 
@@ -10,42 +11,40 @@
  *  (log out).
  * 
  * @author Gustavo Víctor
- * @version 1.0
+ * @version 1.1
  */
-
-// Iniciamos sesión:
- require_once($_SERVER['DOCUMENT_ROOT']. '/includes/session.inc.php');
-
 ?>
 
 <header>
-    <h1><a href="/">TrollNeXt</a></h1>
+    <nav>
+        <h1><a href="/">TrollNeXt</a></h1>
 
-    <div id="header">
-        <?php
-        // Si el usuario no está logueado (no existe su variable de sesión): -->
-        if (!isset($_SESSION['userName'])) {
-            echo
-            '<span>
-                <p>Únete a la comunidad y comienza a trollear a todos. Sin excepción:</p>
+        <div id="header">
+            <?php
+            // Si el usuario no está logueado (no existe su variable de sesión): -->
+            if (!isset($_SESSION['user_name'])) {
+                echo
+                '<span>
+                <p>¡Únete a la comunidad y comienza a trollear!</p>
                 <a href="/login">Trolléate</a>
                 </span>';
-            // Fin usuario no logueado -->
-        } else {
+                // Fin usuario no logueado -->
 
-            //Si el usuario está logueado (existe su variable de sesión): -->
-            echo '<div>';
-            echo '<form action="/results/" method="get">';
-            echo '<input type="text" id="search" name="search" placeholder="¿Qué buscas?"></input>';
-            echo '<input type="submit" value="Busca">';
-            echo '</form>';
-            echo '</div>';
-            echo '<div id="usuario">' . $_SESSION['userName'] . '</div>';
-            echo '<span id="logout">';
-            echo '<a href="/logout">Desconectar</a>';
-            echo '</span>';
-            // Fin usuario logueado -->
-        }
-        ?>
-    </div>
+                //Si el usuario está logueado (existe su variable de sesión): -->
+            } else {
+                echo '<div>';
+                echo '<form action="/results/" method="get">';
+                echo '<input type="text" id="search" name="search" placeholder="¿Qué buscas?"></input>';
+                echo '<input type="submit" value="Busca">';
+                echo '</form>';
+                echo '</div>';
+                echo '<div id="usuario">' . $_SESSION['user_name'] . '</div>';
+                echo '<span id="closeOut">';
+                echo '<a href="/close">Desconectar</a>';
+                echo '</span>';
+                // Fin usuario logueado -->
+            }
+            ?>
+        </div>
+    </nav>
 </header>

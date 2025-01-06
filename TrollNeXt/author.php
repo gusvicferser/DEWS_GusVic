@@ -8,8 +8,11 @@
  * (FINALIZADA)
  * 
  * @author Gustavo Víctor
- * @version 1.1
+ * @version 1.2
  */
+
+ // Iniciamos la sesion:
+ require_once($_SERVER['DOCUMENT_ROOT']. '/includes/session.inc.php');
 
  ?>
  <!DOCTYPE html>

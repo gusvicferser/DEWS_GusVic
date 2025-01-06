@@ -4,11 +4,12 @@ Options All -Indexes
 
 RewriteEngine on
 
-RewriteRule ^user/(.+)$ user.php?user_id=$1 [L]
-RewriteRule ^results/(.+)$ results.php?search=$1 [L]
-RewriteRule ^entry/(.+)$ entry.php?search=$1 [L]
-RewriteRule ^entry/(.+)$ entry.php?like=$1 [L]
-RewriteRule ^comment/(.+)$ comment.php?entry_id=$1 [L]
+RewriteRule ^user/(\d+)/?$ user.php?user_id=$1 [L]
+RewriteRule ^results/(\d+)/?$ results.php?search=$1 [L]
+RewriteRule ^entry/(\d+)/?$ entry.php?e_id=$1 [L]
+RewriteRule ^entry/(\d+)/(\d+)/?$ entry.php?e_id=$1&like=$2 [L, QSA]
+RewriteRule ^entry/(\d+)/error/(.+)?$ entry.php?e_id=$1&error=$2 [L, QSA]
+RewriteRule ^comment/(\d+)/(\d+)/?$ comment.php?e_id=$1 [L]
 
 ERRORDOCUMENT 404 /404
 

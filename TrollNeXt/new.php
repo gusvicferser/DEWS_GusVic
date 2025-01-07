@@ -15,7 +15,7 @@
  *      (TESTEAR)
  * 
  * @author Gustavo Víctor
- * @version 1.1
+ * @version 1.2
  */
 
 // Iniciamos la sesion:
@@ -39,11 +39,12 @@ if (!isset($_SESSION['user_name'])) {
 
             // Mecanismo de seguridad troll:
             if (
-                (strpos("'--", $_POST['text']) > 0) ||
-                (strpos("'; select", $_POST['text']) > 0) ||
-                (strpos("'; insert", $_POST['text']) > 0) ||
-                (strpos("'; delete", $_POST['text']) > 0)
-                ) {
+                (strpos($_POST['text'], "--") !== false) ||
+                (strpos($_POST['text'], "; select") !== false) ||
+                (strpos($_POST['text'], "; insert") !== false) ||
+                (strpos($_POST['text'], "; drop") !== false) ||
+                (preg_match($reg_exp, $_POST['text']))
+            ) {
 
                 $funnies = [
                     '¡Soy Gay! Me ha costado admitirlo, así si lo niego de 

@@ -9,31 +9,40 @@
 </head>
 
 <body>
+    {{-- Div para el contenedor--}}
     <div class="container">
+
+        {{-- For each para cada personaje --}}
         @foreach ($characters as $character)
-            @if ($loop->index % 3 == 0 || $loop->index == 0)
+        {{-- Al comenzar el if si es divisible por cero le dejamos entrar --}}
+                @if ($loop->index % 3 == 0)
+                {{-- Si es la primera iteración no cerramos el div --}}
+                @unless ($loop->first)
+    </div>
+                @endunless
+                {{-- Para todo lo demás, que serán múltiplos de 3, una nueva línea --}}
                 <div class="line">
             @endif
 
-            <span class="character">
+            {{-- Un span para cada personaje --}}
+            <div class="character">
+                {{-- For each para mostrar todas las características --}}
+                <img src="{{ $character['img'] }}" alt="{{ $character['img'] }}">
                 @foreach ($character as $key => $property)
                     <div id="{{ $key . substr($character['name'], 0, 3) }}">
-                        @if ($key == 'img')
-                            <img src="{{ $property }}" alt="{{ $property }}">
-                        @else
-                            {{ $key . ':' . $property }}
-                        @endif
+                        {{-- Si la propiedad es la imagen, ponemos una img --}}
+                        @unless ($key == 'img')
+                            {{ $property }}
+                        @endunless
                     </div>
                 @endforeach
-                </span>
-
-            @if ($loop->index % 3 == 0 || $loop->index == 1)
-    </div>
-    @else
-    @continue
+                </div>
+            {{-- En la última iteración, cerramos la última línea de 'line' --}}
+            @if ($loop->last)
+            </div>
     @endif
     @endforeach
-    </div>
+    </span>
 </body>
 
 </html>

@@ -15,7 +15,7 @@
  *      (TESTEAR)
  * 
  * @author Gustavo Víctor
- * @version 1.2
+ * @version 1.3
  */
 
 // Iniciamos la sesion:
@@ -99,7 +99,7 @@ if (!isset($_SESSION['user_name'])) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">

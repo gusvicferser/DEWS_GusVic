@@ -4,7 +4,7 @@
  * Aplicación modificada para poder loguearse:
  * 
  * @author (Corrección) Gustavo Víctor
- * @version 1.2
+ * @version 1.3 (Corregido después de enviarlo)
  */
 
 // Sesión (hacemos los cambios en la cookie e iniciamos sesión):
@@ -39,10 +39,10 @@ if (!empty($_POST)) {
 
                 $query->bindParam(':user', $_POST['user']);
                 $query->bindParam(':mail', $_POST['user']);
-                $query->execute();
+                $result = $query->execute();
 
                 // Comprobaciones para el login
-                if ($query->rowCount() != 1) {
+                if ($result !== false) {
                     $errors['login'] = 'Error en el acceso';
                 } else {
 

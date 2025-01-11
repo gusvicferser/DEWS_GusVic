@@ -4,14 +4,16 @@
  * Aplicación web para mostrar la cabecera. Ha de incluír:
  * 
  * El logo de la red social (Ha de contener a su vez un enlace a index.html)
+ * 
  * Si el usuario no está logueado, un enlace a loguin
+ * 
  * Si el usuario está logueado, un formulario de búsqueda (campo de texto y botón)
  *  que mandará los datos a la página results y también aparecerá el nombre de
  *  usuario que será un enlace a account y enlaces a new(publicación) y close
  *  (log out).
  * 
  * @author Gustavo Víctor
- * @version 1.1
+ * @version 1.2
  */
 ?>
 

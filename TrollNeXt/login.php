@@ -20,28 +20,38 @@
 // Iniciamos la sesion:
 require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/session.inc.php');
 
-// Hemos de traer las variables y las conexiones:
-require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/env.inc.php');
-require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/connectDB.inc.php');
 
 // Si ya tiene la sesión iniciada, no tiene sentido que acceda a login:
-if (!isset($_SESSION['user_name'])) {
+if (isset($_SESSION['user_name'])) {
 
     header('location:/');
     exit;
 } else {
 
     try {
+        // Hemos de traer las variables y las conexiones:
+        require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/env.inc.php');
+        require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/connectDB.inc.php');
 
+        foreach($_POST as $key => $element) {
+            $_POST[$key] = trim($_POST[$key]);
+        }
+
+        // Bloque por si nos pasan por POST el acceso a la cuenta:
         if (isset($_POST['user_name'])) {
 
-            // Importante hacerle trim a todo lo que envíe el usuario:
-            $_POST['user_name'] = trim($_POST['user_name']);
+            if (
+                empty($_SESSION['errors']['tries']) ||
+                $_SESSION['errors']['tries'] < 8
+            ) {
 
-            $connection = connectDB();
+                // Importante hacerle trim a todo lo que envíe el usuario:
+                $_POST['user_name'] = trim($_POST['user_name']);
 
-            $query = $connection->prepare(
-                'SELECT 
+                $connection = connectDB();
+
+                $query = $connection->prepare(
+                    'SELECT 
                     u.id AS user_id,
                     u.user AS user_name,
                     u.password AS user_pass
@@ -49,41 +59,82 @@ if (!isset($_SESSION['user_name'])) {
                     users u
                 WHERE 
                     u.user = :user OR u.user = :mail;'
-            );
+                );
 
-            $query->bindParam(':user', $_POST['user_name']);
-            $query->bindParam(':mail', $_POST['user_name']);
+                $query->bindParam(':user', $_POST['user_name']);
+                $query->bindParam(':mail', $_POST['user_name']);
 
-            $result = $query->execute();
+                $query->execute();
 
-            // Comprobaciones para el login
-            if ($result !== false) {
-                
-                $errors['login'] = 'Error en el acceso';
+                // Comprobaciones para el login
+                if ($query->rowCount() !== 1) {
 
-            } else {
-                $user = $query->fetchObject();
-
-                if (password_verify($_POST['password'], $user->user_pass)) {
-
-                    // Regeneramos la sesión para que no puedan robar la cuenta:
-                    session_regenerate_id(); // SUPER IMPORTANTE:
-                    $_SESSION['user_name'] = $user->user_name;
-                    $_SESSION['id'] = $user->user_id;
-
-                    unset($query);
-                    unset($connection);
-                    header('location: /');
-                    exit;
+                    $errors['login'] = 'Error en el acceso';
                 } else {
+                    $user = $query->fetchObject();
 
-                    // Si es incorrecto se almacena el error para mostrarlo en el body:
-                    $errors['password'] = 'Contraseña incorrecta';
+                    if (password_verify($_POST['user_pass'], $user->user_pass)) {
+
+                        $query = $connection->query(
+                            'SELECT 
+                                f.user_followed AS fol_id,
+                                u.user AS fol_name
+                            FROM
+                                follows f LEFT JOIN users u
+                            ON 
+                                u.id = f.user_id
+                            WHERE
+                                user_id =' .  $user->user_id . ';'
+                        );
+
+                        // Regeneramos la sesión para que no puedan robar la cuenta:
+                        session_regenerate_id(); // SUPER IMPORTANTE:
+
+                        $_SESSION['user_name'] = $user->user_name;
+                        $_SESSION['user_id'] = $user->user_id;
+                        // Almacenamos el nombre y el id de todos a los que sigue:
+                        $_SESSION['user_fol'] = $query->fetchAll(PDO::FETCH_OBJ);
+
+                        // Eliminamos los intentos erróneos:
+                        unset($_SESSION['errors']['tries']);
+
+                        // Eliminamos la conexión con la base de datos y redirigimos:
+                        unset($query);
+                        unset($connection);
+                        header('location: /');
+                        exit;
+                    } else {
+
+                        /* Si es incorrecto se almacena el error para mostrarlo 
+                        en el body:*/
+                        $errors['user']['pass'] = 'Contraseña incorrecta';
+
+                        // Para controlar que no meta la contraseña más de 8 veces:
+                        if (isset($_SESSION['errors']['tries'])) {
+                            $_SESSION['errors']['tries']++;
+                        } else {
+                            $_SESSION['errors']['tries'] = 1;
+                        }
+                    }
                 }
+
+                // Cerramos la conexión:
+                unset($query);
+                unset($connection);
+            } else if (
+
+                isset($_SESSION['errors']['tries']) &&
+                $_SESSION['errors']['tries'] >= 8
+
+            ) {
+                $errors['access'] =
+                    'Ha intentado poner la contraseña demasiadas
+                    veces, póngase en contacto con nosotros';
             }
         }
     } catch (Exception $exc) {
-        $errors['login'] = 'No fue posible hacer el login';
+        // $errors['login'] = 'No fue posible hacer el login';
+        $errors['login'] = $exc;
     }
 }
 
@@ -95,13 +146,52 @@ if (!isset($_SESSION['user_name'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accede</title>
+    <title>Loguéate</title>
 </head>
 
 <body>
     <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
+
+    if (isset($errors)) {
+        echo '<div class="errors">';
+        foreach ($errors as $key => $error) {
+            if ($key != 'user' && $key != 'errors') {
+                echo '<div>' . $errors[$key] . '</div>';
+            }
+        }
+        echo '</div>';
+    }
     ?>
+
+    <div class="user_form">
+        <form action="#" method="post">
+            <fieldset>
+                <legend>¡Entra al nido del troll!</legend>
+                <label for="user_form">Nombre de usuario o Email:</label><br>
+                <input
+                    type="text"
+                    name="user_name"
+                    id="user_name"
+                    value="<?= $_POST['user_name'] ?? '' ?>">
+                <?php
+                if (isset($errors['user']['user'])) {
+                    echo '<span>' . $errors['user']['user'] . '</span>';
+                }
+                ?>
+                <br><br>
+                <label for="user_pass">Contraseña</label><br>
+                <input type="password" name="user_pass" id="user_pass">
+                <?php
+                if (isset($errors['user']['pass'])) {
+                    echo '<span>' . $errors['user']['pass'] . '</span>';
+                }
+                ?>
+                <br><br>
+                <input type="submit" value="Entra">
+            </fieldset>
+        </form>
+    </div>
 
     <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footer.inc.php');

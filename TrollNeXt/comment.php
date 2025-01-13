@@ -29,7 +29,7 @@ if (!isset($_SESSION['user_name'])) {
 } else {
 
     // Si la publicación está seteada entonces podemos comentar:
-    if (isset($_GET['e_id'])) {
+    if (isset($_GET['entry_id'])) {
 
         try {
 
@@ -44,7 +44,7 @@ if (!isset($_SESSION['user_name'])) {
                     id=:entry;'
             );
 
-            $query->bindParam(':entry', $_GET['e_id']);
+            $query->bindParam(':entry', $_GET['entry_id']);
 
             $query->execute();
 
@@ -77,10 +77,10 @@ if (!isset($_SESSION['user_name'])) {
                     'INSERT INTO 
                         comments (entry_id, user_id, text)
                     VALUES 
-                        (:entry,' . $_SESSION['user_name'] . ', :text);'
+                        (:entry,' . $_SESSION['user_id'] . ', :text);'
                 );
 
-                $query->bindParam(':entry', $_GET['e_id']);
+                $query->bindParam(':entry', $_GET['entry_id']);
                 $query->bindParam(':text', $_POST['text']);
 
                 $query->execute();
@@ -92,7 +92,7 @@ if (!isset($_SESSION['user_name'])) {
         } catch (Exception $exc) {
             // Si ha habido un error, le pasamos que la entrada en cuestión ha dado 
             // fallo:
-            header('location:/entry/' . $_GET['e_id'] . '/error/true');
+            header('location:/entry/' . $_GET['entry_id'] . '/error/true');
             exit;
         }
     } else {

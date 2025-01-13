@@ -33,7 +33,7 @@ if (isset($_SESSION['user_name'])) {
         require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/env.inc.php');
         require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/connectDB.inc.php');
 
-        foreach($_POST as $key => $element) {
+        foreach ($_POST as $key => $element) {
             $_POST[$key] = trim($_POST[$key]);
         }
 
@@ -52,13 +52,13 @@ if (isset($_SESSION['user_name'])) {
 
                 $query = $connection->prepare(
                     'SELECT 
-                    u.id AS user_id,
-                    u.user AS user_name,
-                    u.password AS user_pass
-                FROM 
-                    users u
-                WHERE 
-                    u.user = :user OR u.user = :mail;'
+                        id AS user_id,
+                        user AS user_name,
+                        password AS user_pass
+                    FROM 
+                        users
+                    WHERE 
+                        user = :user OR user = :mail;'
                 );
 
                 $query->bindParam(':user', $_POST['user_name']);
@@ -127,7 +127,7 @@ if (isset($_SESSION['user_name'])) {
                 $_SESSION['errors']['tries'] >= 8
 
             ) {
-                $errors['access'] =
+                $_SESSION['error_access'] =
                     'Ha intentado poner la contraseña demasiadas
                     veces, póngase en contacto con nosotros';
             }
@@ -162,38 +162,43 @@ if (isset($_SESSION['user_name'])) {
         }
         echo '</div>';
     }
+    if (!isset($_SESSION['error_access'])) {
     ?>
-
-    <div class="user_form">
-        <form action="#" method="post">
-            <fieldset>
-                <legend>¡Entra al nido del troll!</legend>
-                <label for="user_form">Nombre de usuario o Email:</label><br>
-                <input
-                    type="text"
-                    name="user_name"
-                    id="user_name"
-                    value="<?= $_POST['user_name'] ?? '' ?>">
-                <?php
-                if (isset($errors['user']['user'])) {
-                    echo '<span>' . $errors['user']['user'] . '</span>';
-                }
-                ?>
-                <br><br>
-                <label for="user_pass">Contraseña</label><br>
-                <input type="password" name="user_pass" id="user_pass">
-                <?php
-                if (isset($errors['user']['pass'])) {
-                    echo '<span>' . $errors['user']['pass'] . '</span>';
-                }
-                ?>
-                <br><br>
-                <input type="submit" value="Entra">
-            </fieldset>
-        </form>
-    </div>
-
+        <div class="user_form">
+            <form action="#" method="post">
+                <fieldset>
+                    <legend>¡Entra al nido del troll!</legend>
+                    <label for="user_name">Nombre de usuario o Email:</label><br>
+                    <input
+                        type="text"
+                        name="user_name"
+                        id="user_name"
+                        value="<?= $_POST['user_name'] ?? '' ?>">
+                    <?php
+                    if (isset($errors['user']['user'])) {
+                        echo '<span>' . $errors['user']['user'] . '</span>';
+                    }
+                    ?>
+                    <br><br>
+                    <label for="user_pass">Contraseña</label><br>
+                    <input type="password" name="user_pass" id="user_pass">
+                    <?php
+                    if (isset($errors['user']['pass'])) {
+                        echo '<span>' . $errors['user']['pass'] . '</span>';
+                    }
+                    ?>
+                    <br><br>
+                    <input type="submit" value="Entra">
+                </fieldset>
+            </form>
+        </div>
     <?php
+    } else {
+
+        echo '<div class="errors">';
+            echo '<div>' . $_SESSION['error_access'] . '</div>';
+        echo '</div>';
+    }
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footer.inc.php');
     ?>
 </body>

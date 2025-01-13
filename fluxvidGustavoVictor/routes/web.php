@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-
 Route::get('movies/{id}', function (int $id) {
     return 'Esta es la movie: ' . $id;
 })->where('id', '[0-9]+')
@@ -28,6 +27,6 @@ Route::get('characters', function () {
 
 Route::get('/', function () {
     // return view('welcome');
-    return 'Hola soy Gustavo Víctor, bienvenido a FluxVid.';
+    return ('index');
 })->name('index');
 

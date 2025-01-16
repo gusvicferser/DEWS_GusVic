@@ -1,15 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MovieController;
 
-Route::get('movies/{id}', function (int $id) {
-    return 'Esta es la movie: ' . $id;
-})->where('id', '[0-9]+')
-    ->name('moviesID');
-
-Route::get('movies', function () {
-    return 'Listado de películas de FluxVid';
-})->name('movies');
+// Route::get('movies/action', [MovieController::class, 'getActionMovies']);
+Route::resource('movies', MovieController::class);
 
 Route::get('characters', function () {
     $characters = [
@@ -27,6 +22,6 @@ Route::get('characters', function () {
 
 Route::get('/', function () {
     // return view('welcome');
-    return ('index');
+    return view('index');
 })->name('index');
 

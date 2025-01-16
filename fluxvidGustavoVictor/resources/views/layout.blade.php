@@ -1,4 +1,3 @@
-@section('layout')
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,13 +8,12 @@
 </head>
 <body>
 
+    @include('partials.nav')
+    
     @yield('welcome')
-
-    @yield('nav')
 
     @yield('content')
 
     @yield('footer')
 </body>
 </html>
-@endsection

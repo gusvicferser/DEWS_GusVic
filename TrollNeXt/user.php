@@ -6,14 +6,14 @@
  * 1. Mostrará los datos del usuario cuya id reciba por get y cantidad de 
  *      seguidores que tiene.  (HECHO)
  * 
- * 2. Se mostrará una lista de todas sus publicaciones. (TO DO)
+ * 2. Se mostrará una lista de todas sus publicaciones. (HECHO)
  *      2.1 De cada publicación mostrará sólo los 50 primeros caracteres (enlace
  *          a la página entry.php) y la cantidad de likes y dislikes de esa 
- *          publicación. (TO DO)
+ *          publicación. (HECHO)
  * 
  * 
  * @author Gustavo Víctor
- * @version 1.2
+ * @version 1.3
  */
 
 // Iniciamos la sesion:
@@ -123,7 +123,12 @@ if (!isset($_SESSION['user_name'])) {
          foreach ($entries as $entry) {
             echo '<div class="post">';
             echo '<div>';
-            echo '<a href="entry/'. $entry->e_id . '">'. $entry->text . '</a>';
+            echo 
+                '<a href="/entry/'. 
+                $entry->e_id .
+                '">'. 
+                trim(substr($entry->text, 0, 50)) .
+                '...</a>';
             echo '</div>';
             echo '<span>Likes: ' . $entry->likes . ' </span>';
             echo '<span>Dislikes: ' . $entry->dislikes . ' </span>';
@@ -139,10 +144,6 @@ if (!isset($_SESSION['user_name'])) {
          echo '</div>';
       }
     
-        ?>
-
-
-    <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footer.inc.php');
     ?>
 </body>

@@ -4,13 +4,18 @@
  * Aplicación web para los resultados de la búsqueda. Ha de tener:
  * 
  * 1. Recibe los datos por get y muestra una lista de los usuarios que coincidan
- *      con la búsqueda. (HECHO)
+ *      con la búsqueda. 
+ * 
+ *      (HECHO)
  * 
  * 2. Mostrará un botón para seguir a los usuarios o dejar de seguirlos según
- *      si el usuario logueado sigue o no a esos usuarios. (HECHO)
+ *      si el usuario logueado sigue o no a esos usuarios. 
+ * 
+ *      (HECHO)
  * 
  * 3. Cada usuario será un enlace a la página user con el id de ese usuario.
- *          (HECHO)
+ *      
+ *     (HECHO)
  * 
  * @author Gustavo Víctor
  * @version 1.3

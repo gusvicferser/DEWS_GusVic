@@ -28,7 +28,7 @@
  *       (Por hacer las imágenes)
  * 
  * @author Gustavo Víctor
- * @version 1.2
+ * @version 1.4
  */
 
 // Iniciamos la sesion:
@@ -147,6 +147,7 @@ if (!isset($_SESSION['user_name'])) {
                   // Seteamos el login:
                   $_SESSION['user_name'] = $_POST['new_user'];
                   $_SESSION['user_id'] = $id->id;
+                  $_SESSION['user_email'] = $_POST['new_email'];
 
                   // Regeneramos el id de la sesión:
                   session_regenerate_id();
@@ -176,8 +177,8 @@ if (!isset($_SESSION['user_name'])) {
    // Ahora vamos a ver qué puede ver el usuario si está conectado:
 } else {
 
-   if (isset($_SESSION['user_fol'])) {
-
+   try {
+      // Vamos a hacer una query para ver todas las publicaciones tanto suyas:
       $search =
          'SELECT 
          u.user AS user,
@@ -213,15 +214,20 @@ if (!isset($_SESSION['user_name'])) {
       WHERE
          (u.id = e.user_id AND u.id=' . $_SESSION['user_id'] . ')';
 
-      foreach ($_SESSION['user_fol'] as $key => $follower) {
-         $search =
-            $search .
-            ' OR (u.id = e.user_id AND u.id=' .
-            $_SESSION['user_fol'][$key]->fol_id .
-            ')';
+      // Como de las personas a las que sigue, añadiendo un OR por cada una:
+      if (isset($_SESSION['user_fol'])) {
+         foreach ($_SESSION['user_fol'] as $key => $follower) {
+            $search =
+               $search .
+               ' OR (u.id = e.user_id AND u.id=' .
+               $_SESSION['user_fol'][$key]->fol_id .
+               ')';
+         }
       }
 
       $search = $search . ' ORDER BY e.date DESC;';
+
+      // var_dump($search); // Traza
 
       $connection = connectDB();
 
@@ -233,8 +239,12 @@ if (!isset($_SESSION['user_name'])) {
       unset($search);
       unset($query);
       unset($connection);
+   } catch (Exception $exc) {
+      $errors['followers'] =
+         'No se han podido encontrar publicaciones de las cuentas a las que sigues.';
    }
 }
+
 ?>
 
 <!DOCTYPE html>

@@ -17,7 +17,7 @@
  *  (HECHO)
  * 
  * @author Gustavo Víctor
- * @version 1.2
+ * @version 1.3
  */
 ?>
 
@@ -45,7 +45,7 @@
                 echo '</form>';
                 echo '</div>';
                 echo '<span id="usuario">';
-                echo '<a href=/bck/account/' . $_SESSION['user_id'] .'>';
+                echo '<a href="/account">';
                 echo $_SESSION['user_name'] . '</a> '; 
                 echo '</span>';
                 echo '<span id="newPost">';

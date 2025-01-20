@@ -14,9 +14,11 @@
  * 
  * 3. En caso de error, se devuelve al formulario con los datos cumplimentados y
  *      un mensaje que diga que error se muestra. 
+ * 
  *      (HECHO)
  * 
  * 4. Si los datos son correctos, se redirige a index.
+ * 
  *      (HECHO)
  * 
  * @author Gustavo Víctor
@@ -58,9 +60,10 @@ if (isset($_SESSION['user_name'])) {
 
                 $query = $connection->prepare(
                     'SELECT 
-                        id AS user_id,
+                        id,
                         user AS user_name,
-                        password AS user_pass
+                        email,
+                        password
                     FROM 
                         users
                     WHERE 
@@ -79,13 +82,14 @@ if (isset($_SESSION['user_name'])) {
                 } else {
                     $user = $query->fetchObject();
 
-                    if (password_verify($_POST['user_pass'], $user->user_pass)) {
+                    if (password_verify($_POST['user_pass'], $user->password)) {
                         
                         // Regeneramos la sesión para que no puedan robar la cuenta:
                         session_regenerate_id(); // SUPER IMPORTANTE:
 
                         $_SESSION['user_name'] = $user->user_name;
-                        $_SESSION['user_id'] = $user->user_id;
+                        $_SESSION['user_id'] = $user->id;
+                        $_SESSION['user_email'] = $user->email;
                         
                         require_once(
                             $_SERVER['DOCUMENT_ROOT'] . 

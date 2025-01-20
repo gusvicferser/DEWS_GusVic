@@ -4,16 +4,16 @@
  * Aplicación web para los resultados de la búsqueda. Ha de tener:
  * 
  * 1. Recibe los datos por get y muestra una lista de los usuarios que coincidan
- *      con la búsqueda. (POR PROBAR)
+ *      con la búsqueda. (HECHO)
  * 
  * 2. Mostrará un botón para seguir a los usuarios o dejar de seguirlos según
- *      si el usuario logueado sigue o no a esos usuarios. 
+ *      si el usuario logueado sigue o no a esos usuarios. (HECHO)
  * 
  * 3. Cada usuario será un enlace a la página user con el id de ese usuario.
  *          (HECHO)
  * 
  * @author Gustavo Víctor
- * @version 1.2
+ * @version 1.3
  */
 
 // Iniciamos la sesion:
@@ -31,6 +31,7 @@ if (!isset($_SESSION['user_name'])) {
 } else {
     try {
 
+        // Si nos pasan una búsqueda:
         if (isset($_GET['search'])) {
 
             // Super importante sacarle los espacios del principio y el final:
@@ -59,28 +60,16 @@ if (!isset($_SESSION['user_name'])) {
 
                 $results = $query->fetchAll(PDO::FETCH_OBJ);
 
+                // Si no hemos seteado previamente los usuarios a los que sigue:
                 if (
                     !isset($_SESSION['user_fol']) ||
                     empty($_SESSION['user_fol'])
                 ) {
 
-                    $query = $connection->query(
-                        'SELECT 
-                            f.user_followed AS fol_id,
-                            u.user AS fol_name
-                        FROM
-                            follows f LEFT JOIN users u
-                        ON 
-                            u.id = f.user_id
-                        WHERE
-                            user_id =' .  $_SESSION['user_id'] . ';'
+                    require_once(
+                        $_SERVER['DOCUMENT_ROOT'] .
+                        '/includes/followers.inc.php'
                     );
-
-                    $_SESSION['user_fol'] = $query->fetchAll(PDO::FETCH_OBJ);
-
-                    foreach ($_SESSION['user_fol'] as $follower) {
-                        $following[$follower->id] = $follower->id;
-                    }
                 }
             }
 
@@ -107,6 +96,9 @@ if (!isset($_SESSION['user_name'])) {
     <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
 
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/latscroll.inc.php');
+
+    // Apartado de trazas:
     // echo '<pre>';
     // var_dump($_SESSION['user_fol']);
     // var_dump($results);
@@ -132,12 +124,29 @@ if (!isset($_SESSION['user_name'])) {
                     $result->user .
                     '</a> ';
 
-                if (isset($following)) {
-                    if (in_array($result->id, $following)) {
-                        echo '<a href="/follow/' . $result->id . '">Unfollow</a>';
+                // Ahora, si existe ese usuario entre sus seguidos:
+                if (isset($_SESSION['user_fol'][$result->id])) {
+                    // Si coincide con el usuario de la búsqueda, se pone para 
+                    // dejar de seguir:
+                    if ($result->id == $_SESSION['user_fol'][$result->id]->fol_id) {
+                        echo
+                        '<a href="/follow/' .
+                            $_SESSION['user_id'] .
+                            '/' .
+                            $result->id .
+                            '">Unfollow</a>';
                     }
+                    // De lo contrario, un botón para seguir:
                 } else {
-                    echo '<a href="/follow/' . $result->id . '">Follow</a>';
+                    // Solo aparece el mensaje de seguir si no es el propio usuario:
+                    if ($result->id != $_SESSION['user_id']) {
+                        echo
+                        '<a href="/follow/' .
+                            $_SESSION['user_id'] .
+                            '/' .
+                            $result->id .
+                            '">Follow</a>';
+                    }
                 }
                 echo '</div>';
             }

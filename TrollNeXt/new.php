@@ -7,15 +7,15 @@
  *      publicación. En caso de errores vuelve a mostrar todo el formulario y un
  *      mensaje indicando el error. 
  * 
- *      (TESTEAR)
+ *      (HECHO)
  * 
  * 2. En el caso de que los datos sean correctos, guardará la publicación y 
  *      redirigirá a la página de dicha entrada (entry.php).
  * 
- *      (TESTEAR)
+ *      (HECHO)
  * 
  * @author Gustavo Víctor
- * @version 1.3
+ * @version 1.4
  */
 
 // Iniciamos la sesion:
@@ -33,7 +33,7 @@ if (!isset($_SESSION['user_name'])) {
 } else {
     try {
 
-        if (isset($_POST)) {
+        if (isset($_POST) && !empty($_POST)) {
             // Le hacemos el trim al texto:
             $_POST['text'] = trim($_POST['text']);
 
@@ -43,7 +43,7 @@ if (!isset($_SESSION['user_name'])) {
                 (strpos($_POST['text'], "; select") !== false) ||
                 (strpos($_POST['text'], "; insert") !== false) ||
                 (strpos($_POST['text'], "; drop") !== false) ||
-                (preg_match($reg_exp, $_POST['text']))
+                (strpos($_POST['text'], "; update") !== false)
             ) {
 
                 $funnies = [
@@ -55,7 +55,7 @@ if (!isset($_SESSION['user_name'])) {
                     '¿Qué significan las dos rayitas en un test de embarazo?'
                 ];
 
-                $_POST['text'] = $funnies[random_int(0, 4)];
+                $_POST['text'] = $funnies[random_int(0, 3)];
             }
 
             // Hacemos la conexión:
@@ -66,7 +66,7 @@ if (!isset($_SESSION['user_name'])) {
                 'INSERT INTO 
                     entries (user_id, text)
                 VALUES 
-                    (' . $_SESSION['user_name'] . ', :text);'
+                    (' . $_SESSION['user_id'] . ', :text);'
             );
 
             $query->bindParam(':text', $_POST['text']);
@@ -74,25 +74,32 @@ if (!isset($_SESSION['user_name'])) {
             // Ejecutamos:
             $query->execute();
 
-            $entry_id = $connection->query(
+            $query = $connection->query(
                 'SELECT 
-                    COUNT(id) 
+                    e.id AS e_id
                 FROM 
-                    entries 
+                    entries e
                 WHERE
-                    user_id=' . $_SESSION['user_name'] . ';'
+                    e.user_id=' . $_SESSION['user_id'] . '
+                ORDER BY e.date DESC
+                LIMIT 1;'
             );
+
+            $entry_id = $query->fetchObject();
+
+            // var_dump($entry_id); // Traza
 
             // Quitamos la conexión una vez hecho el insert:
             unset($query);
             unset($connection);
 
             // Devolvemos a la página de entry con la publicación:
-            header('location:/entry/' . $entry_id);
+            header('location:/entry/' . $entry_id->e_id);
             exit;
         }
     } catch (Exception $exc) {
-        $errors['new'] = '¡No se ha podido crear la nueva publicación!';
+        // $errors['new'] = '¡No se ha podido crear la nueva publicación!';
+        $errors['new'] = $exc;
     }
 }
 
@@ -110,6 +117,8 @@ if (!isset($_SESSION['user_name'])) {
 <body>
     <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
+
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/latscroll.inc.php');
     ?>
 
     <div class="form">
@@ -121,7 +130,7 @@ if (!isset($_SESSION['user_name'])) {
                     id="nText"
                     value="<?= $_POST['text'] ?? '' ?>">
                 <br>
-                <input type="button" value="Publicar">
+                <input type="submit" value="Publicar">
             </fieldset>
         </form>
         <?php

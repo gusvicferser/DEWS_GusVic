@@ -54,9 +54,12 @@ if (!isset($_SESSION['user_name'])) {
 
             $query->execute();
 
-            $id_res = $query->fetchAll(PDO::FETCH_OBJ);
+            $id_res = $query->fetchObject();
 
-            if ($id_res->id_count > 0) {
+            // var_dump($id_res); // Traza
+
+            // Puedo contar cuántas filas tiene este array de obj con count():
+            if (!empty($id_res)) {
 
                 $query = $connection->query(
                     'SELECT 
@@ -81,7 +84,7 @@ if (!isset($_SESSION['user_name'])) {
                 );
 
                 $entries = $query->fetchAll(PDO::FETCH_OBJ);
-            }
+            } 
 
             // Quitamos la conexión:
             unset($query);
@@ -110,8 +113,33 @@ if (!isset($_SESSION['user_name'])) {
 <body>
     <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
-    ?>
 
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/latscroll.inc.php');
+    
+    if(isset($entries)) {
+        echo '<div class="user"> Usuario: ' . $id_res->user_name . '</div>';
+        echo '<div> Followers: ' . $id_res->followers . '</div>';
+        echo '<div class="posts">';
+         foreach ($entries as $entry) {
+            echo '<div class="post">';
+            echo '<div>';
+            echo '<a href="entry/'. $entry->e_id . '">'. $entry->text . '</a>';
+            echo '</div>';
+            echo '<span>Likes: ' . $entry->likes . ' </span>';
+            echo '<span>Dislikes: ' . $entry->dislikes . ' </span>';
+            echo '</div>';
+            echo '<br>';
+         }
+         echo '</div>';
+      } else {
+         echo '<div class="posts">';
+         echo '<div class="post">';
+         echo '<div>';
+         echo '<h2>¡Este usuario no tiene posts!</h2>';
+         echo '</div>';
+      }
+    
+        ?>
 
 
     <?php

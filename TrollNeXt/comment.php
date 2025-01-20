@@ -8,7 +8,7 @@
  * 2. Si se produce un error en los datos ha de mostrarse. Si todo está bien, 
  *      se guarda el comentario y se redirige a la página de entry.php
  * 
- *      (TESTEAR)
+ *      (HECHO)
  * 
  * @author Gustavo Víctor
  * @version 1.2
@@ -37,7 +37,7 @@ if (!isset($_SESSION['user_name'])) {
 
             $query = $connection->prepare(
                 'SELECT 
-                    COUNT(id)
+                    COUNT(id) AS entries
                 FROM 
                     entries 
                 WHERE 
@@ -48,29 +48,33 @@ if (!isset($_SESSION['user_name'])) {
 
             $query->execute();
 
-            $res = $query->fetch();
+            $res = $query->fetchObject();
+
+            // var_dump($res->entries); // Traza
 
             // Así comprobamos que la entrada exista. Si es así se puede comentar:
-            if ($res == 1) {
+            if ($res->entries == 1) {
 
                 // Mecanismo de seguridad troll:
                 if (
-                    (strpos("'--", $_POST['text']) > 0) ||
-                    (strpos("'; select", $_POST['text']) > 0) ||
-                    (strpos("'; insert", $_POST['text']) > 0) ||
-                    (strpos("'; delete", $_POST['text']) > 0)
+                    (strpos($_POST['text'], "--") !== false) ||
+                    (strpos($_POST['text'], "; select") !== false) ||
+                    (strpos($_POST['text'], "; insert") !== false) ||
+                    (strpos($_POST['text'], "; drop") !== false) ||
+                    (strpos($_POST['text'], "; update") !== false)
                 ) {
 
                     $funnies = [
-                        '¡Soy Gay! Me ha costado admitirlo, así si lo niego de 
-                    pronto, es porque he vuelto al armario, ¡no dejéis que pase!',
-                        '¿Alguien para probar el pegging?',
-                        '¿A alguien más le pasa que cuando está en el tema le da
-                    diarrea explosiva?',
-                        '¿Qué significan las dos rayitas en un test de embarazo?'
+                        'Ommelette du fromage',
+                        'Era mejor la película que te has montado con esta
+                        publicación',
+                        '¿Buscas maduritos o maduritas por tu zona?',
+                        'Es todo mentira... salvo alguna cosa',
+                        'Me gustan los catalanes... Hacen cosas.'
                     ];
 
                     $_POST['text'] = $funnies[random_int(0, 4)];
+
                 }
 
                 $query = $connection->prepare(
@@ -88,11 +92,17 @@ if (!isset($_SESSION['user_name'])) {
                 // Cerramos la conexión a la base de datos:
                 unset($query);
                 unset($connection);
+
+                // Devolvemos a la entrada:
+                header('location:/entry/'. $_GET['entry_id']);
+                exit;
             }
         } catch (Exception $exc) {
             // Si ha habido un error, le pasamos que la entrada en cuestión ha dado 
             // fallo:
-            header('location:/entry/' . $_GET['entry_id'] . '/error/true');
+            $_SESSION['errors']['comment'] = 
+                'No se ha podido comentar la publicación';
+            header('location:/entry/' . $_GET['entry_id']);
             exit;
         }
     } else {

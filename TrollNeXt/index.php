@@ -5,18 +5,27 @@
  * 
  * 1. Si no está logueado, mensaje de bienvenida y de invitación a registrarse.
  * 
+ * (HECHO)
+ * 
  * 2. Mostrará el formulario de registro que envía datos al propio index (#).
+ * 
+ * (HECHO)
  * 
  * 3. 
  *    3.1 Si está logueado, mostrará el tablón de anuncios con todas las 
- *        publicaciones de los usuarios en orden cronológico (desc).
+ *        publicaciones de los usuarios en orden cronológico (desc). 
+ * 
+ *       (HECHO)
  *  
  *    3.2 Estas publicaciones tendrán el texto y será un enlace a la página entry. 
+ *       (HECHO)
  * 
  *    3.3 El autor con un enlace a la página user.
+ *       (HECHO)
  * 
  *    3.4 Imágenes para indicar si gusta o no y el número de comentarios de una
  *        publicación.
+ *       (Por hacer las imágenes)
  * 
  * @author Gustavo Víctor
  * @version 1.2
@@ -164,6 +173,67 @@ if (!isset($_SESSION['user_name'])) {
       // $errors['login'] = 'No fue posible hacer el login';
       $errors['login'] = $exc;
    }
+   // Ahora vamos a ver qué puede ver el usuario si está conectado:
+} else {
+
+   if (isset($_SESSION['user_fol'])) {
+
+      $search =
+         'SELECT 
+         u.user AS user,
+         u.id AS u_id,  
+         e.text AS entry,
+         e.id AS e_id,  
+         (
+            SELECT 
+               COUNT(l.user_id) 
+            FROM 
+               likes l, entries e2 
+            WHERE 
+               l.entry_id = e2.id AND e2.id=e.id
+         ) AS likes, 
+         (
+            SELECT 
+               COUNT(d.user_id) 
+            FROM 
+               dislikes d, entries e3 
+            WHERE 
+               d.entry_id = e3.id AND e3.id = e.id
+         ) AS dislikes,
+         (
+            SELECT 
+               COUNT(c.entry_id)
+            FROM 
+               comments c, entries e4
+            WHERE
+               c.entry_id = e4.id AND e4.id = e.id
+         ) AS comments
+      FROM 
+         users u, entries e 
+      WHERE
+         (u.id = e.user_id AND u.id=' . $_SESSION['user_id'] . ')';
+
+      foreach ($_SESSION['user_fol'] as $key => $follower) {
+         $search =
+            $search .
+            ' OR (u.id = e.user_id AND u.id=' .
+            $_SESSION['user_fol'][$key]->fol_id .
+            ')';
+      }
+
+      $search = $search . ' ORDER BY e.date DESC;';
+
+      $connection = connectDB();
+
+      $query = $connection->query($search);
+
+      $posts = $query->fetchAll(PDO::FETCH_OBJ);
+
+      // Quitamos todas las variables que ya no necesitamos:
+      unset($search);
+      unset($query);
+      unset($connection);
+   }
 }
 ?>
 
@@ -179,60 +249,125 @@ if (!isset($_SESSION['user_name'])) {
 <body>
    <?php
    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
-   
+
+   //Traza:
+   // echo '<pre>';
+   // var_dump($_SESSION['user_fol']);
+   // echo '</pre>';
+
+
+   if (isset($errors)) {
+      echo '<div class="errors">';
+      foreach ($errors as $key => $error) {
+         if ($key != 'user' && $key != 'errors') {
+            echo '<div>' . $errors[$key] . '</div>';
+         }
+      }
+      echo '</div>';
+   }
+
+   if (isset($_SESSION['errors'])) {
+      echo '<div class="errors">';
+      foreach ($_SESSION['errors'] as $key => $error) {
+
+         echo '<div>' . $_SESSION['errors'][$key] . '</div>';
+      }
+      echo '</div>';
+
+      // Luego para quitar los errores, una vez mostrados, los eliminamos:
+      unset($_SESSION['errors']);
+   }
+
+   if (isset($_SESSION['success'])) {
+      echo '<div class="success">';
+      echo '<div>' . $_SESSION['success'] . '</div>';
+      echo '</div>';
+
+      // Quitamos también los avisos de éxito:
+      unset($_SESSION['success']);
+   }
+
    if (!isset($_SESSION['user_name'])) {
-      ?>
+   ?>
+      <div>
+         <h1>Bienvenido a TrollNeXt, donde el siguiente en ser trolleado podrías ser tú</h1>
+      </div>
       <div class="new_user_form">
          <form action="#" method="post">
             <fieldset>
                <legend>¡Regístrate y entra al nido del troll!</legend>
                <label for="new_user">Nombre de usuario</label><br>
                <input
-               type="text"
-               name="new_user"
-               id="new_user"
-               value="<?= $_POST['new_user'] ?? '' ?>">
+                  type="text"
+                  name="new_user"
+                  id="new_user"
+                  value="<?= $_POST['new_user'] ?? '' ?>">
                <?php
-                if (isset($errors['new_user']['user'])) {
-                   echo '<span>' . $errors['new_user']['user'] . '</span>';
-                  }
-                  ?>
-                <br><br>
-                <label for="new_email">Email</label><br>
-                <input
-                type="text"
-                name="new_email"
-                id="new_email"
-                value="<?= $_POST['new_email'] ?? '' ?>">
-                <?php
-                if (isset($errors['new_user']['mail'])) {
-                   echo '<span>' . $errors['new_user']['mail'] . '</span>';
-                  }
-                  ?>
-                <br><br>
-                <label for="new_pass">Contraseña</label><br>
-                <input type="password" name="new_pass" id="new_pass">
-                <?php
-                if (isset($errors['new_user']['pass'])) {
-                   echo '<span>' . $errors['new_user']['pass'] . '</span>';
-                  }
-                  ?>
-                <br><br>
-                <label for="check_pass">Repita su contraseña</label><br>
-                <input type="password" name="check_pass" id="check_pass">
-                <?php
-                if (isset($errors['new_user']['dual'])) {
-                   echo '<span>' . $errors['new_user']['dual'] . '</span>';
-                  }
-                  ?>
-                <br><br>
-                <input type="submit" value="Entra">
-               </fieldset>
-            </form>
-         </div>
-         <?php
+               if (isset($errors['new_user']['user'])) {
+                  echo '<span>' . $errors['new_user']['user'] . '</span>';
+               }
+               ?>
+               <br><br>
+               <label for="new_email">Email</label><br>
+               <input
+                  type="text"
+                  name="new_email"
+                  id="new_email"
+                  value="<?= $_POST['new_email'] ?? '' ?>">
+               <?php
+               if (isset($errors['new_user']['mail'])) {
+                  echo '<span>' . $errors['new_user']['mail'] . '</span>';
+               }
+               ?>
+               <br><br>
+               <label for="new_pass">Contraseña</label><br>
+               <input type="password" name="new_pass" id="new_pass">
+               <?php
+               if (isset($errors['new_user']['pass'])) {
+                  echo '<span>' . $errors['new_user']['pass'] . '</span>';
+               }
+               ?>
+               <br><br>
+               <label for="check_pass">Repita su contraseña</label><br>
+               <input type="password" name="check_pass" id="check_pass">
+               <?php
+               if (isset($errors['new_user']['dual'])) {
+                  echo '<span>' . $errors['new_user']['dual'] . '</span>';
+               }
+               ?>
+               <br><br>
+               <input type="submit" value="Entra">
+            </fieldset>
+         </form>
+      </div>
+   <?php
    } else {
-      require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/latscroll.inc.php');    
+      require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/latscroll.inc.php');
+
+      if (isset($posts)) {
+         echo '<div class="posts">';
+         foreach ($posts as $post) {
+            echo '<div class="post">';
+            echo '<div>';
+            echo '<a href="user/' . $post->u_id . '">' . $post->user . '</a>';
+            echo '</div>';
+            echo '<div>';
+            echo '<a href="entry/' . $post->e_id . '">' . $post->entry . '</a>';
+            echo '</div>';
+            echo '<span>Likes: ' . $post->likes . ' </span>';
+            echo '<span>Dislikes: ' . $post->dislikes . ' </span>';
+            echo '<span>Comentarios: ' . $post->comments . ' </span>';
+            echo '</div>';
+            echo '<br>';
+         }
+         echo '</div>';
+      } else {
+         echo '<div class="posts">';
+         echo '<div class="post">';
+         echo '<div>';
+         echo '<h2>¡No hay post en tu feed porque no sigues a nadie!</h2>';
+         echo '</div>';
+      }
    }
    ?>
    <br><br>

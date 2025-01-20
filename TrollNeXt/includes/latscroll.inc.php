@@ -6,7 +6,7 @@
  * 1. Se muestran todos los seguidores del usuario:
  * 
  * @author Gustavo Víctor
- * @version 1.0
+ * @version 1.1
  */
 
 ?>
@@ -30,7 +30,9 @@
             echo '</div>';
         }
     } else {
-        echo '<div class="followed">No sigues a nadie... todavía</div>';
+        echo '<div class="followed">';
+        echo 'No sigues a nadie... todavía. ¿Qué esperas, una señal?';
+        echo '</div>';
     }
     ?>
 </div>

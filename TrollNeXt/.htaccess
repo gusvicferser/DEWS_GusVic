@@ -8,15 +8,16 @@ RewriteRule ^user/(\d+)/?$ user.php?user_id=$1 [L]
 
 RewriteRule ^results/(.+)/?$ results.php?search=$1 [L]
 
-RewriteRule ^entry/(\d+)/error/(.+)?$ entry.php?entry_id=$1&error=$2 [L,QSA]
 RewriteRule ^entry/(\d+)/(\d+)/?$ entry.php?entry_id=$1&like=$2 [L,QSA]
 RewriteRule ^entry/(\d+)/?$ entry.php?entry_id=$1 [L]
 
-RewriteRule ^comment/(\d+)/(\d+)/?$ comment.php?entry_id=$1 [L]
+RewriteRule ^comment/(\d+)/?$ comment.php?entry_id=$1 [L]
+
+RewriteRule ^follow/(\d+)/(\d+)?$ /follow.php?user_id=$1&user_followed=$2 [L,QSA]
 
 RewriteRule ^contact/?$ https://www.youtube.com/watch?v=dQw4w9WgXcQ [R=301,L]
 
-RewriteRule ^/account/(\d+)/?$ back/account.php?user_id=$1 [L]
+RewriteRule ^account/(\d+)/?$ back/account.php?user_id=$1 [L]
 
 ERRORDOCUMENT 404 /404
 

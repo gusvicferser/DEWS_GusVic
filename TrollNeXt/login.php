@@ -4,17 +4,23 @@
  * Aplicación web para loguearse en la red social. Requiere:
  * 
  * 1. Si no recibe datos, muestra formulario para autenticarse. Datos se envían a 
- *      la propia página (#).
+ *      la propia página (#). 
+ * 
+ *      (HECHO)
  * 
  * 2. Si recibe datos, trata de hacer el login.
  * 
+ *      (HECHO)
+ * 
  * 3. En caso de error, se devuelve al formulario con los datos cumplimentados y
  *      un mensaje que diga que error se muestra. 
+ *      (HECHO)
  * 
  * 4. Si los datos son correctos, se redirige a index.
+ *      (HECHO)
  * 
  * @author Gustavo Víctor
- * @version 1.1
+ * @version 1.2
  */
 
 // Iniciamos la sesion:
@@ -41,8 +47,8 @@ if (isset($_SESSION['user_name'])) {
         if (isset($_POST['user_name'])) {
 
             if (
-                empty($_SESSION['errors']['tries']) ||
-                $_SESSION['errors']['tries'] < 8
+                empty($_SESSION['password_tries']) ||
+                $_SESSION['password_tries'] < 8
             ) {
 
                 // Importante hacerle trim a todo lo que envíe el usuario:
@@ -74,29 +80,25 @@ if (isset($_SESSION['user_name'])) {
                     $user = $query->fetchObject();
 
                     if (password_verify($_POST['user_pass'], $user->user_pass)) {
-
-                        $query = $connection->query(
-                            'SELECT 
-                                f.user_followed AS fol_id,
-                                u.user AS fol_name
-                            FROM
-                                follows f LEFT JOIN users u
-                            ON 
-                                u.id = f.user_id
-                            WHERE
-                                user_id =' .  $user->user_id . ';'
-                        );
-
+                        
                         // Regeneramos la sesión para que no puedan robar la cuenta:
                         session_regenerate_id(); // SUPER IMPORTANTE:
 
                         $_SESSION['user_name'] = $user->user_name;
                         $_SESSION['user_id'] = $user->user_id;
-                        // Almacenamos el nombre y el id de todos a los que sigue:
-                        $_SESSION['user_fol'] = $query->fetchAll(PDO::FETCH_OBJ);
+                        
+                        require_once(
+                            $_SERVER['DOCUMENT_ROOT'] . 
+                            '/includes/followers.inc.php'
+                        );
+                    
+                        // Traza para comprobar cómo se guardan los seguidores:
+                        // echo '<pre>';
+                        // var_dump($_SESSION['user_fol']);
+                        // echo '</pre>';
 
                         // Eliminamos los intentos erróneos:
-                        unset($_SESSION['errors']['tries']);
+                        unset($_SESSION['password_tries']);
 
                         // Eliminamos la conexión con la base de datos y redirigimos:
                         unset($query);
@@ -110,10 +112,10 @@ if (isset($_SESSION['user_name'])) {
                         $errors['user']['pass'] = 'Contraseña incorrecta';
 
                         // Para controlar que no meta la contraseña más de 8 veces:
-                        if (isset($_SESSION['errors']['tries'])) {
-                            $_SESSION['errors']['tries']++;
+                        if (isset($_SESSION['password_tries'])) {
+                            $_SESSION['password_tries']++;
                         } else {
-                            $_SESSION['errors']['tries'] = 1;
+                            $_SESSION['password_tries'] = 1;
                         }
                     }
                 }
@@ -123,8 +125,8 @@ if (isset($_SESSION['user_name'])) {
                 unset($connection);
             } else if (
 
-                isset($_SESSION['errors']['tries']) &&
-                $_SESSION['errors']['tries'] >= 8
+                isset($_SESSION['password_tries']) &&
+                $_SESSION['password_tries'] >= 8
 
             ) {
                 $_SESSION['error_access'] =

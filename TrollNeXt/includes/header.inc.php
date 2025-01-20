@@ -4,13 +4,17 @@
  * Aplicación web para mostrar la cabecera. Ha de incluír:
  * 
  * El logo de la red social (Ha de contener a su vez un enlace a index.html)
+ *  (TO DO)
  * 
  * Si el usuario no está logueado, un enlace a loguin
+ *  (HECHO)
  * 
  * Si el usuario está logueado, un formulario de búsqueda (campo de texto y botón)
  *  que mandará los datos a la página results y también aparecerá el nombre de
  *  usuario que será un enlace a account y enlaces a new(publicación) y close
  *  (log out).
+ * 
+ *  (HECHO)
  * 
  * @author Gustavo Víctor
  * @version 1.2
@@ -44,8 +48,11 @@
                 echo '<a href=/bck/account/' . $_SESSION['user_id'] .'>';
                 echo $_SESSION['user_name'] . '</a> '; 
                 echo '</span>';
+                echo '<span id="newPost">';
+                echo '<a href="/new">Nueva Publicación</a> ';
+                echo '</span>';
                 echo '<span id="closeOut">';
-                echo '<a href="/close">Desconectar</a>';
+                echo '<a href="/close">Desconectar</a> ';
                 echo '</span>';
                 // Fin usuario logueado -->
             }

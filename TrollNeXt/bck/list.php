@@ -8,7 +8,7 @@
  *      (TO DO)
  * 
  * @author Gustavo Víctor
- * @version 1.1
+ * @version 1.2
  */
 
 // Iniciamos la sesion:
@@ -47,7 +47,9 @@ if (!isset($_SESSION['user_name'])) {
             FROM 
                 entries e 
             WHERE 
-                e.user_id=' . $_SESSION['user_id'] . ';'
+                e.user_id=' . $_SESSION['user_id'] . '
+            ORDER BY 
+                e.date DESC;'
         );
 
         $entries = $query->fetchAll(PDO::FETCH_OBJ);

@@ -15,7 +15,7 @@
  *      (HECHO)
  * 
  * @author Gustavo Víctor
- * @version 1.2
+ * @version 1.3
  */
 
 // Iniciamos la sesion:
@@ -135,41 +135,38 @@ if (!isset($_SESSION['user_name'])) {
         echo '<span>Likes: ' . $entry->likes . ' </span>';
         echo '<span>Dislikes: ' . $entry->dislikes . ' </span>';
         echo '<div class="comments">';
-        if(isset($comments) && !empty($comments)) {
-        foreach ($comments as $comment) {
-            echo '<span>'. $comment->user . ' --</span> ';
-            echo '<span>'. $comment->comment . '</span> ';
-            echo 
-                '<span>'. 
-                date_format(new DateTime($comment->date), 'd/m/y') .
-                '</span> ';
-            echo '<br>';
+        if (isset($comments) && !empty($comments)) {
+            foreach ($comments as $comment) {
+                echo '<span>' . $comment->user . ' --</span> ';
+                echo '<span>' . $comment->comment . '</span> ';
+                echo
+                '<span>' .
+                    date_format(new DateTime($comment->date), 'd/m/y') .
+                    '</span> ';
+                echo '<br>';
+            }
+        } else {
+            echo '<span>Esta publicación está sin trollear</span>';
         }
-    } else {
-        echo '<span>Esta publicación está sin trollear</span>';
-    }
     ?>
         <div class="form">
-            <form action="/comment/<?=$_GET['entry_id']??''?>" method="post">
-                <input 
-                    type="text" 
-                    name="text" 
-                    id="text" 
-                    placeholder="Trolea, va, que lo estás deseando..."
-                >
+            <form action="/comment/<?= $_GET['entry_id'] ?? '' ?>" method="post">
+                <input
+                    type="text"
+                    name="text"
+                    id="text"
+                    placeholder="Trolea, va, que lo estás deseando...">
                 <input type="submit" value="Troleo">
             </form>
         </div>
     <?php
-    if (isset($_SESSION['errors']['comment'])) {
-        echo '<div class="errors">' . $_SESSION['errors']['comment'] . '</div>';
-        unset($_SESSION['errors']['comment']);
+        if (isset($_SESSION['errors']['comment'])) {
+            echo '<div class="errors">' . $_SESSION['errors']['comment'] . '</div>';
+            unset($_SESSION['errors']['comment']);
+        }
+        echo '</div>';
     }
-    echo '</div>';
-}
-    ?>
 
-    <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footer.inc.php');
     ?>
 </body>

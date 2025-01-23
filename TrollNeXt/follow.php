@@ -138,7 +138,7 @@ if (
             unset($query);
             unset($connection);
         } catch (Exception $exc) {
-            $_SESSION['errors']['follow'] = $exc;
+            // $_SESSION['errors']['follow'] = $exc;
             header('location:/');
             exit;
         }

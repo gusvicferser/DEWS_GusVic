@@ -15,7 +15,7 @@
  *      (HECHO)
  * 
  * @author Gustavo Víctor
- * @version 1.4
+ * @version 1.5
  */
 
 // Iniciamos la sesion:
@@ -33,7 +33,7 @@ if (!isset($_SESSION['user_name'])) {
 } else {
     try {
 
-        if (isset($_POST) && !empty($_POST)) {
+        if (isset($_POST['text']) && !empty($_POST['text'])) {
             // Le hacemos el trim al texto:
             $_POST['text'] = trim($_POST['text']);
 
@@ -71,6 +71,8 @@ if (!isset($_SESSION['user_name'])) {
 
             $query->bindParam(':text', $_POST['text']);
 
+            // var_dump($query->debugDumpParams());
+
             // Ejecutamos:
             $query->execute();
 
@@ -98,8 +100,8 @@ if (!isset($_SESSION['user_name'])) {
             exit;
         }
     } catch (Exception $exc) {
-        // $errors['new'] = '¡No se ha podido crear la nueva publicación!';
-        $errors['new'] = $exc;
+        $errors['new'] = '¡No se ha podido crear la nueva publicación!';
+        // $errors['new'] = $exc;
     }
 }
 

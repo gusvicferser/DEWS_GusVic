@@ -69,8 +69,9 @@ if (
 
             $disliked = $query->fetchObject();
 
-            var_dump($liked);
-            var_dump($disliked);
+            // Trazas:
+            // var_dump($liked);
+            // var_dump($disliked);
 
             // Si tiene likes, hay que sacarlos y ponerlos en la tabla dislike:
             if ($liked->liked > 0) {

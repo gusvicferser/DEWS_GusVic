@@ -28,7 +28,7 @@
  *       (HECHO)
  * 
  * @author Gustavo Víctor
- * @version 1.5
+ * @version 1.6
  */
 
 // Iniciamos la sesion:
@@ -142,7 +142,7 @@ if (!isset($_SESSION['user_name'])) {
                           user="' . $_POST['new_user'] . '";'
                   );
 
-                  $id = $id_query->fetch();
+                  $id = $id_query->fetchObject();
 
                   // Seteamos el login:
                   $_SESSION['user_name'] = $_POST['new_user'];
@@ -171,8 +171,8 @@ if (!isset($_SESSION['user_name'])) {
          unset($connection);
       }
    } catch (Exception $exc) {
-      // $errors['login'] = 'No fue posible hacer el login';
-      $errors['login'] = $exc;
+      $errors['login'] = 'No fue posible hacer el login';
+    //   $errors['login'] = $exc;
    }
    // Ahora vamos a ver qué puede ver el usuario si está conectado:
 } else {

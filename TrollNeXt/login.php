@@ -22,7 +22,7 @@
  *      (HECHO)
  * 
  * @author Gustavo Víctor
- * @version 1.2
+ * @version 1.3
  */
 
 // Iniciamos la sesion:
@@ -42,7 +42,7 @@ if (isset($_SESSION['user_name'])) {
         require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/connectDB.inc.php');
 
         foreach ($_POST as $key => $element) {
-            $_POST[$key] = trim($_POST[$key]);
+            $_POST[$key] = trim($_POST[$key] ?? '');
         }
 
         // Bloque por si nos pasan por POST el acceso a la cuenta:
@@ -52,9 +52,6 @@ if (isset($_SESSION['user_name'])) {
                 empty($_SESSION['password_tries']) ||
                 $_SESSION['password_tries'] < 8
             ) {
-
-                // Importante hacerle trim a todo lo que envíe el usuario:
-                $_POST['user_name'] = trim($_POST['user_name']);
 
                 $connection = connectDB();
 
@@ -82,45 +79,54 @@ if (isset($_SESSION['user_name'])) {
                 } else {
                     $user = $query->fetchObject();
 
-                    if (password_verify($_POST['user_pass'], $user->password)) {
-                        
-                        // Regeneramos la sesión para que no puedan robar la cuenta:
-                        session_regenerate_id(); // SUPER IMPORTANTE:
+                    if (
+                        !empty($_POST['password'])
+                    ) {
+                        if (
+                            password_verify($_POST['password'], $user->password)
+                        ) {
 
-                        $_SESSION['user_name'] = $user->user_name;
-                        $_SESSION['user_id'] = $user->id;
-                        $_SESSION['user_email'] = $user->email;
-                        
-                        require_once(
-                            $_SERVER['DOCUMENT_ROOT'] . 
-                            '/includes/followers.inc.php'
-                        );
-                    
-                        // Traza para comprobar cómo se guardan los seguidores:
-                        // echo '<pre>';
-                        // var_dump($_SESSION['user_fol']);
-                        // echo '</pre>';
+                            // Regeneramos la sesión para que no puedan robar la cuenta:
+                            session_regenerate_id(); // SUPER IMPORTANTE:
 
-                        // Eliminamos los intentos erróneos:
-                        unset($_SESSION['password_tries']);
+                            $_SESSION['user_name'] = $user->user_name;
+                            $_SESSION['user_id'] = $user->id;
+                            $_SESSION['user_email'] = $user->email;
 
-                        // Eliminamos la conexión con la base de datos y redirigimos:
-                        unset($query);
-                        unset($connection);
-                        header('location: /');
-                        exit;
-                    } else {
+                            require_once(
+                                $_SERVER['DOCUMENT_ROOT'] .
+                                '/includes/followers.inc.php'
+                            );
 
-                        /* Si es incorrecto se almacena el error para mostrarlo 
-                        en el body:*/
-                        $errors['user']['pass'] = 'Contraseña incorrecta';
+                            // Traza para comprobar cómo se guardan los seguidores:
+                            // echo '<pre>';
+                            // var_dump($_SESSION['user_fol']);
+                            // echo '</pre>';
 
-                        // Para controlar que no meta la contraseña más de 8 veces:
-                        if (isset($_SESSION['password_tries'])) {
-                            $_SESSION['password_tries']++;
+                            // Eliminamos los intentos erróneos:
+                            unset($_SESSION['password_tries']);
+
+                            // Eliminamos la conexión con la base de datos y redirigimos:
+                            unset($query);
+                            unset($connection);
+                            header('location: /');
+                            exit;
                         } else {
-                            $_SESSION['password_tries'] = 1;
+
+                            /* Si es incorrecto se almacena el error para mostrarlo 
+                        en el body:*/
+                            $errors['user']['pass'] = 'Contraseña incorrecta';
+
+                            // Para controlar que no meta la contraseña más de 8 veces:
+                            if (isset($_SESSION['password_tries'])) {
+                                $_SESSION['password_tries']++;
+                            } else {
+                                $_SESSION['password_tries'] = 1;
+                            }
                         }
+                    } else {
+                        $errors['user']['pass'] =
+                            'La contraseña no puede estar vacía';
                     }
                 }
 
@@ -139,8 +145,8 @@ if (isset($_SESSION['user_name'])) {
             }
         }
     } catch (Exception $exc) {
-        // $errors['login'] = 'No fue posible hacer el login';
-        $errors['login'] = $exc;
+        $errors['login'] = 'No fue posible hacer el login';
+        // $errors['login'] = $exc;
     }
 }
 
@@ -186,8 +192,8 @@ if (isset($_SESSION['user_name'])) {
                     }
                     ?>
                     <br><br>
-                    <label for="user_pass">Contraseña</label><br>
-                    <input type="password" name="user_pass" id="user_pass">
+                    <label for="password">Contraseña</label><br>
+                    <input type="password" name="password" id="password">
                     <?php
                     if (isset($errors['user']['pass'])) {
                         echo '<span>' . $errors['user']['pass'] . '</span>';
@@ -202,7 +208,7 @@ if (isset($_SESSION['user_name'])) {
     } else {
 
         echo '<div class="errors">';
-            echo '<div>' . $_SESSION['error_access'] . '</div>';
+        echo '<div>' . $_SESSION['error_access'] . '</div>';
         echo '</div>';
     }
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footer.inc.php');

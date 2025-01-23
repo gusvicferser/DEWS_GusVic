@@ -11,7 +11,7 @@
  *      (HECHO)
  * 
  * @author Gustavo Víctor
- * @version 1.2
+ * @version 1.3
  */
 
 // Iniciamos la sesion:
@@ -66,8 +66,7 @@ if (!isset($_SESSION['user_name'])) {
 
                     $funnies = [
                         'Ommelette du fromage',
-                        'Era mejor la película que te has montado con esta
-                        publicación',
+                        'Era mejor la película que te has montado en tu cabeza',
                         '¿Buscas maduritos o maduritas por tu zona?',
                         'Es todo mentira... salvo alguna cosa',
                         'Me gustan los catalanes... Hacen cosas.'

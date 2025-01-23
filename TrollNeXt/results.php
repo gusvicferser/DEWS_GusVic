@@ -18,7 +18,7 @@
  *     (HECHO)
  * 
  * @author Gustavo Víctor
- * @version 1.3
+ * @version 1.4
  */
 
 // Iniciamos la sesion:
@@ -135,22 +135,14 @@ if (!isset($_SESSION['user_name'])) {
                     // dejar de seguir:
                     if ($result->id == $_SESSION['user_fol'][$result->id]->fol_id) {
                         echo
-                        '<a href="/follow/' .
-                            $_SESSION['user_id'] .
-                            '/' .
-                            $result->id .
-                            '">Unfollow</a>';
+                        '<a href="/follow/'. $result->id . '">Unfollow</a>';
                     }
                     // De lo contrario, un botón para seguir:
                 } else {
                     // Solo aparece el mensaje de seguir si no es el propio usuario:
                     if ($result->id != $_SESSION['user_id']) {
                         echo
-                        '<a href="/follow/' .
-                            $_SESSION['user_id'] .
-                            '/' .
-                            $result->id .
-                            '">Follow</a>';
+                        '<a href="/follow/'. $result->id . '">Follow</a>';
                     }
                 }
                 echo '</div>';

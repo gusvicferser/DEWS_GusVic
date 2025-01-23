@@ -25,10 +25,10 @@
  * 
  *    3.4 Imágenes para indicar si gusta o no y el número de comentarios de una
  *        publicación.
- *       (Por hacer las imágenes)
+ *       (HECHO)
  * 
  * @author Gustavo Víctor
- * @version 1.4
+ * @version 1.5
  */
 
 // Iniciamos la sesion:
@@ -42,7 +42,7 @@ if (!isset($_SESSION['user_name'])) {
    try {
 
       foreach ($_POST as $key => $element) {
-         $_POST[$key] = trim($_POST[$key]);
+         $_POST[$key] = trim($_POST[$key]??'');
       }
 
       if (isset($_POST['new_user'])) {
@@ -94,11 +94,11 @@ if (!isset($_SESSION['user_name'])) {
 
             $query = $connection->prepare(
                'SELECT 
-              user, email
-          FROM 
-              users
-          WHERE   
-              user = :new_user OR email = :email;'
+                  user, email
+               FROM 
+                  users
+               WHERE   
+                  user = :new_user OR email = :email;'
             );
 
             $query->bindParam(':new_user', $_POST['new_user']);
@@ -208,7 +208,16 @@ if (!isset($_SESSION['user_name'])) {
                comments c, entries e4
             WHERE
                c.entry_id = e4.id AND e4.id = e.id
-         ) AS comments
+         ) AS comments,
+         (
+            SELECT 
+               COUNT(l.user_id) 
+            FROM 
+               likes l, entries e5 
+            WHERE 
+               l.entry_id = e5.id AND 
+               e5.id=e.id AND 
+               l.user_id = '. $_SESSION['user_id'] .') AS liked
       FROM 
          users u, entries e 
       WHERE
@@ -279,7 +288,6 @@ if (!isset($_SESSION['user_name'])) {
    if (isset($_SESSION['errors'])) {
       echo '<div class="errors">';
       foreach ($_SESSION['errors'] as $key => $error) {
-
          echo '<div>' . $_SESSION['errors'][$key] . '</div>';
       }
       echo '</div>';
@@ -358,42 +366,45 @@ if (!isset($_SESSION['user_name'])) {
          echo '<div class="posts">';
          foreach ($posts as $post) {
             echo '<div class="post">';
+            
             echo '<div>';
             echo '<a href="user/' . $post->u_id . '">' . $post->user . '</a>';
             echo '</div>';
+            
             echo '<div>';
             echo '<a href="entry/' . $post->e_id . '">' . $post->entry . '</a>';
             echo '</div>';
+            
             echo '<span>Likes: ' . $post->likes . ' </span>';
+            
             echo '<span>Dislikes: ' . $post->dislikes . ' </span>';
+
+            echo '<span>';
+            echo '<a href="/like/'. $post->e_id . '">';
+            if($post->liked > 0) {
+               echo '<img src="img/dislike.png" alt="dislike" width="50px"></a>';
+            } else {
+               echo '<img src="img/like.png" alt="like" width="50px"></a>';
+            }
+            echo ' </span>';
+
             echo '<span>Comentarios: ' . $post->comments . ' </span>';
             echo '</div>';
+            
             echo '<br>';
          }
          echo '</div>';
       } else {
          echo '<div class="posts">';
+         
          echo '<div class="post">';
-         echo '<div>';
          echo '<h2>¡No hay post en tu feed porque no sigues a nadie!</h2>';
+         echo '</div>';
+
          echo '</div>';
       }
    }
-   ?>
-   <br><br>
-   <a href="/author.php">Author</a>
-   <a href="/close.php">Close</a>
-   <a href="/comment.php">Comment</a>
-   <a href="/entry.php">Entry</a>
-   <a href="/login.php">Login</a>
-   <a href="/new.php">New</a>
-   <a href="/results.php">Results</a>
-   <a href="/bck/account.php">Account</a>
-   <a href="/bck/cancel.php">Cancel</a>
-   <a href="/bck/delete.php">Delete</a>
-   <a href="/bck/list.php">List</a>
-   <br><br>
-   <?php
+   
    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footer.inc.php');
    ?>
 </body>

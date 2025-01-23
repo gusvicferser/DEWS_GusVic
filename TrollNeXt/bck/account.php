@@ -3,12 +3,17 @@
 /**
  * Aplicación web para mostrar los datos del usuario para poder modificarlos:
  * 
- *  1. Si recibe datos de este mismo formulario, los almacenará.
+ *  1. Si recibe datos de este mismo formulario (y la contraseña es correcta), 
+ *      los almacenará. 
+ *      
+ *     (HECHO)
  * 
- *  2. Mostrará un enlace a list y un enlace a cancel.
+ *  2. Mostrará un enlace a list y un enlace a cancel. 
+ * 
+ *     (HECHO)
  * 
  * @author Gustavo Víctor
- * @version 1.0
+ * @version 1.2
  */
 
 // Iniciamos la sesion:
@@ -26,111 +31,208 @@ if (!isset($_SESSION['user_name'])) {
 } else {
     try {
 
-
-        // Si están seteados cualquiera de estos campos comprobamos:
-        if (
-            isset($_POST['new_email']) ||
-            isset($_POST['new_pass']) ||
-            isset($_POST['pass_check'])
-        ) {
+        if (isset($_POST) && !empty($_POST)) {
+            foreach ($_POST as $key => $element) {
+                $_POST[$key] = trim($_POST[$key] ?? '');
+            }
 
             $connection = connectDB();
 
-            // Comprobamos que el email del usuario cumpla la reg_exp:
-            if (
-                isset($_POST['new_email']) &&
-                preg_match(REGEXP_USERMAIL, $_POST['new_email'])
-            ) {
-                // Si la cumple, hay que asegurarse de que no haya dos emails 
-                // iguales para evitar problemas de seguridad:
+            $query = $connection->query(
+                'SELECT
+                password
+            FROM 
+                users
+            WHERE
+                id=' . $_SESSION['user_id'] . ';'
+            );
 
-                $query = $connection->prepare(
-                    'SELECT 
-                    email
-                FROM 
-                    users
-                WHERE   
-                    email = :email;'
-                );
+            $result = $query->fetchObject();
 
-                $query->bindParam(':email', $_POST['new_email']);
-
-                $query->execute();
-
-                // Si lo que nos devuelve da 1 fila o más, significa que existe:
-                if ($query->rowCount() > 1) {
-                    $errors['change']['name_email'] =
-                        'Este email ya ha sido registrado';
-                } else {
-                    $email_ok = true;
-                    $update_mail = 'email = ' . $_POST['new_email'];
-                }
+            // Verificamos si la contraseña actual es correcta y, si no, me vale
+            // verga que quiere cambiarla:
+            if (!password_verify($_POST['password'], $result->password)) {
+                $errors['change']['password'] =
+                    'La contraseña que ha puesto no es correcta';
             } else {
-                $email_ok = false;
-                $errors['change']['mail'] = 'No es un email válido';
-            }
 
-            // Comprobamos que la nueva contraseña no esté vacía:
-            if (isset($_POST['new_pass']) && !empty($_POST['new_pass'])) {
-                
-                // Si no están ambas vacías, comprobamos que las contraseñas coincidan:
                 if (
-                    isset($_POST['check_pass']) &&
-                    !empty($_POST['check_pass']) &&
-                    ($_POST['new_pass'] === $_POST['check_pass'])
+                    isset($_POST['new_user']) &&
+                    ($_POST['new_user'] != $_SESSION['user_name'])
                 ) {
-                    $pass_check_ok = true;
-                    $update_pass =
-                        'password = ' .
-                        password_hash($_POST['new_pass'], PASSWORD_DEFAULT);
-                } else {
-                    $pass_check_ok = false;
-                    $errors['change']['dual'] = '¡Las contraseñas no coinciden!';
-                }
-            }
-            // Si cualquiera de las variables están seteadas, haremos un update:
-            if ($email_ok || $pass_check_ok) {
-                /* El caso límite o de ruptura es cuando ambos updates se van a 
-                hacer al mismo tiempo. Para realizar tan solo una consulta, hemos
-                de unirlas en un string. De lo contrario, me sirve cualquiera
-                que no sea nula (no pasaría por este if si ninguna estuviera
-                seteada):*/
-                if (isset($update_mail) && isset($update_pass)) {
 
-                // Si no existe, pasamos a actualizarlo:
-                $query = $connection->prepare(
-                    'UPDATE 
+                    if (preg_match(REGEXP_USERNAME, $_POST['new_user'])) {
+                        /* Si la cumple, hay que asegurarse de que no haya dos emails 
+                        iguales para evitar problemas de seguridad:*/
+                        $query = $connection->prepare(
+                            'SELECT 
+                                user
+                            FROM 
+                                users
+                            WHERE   
+                                user = :user;'
+                        );
+
+                        $query->bindParam(':user', $_POST['new_user']);
+
+                        $query->execute();
+
+                        /* Si lo que nos devuelve da 1 fila o más, significa que
+                        existe:*/
+                        if ($query->rowCount() > 1) {
+                            $errors['change']['user_name'] =
+                                '¡Este nombre de usuario ya existe!';
+                        } else {
+                            $user_ok = true;
+                        }
+                    } else {
+                        $user_ok = false;
+                        $errors['change']['user'] = 
+                            'No es un nombre de usuario válido';
+                    }
+                }
+
+                // Comprobamos que el email del usuario cumpla la reg_exp:
+                if (
+                    isset($_POST['new_email']) &&
+                    ($_POST['new_email'] != $_SESSION['user_email'])
+                ) {
+
+                    if (preg_match(REGEXP_USERMAIL, $_POST['new_email'])) {
+                        // Si la cumple, hay que asegurarse de que no haya dos emails 
+                        // iguales para evitar problemas de seguridad:
+
+                        $query = $connection->prepare(
+                            'SELECT 
+                                email
+                            FROM 
+                                users
+                            WHERE   
+                                email = :email;'
+                        );
+
+                        $query->bindParam(':email', $_POST['new_email']);
+
+                        $query->execute();
+
+                        // Si lo que nos devuelve da 1 fila o más, significa que existe:
+                        if ($query->rowCount() > 1) {
+                            $errors['change']['name_email'] =
+                                'Este email ya ha sido registrado';
+                        } else {
+                            $email_ok = true;
+                        }
+                    } else {
+                        $email_ok = false;
+                        $errors['change']['mail'] = 'No es un email válido';
+                    }
+                }
+
+                // Si cualquiera de las variables están seteadas, haremos un update:
+                if (
+
+                    (isset($user_ok) && $user_ok) || 
+                    (isset($email_ok) && $email_ok)
+                    
+                    ) {
+
+                    $new_user = $_POST['new_user'] ?? $_SESSION['user_name'];
+                    $new_email = $_POST['new_email'] ?? $_SESSION['user_email'];
+
+                    $query = $connection->prepare(
+                        'UPDATE 
                             users
                         SET 
-                            :update_mail , :update_pass 
+                            user = :update_user , email = :update_email 
                         WHERE 
                             id =' . $_SESSION['user_id'] . ';'
-                );
+                    );
 
-                $query->bindParam(':update_mail', $update_mail); // SEGUIR
-                
-                echo '<pre>';
-                print_r($query->debugDumpParams());
-                echo '</pre>';
+                    $query->bindParam(':update_user', $new_user);
 
-                $query->execute();
-        
-                } else {
-                    $update = $update_mail ?? $update_pass ?? '';
+                    $query->bindParam(':update_email', $new_email);
+
+                    // Traza:
+                    // echo '<pre>';
+                    // print_r($query->debugDumpParams());
+                    // echo '</pre>';
+
+                    $query->execute();
+
+                    // Damos feedback de si se ha podido actualizar o no:
+                    if (isset($user_ok)) {
+                        if ($query->rowCount() < 1) {
+                            $errors['user_name'] =
+                                'No se ha podido actualizar su nombre de usuario';
+                        } else {
+                            $success['user_name'] =
+                                'Se ha actualizado su nombre de usuario';
+                        }
+                    }
+
+                    if (isset($email_ok)) {
+                        if ($query->rowCount() < 1) {
+                            $errors['user_mail'] =
+                                'No se ha podido actualizar su email';
+                        } else {
+                            $success['user_name'] =
+                                'Se ha actulizado su email';
+                        }
+                    }
+
+                    // Actualizamos nombre o email o no hacemos nada, según:
+                    $_SESSION['user_name'] = 
+                        $_POST['new_user'] ?? $_SESSION['user_name'];
+                    $_SESSION['user_email'] = 
+                        $_POST['new_email'] ?? $_SESSION['user_email'];
                 }
 
+                // Comprobamos que quiere cambiar la contraseña:
+                if (isset($_POST['new_pass']) && !empty($_POST['new_pass'])) {
 
+                    // Si no están ambas vacías, comprobamos que las contraseñas
+                    // coincidan:
+                    if (
+                        isset($_POST['check_pass']) &&
+                        !empty($_POST['check_pass']) &&
+                        ($_POST['new_pass'] === $_POST['check_pass'])
+                    ) {
+                        $pass_check_ok = true;
+                    } else {
+                        $pass_check_ok = false;
+                        $errors['change']['dual'] = '¡Las contraseñas no coinciden!';
+                    }
+                }
 
-                if (strpos($update, 'email') > 0) {
-                    $success = 'Su email ha sido actualizado';
-                    $_SESSION['user_email'] = $_POST['new_email'];
-                } else {
-                    $success = 'Su contraseña ha sido actualizada';
+                // ¿Puedo poner esto? (P.D: Parece que sí)
+                if ($pass_check_ok ?? false) {
+
+                    $query = $connection->query(
+                        'UPDATE 
+                            users
+                        SET 
+                            password = "' .
+                                password_hash($_POST['new_pass'], PASSWORD_DEFAULT) .
+                                '" 
+                        WHERE 
+                            id =' . $_SESSION['user_id'] . ';'
+                    );
+
+                    if ($query->rowCount() > 0) {
+                        $success['password'] = 'Se ha actualizado su contraseña';
+                        // Regeneramos la sesión para que no puedan robar la cuenta:
+                        session_regenerate_id(); // SUPER IMPORTANTE:
+
+                    } else {
+                        $errors['password'] =
+                            'No se ha podido actualizar su contraseña';
+                    }
                 }
             }
             // Cortamos la conexión con la base de datos:
             unset($query);
             unset($connection);
+            unset($_POST);
         }
     } catch (Exception $exc) {
         // $errors['account'] = 'No ha sido posible mostrar su información.';
@@ -157,23 +259,40 @@ if (!isset($_SESSION['user_name'])) {
     // var_dump($_SESSION['user_fol']);
     // echo '</pre>';
 
+    if(isset($_SESSION['errors']['delete_user'])){
+        echo '<div>' . $_SESSION['errors']['delete_user'] . '</div>';
+    }
 
-    if (isset($errors['account'])) {
+    if (isset($errors)) {
         echo '<div class="errors">';
-        echo '<div>' . $errors['account'] . '</div>';
+        foreach ($errors as $key => $error) {
+            if ($key != 'change') {
+                echo '<div>' . $errors[$key] . '</div>';
+            }
+        }
         echo '</div>';
     }
 
+    if (isset($success)) {
+        echo '<div class="success">';
+        foreach ($success as $element) {
+            echo '<div>' . $element . '</div>';
+        }
+        echo '</div>';
+
+        // Quitamos también los avisos de éxito:
+        unset($_SESSION['success']);
+    }
 
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/latscroll.inc.php');
     ?>
     <br><br>
     <div>
-        <a href="/bck/list/">¿Quieres ver tus publicaciones?</a>
+        <a href="/list/">¿Quieres ver tus publicaciones?</a>
     </div>
     <br>
     <div>
-        <a href="/bck/cancel/">¿Quieres... quieres borrar tu cuenta?</a>
+        <a href="/cancel/">¿Quieres... quieres borrar tu cuenta?</a>
     </div>
     <br><br>
     <div class="change_form">
@@ -185,7 +304,7 @@ if (!isset($_SESSION['user_name'])) {
                     type="text"
                     name="new_user"
                     id="new_user"
-                    value="<?= $_SESSION['user_name']?>">
+                    value="<?= $_SESSION['user_name'] ?>">
                 <?php
                 if (isset($errors['change']['user'])) {
                     echo '<span>' . $errors['change']['user'] . '</span>';
@@ -197,7 +316,7 @@ if (!isset($_SESSION['user_name'])) {
                     type="text"
                     name="new_email"
                     id="new_email"
-                    value="<?=$_SESSION['user_email']?>">
+                    value="<?= $_SESSION['user_email'] ?>">
                 <?php
                 if (isset($errors['change']['mail'])) {
                     echo '<span>' . $errors['change']['mail'] . '</span>';
@@ -206,17 +325,20 @@ if (!isset($_SESSION['user_name'])) {
                 <br><br>
                 <label for="new_pass">Cambia tu contraseña:</label><br>
                 <input type="password" name="new_pass" id="new_pass">
-                <?php
-                if (isset($errors['change']['pass'])) {
-                    echo '<span>' . $errors['change']['pass'] . '</span>';
-                }
-                ?>
                 <br><br>
                 <label for="check_pass">Repite tu nueva contraseña:</label><br>
                 <input type="password" name="check_pass" id="check_pass">
                 <?php
                 if (isset($errors['change']['dual'])) {
                     echo '<span>' . $errors['change']['dual'] . '</span>';
+                }
+                ?>
+                <br><br>
+                <label for="password">Introduce tu contraseña actual:</label><br>
+                <input type="password" name="password" id="password">
+                <?php
+                if (isset($errors['change']['password'])) {
+                    echo '<span>' . $errors['change']['password'] . '</span>';
                 }
                 ?>
                 <br><br>

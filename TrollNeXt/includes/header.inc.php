@@ -17,7 +17,7 @@
  *  (HECHO)
  * 
  * @author Gustavo Víctor
- * @version 1.3
+ * @version 1.4
  */
 ?>
 
@@ -39,18 +39,23 @@
                 //Si el usuario está logueado (existe su variable de sesión): -->
             } else {
                 echo '<div>';
+
                 echo '<form action="/results.php" method="GET">';
                 echo '<input type="text" id="search" name="search" placeholder="¿Qué buscas?"></input>';
                 echo '<input type="submit" value="Busca">';
                 echo '</form>';
+
                 echo '</div>';
+
                 echo '<span id="usuario">';
                 echo '<a href="/account">';
                 echo $_SESSION['user_name'] . '</a> '; 
                 echo '</span>';
+
                 echo '<span id="newPost">';
                 echo '<a href="/new">Nueva Publicación</a> ';
                 echo '</span>';
+
                 echo '<span id="closeOut">';
                 echo '<a href="/close">Desconectar</a> ';
                 echo '</span>';

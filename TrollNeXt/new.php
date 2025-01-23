@@ -50,7 +50,7 @@ if (!isset($_SESSION['user_name'])) {
                     '¡Soy Gay! Me ha costado admitirlo, así si lo niego de 
                     pronto, es porque he vuelto al armario, ¡no dejéis que pase!',
                     '¿Alguien para probar el pegging?',
-                    '¿A alguien más le pasa que cuando está en el tema le da
+                    '¿A alguien más le pasa que cuando está follando le da
                     diarrea explosiva?',
                     '¿Qué significan las dos rayitas en un test de embarazo?'
                 ];

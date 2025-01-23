@@ -6,15 +6,14 @@
  * 1. Se muestran todos los seguidores del usuario:
  * 
  * @author Gustavo Víctor
- * @version 1.1
+ * @version 1.2
  */
 
 ?>
 
 <div class="lateral_scroll">
-
     <?php
-    if(isset($_SESSION['user_fol']) && !empty($_SESSION['user_fol'])) {
+    if (isset($_SESSION['user_fol']) && !empty($_SESSION['user_fol'])) {
         foreach ($_SESSION['user_fol'] as $followed) {
             echo
             '<div class="followed" id="fol' .
@@ -27,6 +26,7 @@
                 '">' .
                 $followed->fol_name .
                 '</a>';
+            echo '</div>';
             echo '</div>';
         }
     } else {

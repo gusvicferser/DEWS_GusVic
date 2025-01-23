@@ -5,10 +5,10 @@
  * Nombre del creador
  * Foto de mí
  * 
- * (FINALIZADA)
+ * (HECHO)
  * 
  * @author Gustavo Víctor
- * @version 1.2
+ * @version 1.3
  */
 
  // Iniciamos la sesion:
@@ -27,7 +27,7 @@
    require_once($_SERVER['DOCUMENT_ROOT']. '/includes/header.inc.php');
    ?>
     <h1>Gustavo Víctor (El creador)</h1>
-    <img src="/img/gus.jpg" alt="gus.jpg">
+    <img src="/img/gus.jpg" alt="gus.jpg" width="400px">
 
     <?php
     require_once($_SERVER['DOCUMENT_ROOT']. '/includes/footer.inc.php');

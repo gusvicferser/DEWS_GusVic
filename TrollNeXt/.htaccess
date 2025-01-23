@@ -13,13 +13,17 @@ RewriteRule ^entry/(\d+)/?$ entry.php?entry_id=$1 [L]
 
 RewriteRule ^comment/(\d+)/?$ comment.php?entry_id=$1 [L]
 
-RewriteRule ^follow/(\d+)/(\d+)?$ /follow.php?user_id=$1&user_followed=$2 [L,QSA]
+RewriteRule ^follow/(\d+)?$ follow.php?user_followed=$1 [L]
+
+RewriteRule ^like/(\d+)/?$ like.php?entry_id=$1 [L]
 
 RewriteRule ^contact/?$ https://www.youtube.com/watch?v=dQw4w9WgXcQ [R=301,L]
 
 RewriteRule ^account/?$ bck/account.php [L]
 
 RewriteRule ^list/?$ bck/list.php [L]
+
+RewriteRule ^delete/(\d+)/?$ bck/delete.php?entry_id=$1 [L]
 
 RewriteRule ^cancel/?$ bck/cancel.php [L]
 

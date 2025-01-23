@@ -8,8 +8,9 @@
  *      (TO DO)
  * 
  * @author Gustavo Víctor
- * @version 1.0
+ * @version 1.1
  */
+
 // Iniciamos la sesion:
 require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/session.inc.php');
 
@@ -24,6 +25,9 @@ if (!isset($_SESSION['user_name'])) {
     exit;
 } else {
     try {
+
+        $connection = connectDB();
+
         $query = $connection->query(
             'SELECT 
                 e.id AS e_id, 
@@ -43,7 +47,7 @@ if (!isset($_SESSION['user_name'])) {
             FROM 
                 entries e 
             WHERE 
-                e.user_id=' . $id_res->user_id . ';'
+                e.user_id=' . $_SESSION['user_id'] . ';'
         );
 
         $entries = $query->fetchAll(PDO::FETCH_OBJ);
@@ -71,10 +75,30 @@ if (!isset($_SESSION['user_name'])) {
     <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
 
+    if (isset($_SESSION['errors'])) {
+        echo '<div class="errors">';
+        foreach ($_SESSION['errors'] as $key => $error) {
+           echo '<div>' . $_SESSION['errors'][$key] . '</div>';
+        }
+        echo '</div>';
+  
+        // Luego para quitar los errores, una vez mostrados, los eliminamos:
+        unset($_SESSION['errors']);
+     }
+  
+     if (isset($_SESSION['success'])) {
+        echo '<div class="success">';
+        echo '<div>' . $_SESSION['success'] . '</div>';
+        echo '</div>';
+  
+        // Quitamos también los avisos de éxito:
+        unset($_SESSION['success']);
+     }
+
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/latscroll.inc.php');
     
     if(isset($entries)) {
-        echo '<div class="user">Cuenta actual:'. $_SESSION['username'] . '</div>';
+        echo '<div class="user">Cuenta actual:'. $_SESSION['user_name'] . '</div>';
         echo '<div class="posts">';
          foreach ($entries as $entry) {
             echo '<div class="post">';
@@ -88,6 +112,9 @@ if (!isset($_SESSION['user_name'])) {
             echo '</div>';
             echo '<span>Likes: ' . $entry->likes . ' </span>';
             echo '<span>Dislikes: ' . $entry->dislikes . ' </span>';
+            echo '</div>';
+            echo '<div>';
+            echo '<a href="/delete/'. $entry->e_id . '">Eliminar</a>';
             echo '</div>';
             echo '<br>';
          }

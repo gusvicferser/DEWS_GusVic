@@ -13,7 +13,7 @@
  * 
  * 
  * @author Gustavo Víctor
- * @version 1.3
+ * @version 1.4
  */
 
 // Iniciamos la sesion:
@@ -58,7 +58,6 @@ if (!isset($_SESSION['user_name'])) {
 
             // var_dump($id_res); // Traza
 
-            // Puedo contar cuántas filas tiene este array de obj con count():
             if (!empty($id_res)) {
 
                 $query = $connection->query(
@@ -76,7 +75,7 @@ if (!isset($_SESSION['user_name'])) {
                         FROM 
                             dislikes d, entries e3 
                         WHERE 
-                            d.entry_id = e3.id AND e3.id=e.id) AS dislikes 
+                            d.entry_id = e3.id AND e3.id=e.id) AS dislikes
                     FROM 
                         entries e 
                     WHERE 
@@ -84,6 +83,11 @@ if (!isset($_SESSION['user_name'])) {
                 );
 
                 $entries = $query->fetchAll(PDO::FETCH_OBJ);
+
+                // Traza:
+                // echo '<pre>';
+                // var_dump($entries);
+                // echo '</pre>';
             } 
 
             // Quitamos la conexión:

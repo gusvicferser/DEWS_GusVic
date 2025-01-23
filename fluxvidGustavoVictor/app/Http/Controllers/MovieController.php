@@ -13,8 +13,14 @@ class MovieController extends Controller
      */
     public function index(): View
     {
-        $movies = Movie::all();
+        $movies = Movie::where('visibility', 1)->paginate(6);
         return view('movies.index', compact('movies'));
+    }
+
+    public function getMoviesByYear(string $year): View {
+
+        $movies = Movie::where('year', $year)->paginate(6);
+        return view('movies.byyear', compact('movies', 'year'));
     }
 
     /**

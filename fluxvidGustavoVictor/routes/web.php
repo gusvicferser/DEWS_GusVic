@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MovieController;
 
 // Route::get('movies/action', [MovieController::class, 'getActionMovies']);
+Route::get('movies/byyear/{year}', [MovieController::class, 'getMoviesByYear']);
 Route::resource('movies', MovieController::class);
 
 Route::get('characters', function () {

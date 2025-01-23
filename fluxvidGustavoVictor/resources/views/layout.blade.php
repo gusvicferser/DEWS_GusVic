@@ -9,11 +9,11 @@
 <body>
 
     @include('partials.nav')
-    
+
     @yield('welcome')
 
     @yield('content')
 
-    @yield('footer')
+    @include('partials.footer')
 </body>
 </html>

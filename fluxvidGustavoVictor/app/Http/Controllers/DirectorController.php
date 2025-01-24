@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Movie;
+use App\Models\Director;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-class MovieController extends Controller
+class DirectorController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(): View
     {
-        $movies = Movie::where('visibility', 1)->paginate(6);
-        return view('movies.index', compact('movies'));
+        $directors = Director::where('visibility', 1)->paginate(6);
+        return view('directors.index', compact('directors'));
     }
 
     /**
@@ -36,19 +36,15 @@ class MovieController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Movie $movie): Mixed
+    public function show(Director $director)
     {
-        Movie::findOrFail($movie->id);
-        if($movie->visibility == 0) {
-            return redirect()->route('movies.index');
-        }
-        return view('movies.show', compact('movie'));
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Movie $movie)
+    public function edit(Director $director)
     {
         //
     }
@@ -56,7 +52,7 @@ class MovieController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Movie $movie)
+    public function update(Request $request, Director $director)
     {
         //
     }
@@ -64,9 +60,8 @@ class MovieController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Movie $movie)
+    public function destroy(Director $director)
     {
-        Movie::findOrFail($movie->id)->delete();
-        return redirect()->route('movies.index');
+        //
     }
 }

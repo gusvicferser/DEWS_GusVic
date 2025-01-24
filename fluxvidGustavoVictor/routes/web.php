@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\DirectorController;
+
+Route::resource('directors', DirectorController::class);
 
 // Route::get('movies/action', [MovieController::class, 'getActionMovies']);
 Route::get('movies/byyear/{year}', [MovieController::class, 'getMoviesByYear']);

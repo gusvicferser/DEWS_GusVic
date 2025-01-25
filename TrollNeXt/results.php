@@ -94,6 +94,8 @@ if (!isset($_SESSION['user_name'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?= CSS_LINK ?>
+    <?= BOOT_LINK ?>
     <title>Nido D Trolls</title>
 </head>
 
@@ -101,6 +103,8 @@ if (!isset($_SESSION['user_name'])) {
     <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
 
+    echo '<div class="container">';
+    echo '<div class="row">';
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/latscroll.inc.php');
 
     // Apartado de trazas:
@@ -118,12 +122,17 @@ if (!isset($_SESSION['user_name'])) {
     }
     ?>
 
-    <div id="results">
+    <div class="col-lg-6 d-flex flex-column ">
         <?php
         if (isset($results) && !empty($results)) {
             foreach ($results as $result) {
-                echo '<div id="' . $result->user . '">';
+                echo
+                '<div 
+                        class="p-4 d-flex flex-column justify-content-center" 
+                        id="' . $result->user . '"
+                    >';
                 echo '<a 
+                        class="fw-bold text-center text-warning"
                         href="/user/' . $result->id .
                     '">' .
                     $result->user .
@@ -133,16 +142,27 @@ if (!isset($_SESSION['user_name'])) {
                 if (isset($_SESSION['user_fol'][$result->id])) {
                     // Si coincide con el usuario de la búsqueda, se pone para 
                     // dejar de seguir:
-                    if ($result->id == $_SESSION['user_fol'][$result->id]->fol_id) {
+                    if (
+                        $result->id ==
+                        $_SESSION['user_fol'][$result->id]->fol_id
+                    ) {
                         echo
-                        '<a href="/follow/'. $result->id . '">Unfollow</a>';
+                        '<a 
+                            class="btn btn-primary" 
+                            href="/follow/' . $result->id . '"
+                        >
+                        Unfollow
+                        </a>';
                     }
                     // De lo contrario, un botón para seguir:
                 } else {
                     // Solo aparece el mensaje de seguir si no es el propio usuario:
                     if ($result->id != $_SESSION['user_id']) {
                         echo
-                        '<a href="/follow/'. $result->id . '">Follow</a>';
+                        '<a 
+                                class="btn btn-primary" 
+                                href="/follow/' . $result->id . '"
+                            >Follow</a>';
                     }
                 }
                 echo '</div>';
@@ -159,6 +179,8 @@ if (!isset($_SESSION['user_name'])) {
             }
         }
         ?>
+    </div>
+    </div>
     </div>
     <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footer.inc.php');

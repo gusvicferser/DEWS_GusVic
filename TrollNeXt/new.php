@@ -113,6 +113,8 @@ if (!isset($_SESSION['user_name'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?= CSS_LINK ?>
+    <?= BOOT_LINK ?>
     <title>Nuevo Trolleo</title>
 </head>
 
@@ -120,26 +122,29 @@ if (!isset($_SESSION['user_name'])) {
     <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
 
+    echo '<div class="container">';
+    echo '<div class="row">';
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/latscroll.inc.php');
     ?>
 
-    <div class="form">
-        <form action="#" method="post">
-            <fieldset>
-                <input
+    <div class="col-lg-6 p-4">
+        <form class="d-flex flex-column" action="#" method="post">
+        <input
                     type="text"
                     name="text"
                     id="nText"
+                    placeholder="Trolea, que lo estás deseando..."
+                    style="height: 100px;"
                     value="<?= $_POST['text'] ?? '' ?>">
-                <br>
                 <input type="submit" value="Publicar">
-            </fieldset>
         </form>
         <?php
         if (isset($errors['new'])) {
             echo '<div class="errors">' . $errors['new'] . '</div>';
         }
         ?>
+    </div>
+    </div>
     </div>
 
     <?php

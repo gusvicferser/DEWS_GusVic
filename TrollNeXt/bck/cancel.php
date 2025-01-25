@@ -3,7 +3,6 @@
 /**
  * Aplicación web para eliminar la cuenta de la persona cuya cuenta esté abierta:
  * 
- * 1. 
  * 
  * @author Gustavo Víctor
  * @version 1.0
@@ -95,8 +94,8 @@ if (!isset($_SESSION['user_name'])) {
                     'DELETE FROM 
                         follows 
                     WHERE 
-                        user_id=' . $_SESSION['user_id'] . 
-                        ' OR user_followed = '. $_SESSION['user_id'] .';'
+                        user_id=' . $_SESSION['user_id'] .
+                        ' OR user_followed = ' . $_SESSION['user_id'] . ';'
                 );
 
             // Por último quitamos al usuario:
@@ -136,7 +135,6 @@ if (!isset($_SESSION['user_name'])) {
             // Enviamos para inicio:
             header('location:/');
             exit;
-
         } catch (Exception $exc) {
             $_SESSION['errors']['delete_user'] =
                 'No se ha podido completar la acción';
@@ -158,36 +156,42 @@ if (!isset($_SESSION['user_name'])) {
 ?>
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-bs-theme="dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <?= BOOT_LINK ?>
+    <?= CSS_LINK ?>
+
     <title>Borrar su cuenta</title>
 </head>
 
 <body>
     <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
+
+    echo '<div class="row d-flex justify-content-center">';
+    echo '<div class="col-lg-6 d-flex flex-column justify-content-center p-3 m-3">';
     ?>
-    <div class="user_form">
-        <form action="#" method="post">
-            <fieldset>
-                <legend>Eliminar cuenta de <?= $_SESSION['user_name'] ?></legend>
+    <div class="container-fluid">
+        <form class="form-group mx-auto rounded-4 login" action="#" method="post">
+            <div class="m-2 p-5">
+                <h2 class="text-center text-warning">Eliminar cuenta de <?= $_SESSION['user_name'] ?></h2>
                 <br>
-                <input
-                    type="checkbox"
-                    name="confirm"
-                    id="confirm"
-                    value="true">
-                <label for="confirm">
-                    ¿Está seguro de que quiere borrar su cuenta?<br>
+                <h3 class="form-check-label text-center" for="confirm">
+                    ¿Está seguro de que quiere borrar su cuenta? <br><br>
                     Esta acción no se puede deshacer
-                </label>
-                <br><br>
-                <input type="submit" value="Borra todo">
-            </fieldset>
+                </h3><br>
+                <div class="form-check d-flex justify-content-center">
+                    <input class="form-check-input" type="checkbox" name="confirm" value="true" id="confirm">
+                </div>
+                <input class="form-control rounded-3 p-2 mt-2 btn btn-outline-warning border-0" type="submit" value="Borra todo">
+            </div>
         </form>
+    </div>
+    </div>
     </div>
     <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footer.inc.php');

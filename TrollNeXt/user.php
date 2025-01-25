@@ -88,7 +88,7 @@ if (!isset($_SESSION['user_name'])) {
                 // echo '<pre>';
                 // var_dump($entries);
                 // echo '</pre>';
-            } 
+            }
 
             // Quitamos la conexión:
             unset($query);
@@ -111,6 +111,8 @@ if (!isset($_SESSION['user_name'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?= CSS_LINK ?>
+    <?= BOOT_LINK ?>
     <title>Troll</title>
 </head>
 
@@ -118,19 +120,25 @@ if (!isset($_SESSION['user_name'])) {
     <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
 
+    echo '<div class="container">';
+    echo '<div class="row">';
+
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/latscroll.inc.php');
-    
-    if(isset($entries)) {
-        echo '<div class="user"> Usuario: ' . $id_res->user_name . '</div>';
-        echo '<div> Followers: ' . $id_res->followers . '</div>';
-        echo '<div class="posts">';
-         foreach ($entries as $entry) {
+
+    echo '<div class="col-lg-6 p-4 d-flex justify-content-center flex-column">';
+    if (isset($entries)) {
+        echo '<div class="d-flex flex-column justify-content-center">';
+        echo '<span>' . $id_res->user_name . '</span>';
+        echo '<span>Followers: ' . $id_res->followers . '</span>';
+        echo '</div>';
+        echo '<div class="p-4">';
+        foreach ($entries as $entry) {
             echo '<div class="post">';
             echo '<div>';
-            echo 
-                '<a href="/entry/'. 
+            echo
+            '<a href="/entry/' .
                 $entry->e_id .
-                '">'. 
+                '">' .
                 trim(substr($entry->text, 0, 50)) .
                 '...</a>';
             echo '</div>';
@@ -138,18 +146,25 @@ if (!isset($_SESSION['user_name'])) {
             echo '<span>Dislikes: ' . $entry->dislikes . ' </span>';
             echo '</div>';
             echo '<br>';
-         }
-         echo '</div>';
-      } else {
-         echo '<div class="posts">';
-         echo '<div class="post">';
-         echo '<div>';
-         echo '<h2>¡Este usuario no tiene posts!</h2>';
-         echo '</div>';
-      }
-    
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footer.inc.php');
+        }
+        echo '</div>';
+    } else {
     ?>
+        <div class="posts">
+            <div class="post">
+                <div>
+                    <h2>¡Este usuario no tiene posts!</h2>
+                </div>
+            <?php
+        }
+            ?>
+            </div>
+        </div>
+        </div>
+        </div>
+        <?php
+        require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footer.inc.php');
+        ?>
 </body>
 
 </html>

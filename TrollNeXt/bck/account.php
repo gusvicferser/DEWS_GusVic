@@ -87,7 +87,7 @@ if (!isset($_SESSION['user_name'])) {
                         }
                     } else {
                         $user_ok = false;
-                        $errors['change']['user'] = 
+                        $errors['change']['user'] =
                             'No es un nombre de usuario válido';
                     }
                 }
@@ -131,10 +131,10 @@ if (!isset($_SESSION['user_name'])) {
                 // Si cualquiera de las variables están seteadas, haremos un update:
                 if (
 
-                    (isset($user_ok) && $user_ok) || 
+                    (isset($user_ok) && $user_ok) ||
                     (isset($email_ok) && $email_ok)
-                    
-                    ) {
+
+                ) {
 
                     $new_user = $_POST['new_user'] ?? $_SESSION['user_name'];
                     $new_email = $_POST['new_email'] ?? $_SESSION['user_email'];
@@ -181,9 +181,9 @@ if (!isset($_SESSION['user_name'])) {
                     }
 
                     // Actualizamos nombre o email o no hacemos nada, según:
-                    $_SESSION['user_name'] = 
+                    $_SESSION['user_name'] =
                         $_POST['new_user'] ?? $_SESSION['user_name'];
-                    $_SESSION['user_email'] = 
+                    $_SESSION['user_email'] =
                         $_POST['new_email'] ?? $_SESSION['user_email'];
                 }
 
@@ -212,8 +212,8 @@ if (!isset($_SESSION['user_name'])) {
                             users
                         SET 
                             password = "' .
-                                password_hash($_POST['new_pass'], PASSWORD_DEFAULT) .
-                                '" 
+                            password_hash($_POST['new_pass'], PASSWORD_DEFAULT) .
+                            '" 
                         WHERE 
                             id =' . $_SESSION['user_id'] . ';'
                     );
@@ -242,24 +242,33 @@ if (!isset($_SESSION['user_name'])) {
 
 ?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-bs-theme="dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?= CSS_LINK ?>
+    <?= BOOT_LINK ?>
     <title>Cuenta de <?= $_SESSION['user_name'] ?></title>
 </head>
 
 <body>
     <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
-
+    
     //Traza:
     // echo '<pre>';
     // var_dump($_SESSION['user_fol']);
     // echo '</pre>';
+    
+    echo '<div class="container">';
 
-    if(isset($_SESSION['errors']['delete_user'])){
+    echo '<div class="row">';
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/latscroll.inc.php');
+
+    echo '<div class="col-lg-6">';
+
+    if (isset($_SESSION['errors']['delete_user'])) {
         echo '<div>' . $_SESSION['errors']['delete_user'] . '</div>';
     }
 
@@ -284,7 +293,6 @@ if (!isset($_SESSION['user_name'])) {
         unset($_SESSION['success']);
     }
 
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/latscroll.inc.php');
     ?>
     <br><br>
     <div>
@@ -295,11 +303,11 @@ if (!isset($_SESSION['user_name'])) {
         <a href="/cancel/">¿Quieres... quieres borrar tu cuenta?</a>
     </div>
     <br><br>
-    <div class="change_form">
-        <form action="#" method="post">
-            <fieldset>
+    <div>
+        <form class="d-flex flex-column text-center p-4 justify-content-center" action="#" method="post">
                 <legend>¿Quieres cambiar tu información?</legend>
-                <label for="new_user">Cambia tu nombre de usuario:</label><br>
+                <br>
+                <label for="new_user">Cambia tu nombre de usuario:</label>
                 <input
                     type="text"
                     name="new_user"
@@ -310,8 +318,8 @@ if (!isset($_SESSION['user_name'])) {
                     echo '<span>' . $errors['change']['user'] . '</span>';
                 }
                 ?>
-                <br><br>
-                <label for="new_email">Cambia tu email:</label><br>
+                <br>
+                <label for="new_email">Cambia tu email:</label>
                 <input
                     type="text"
                     name="new_email"
@@ -322,29 +330,33 @@ if (!isset($_SESSION['user_name'])) {
                     echo '<span>' . $errors['change']['mail'] . '</span>';
                 }
                 ?>
-                <br><br>
-                <label for="new_pass">Cambia tu contraseña:</label><br>
+                <br>
+                <label for="new_pass">Cambia tu contraseña:</label>
                 <input type="password" name="new_pass" id="new_pass">
-                <br><br>
-                <label for="check_pass">Repite tu nueva contraseña:</label><br>
+                <br>
+                <label for="check_pass">Repite tu nueva contraseña:</label>
                 <input type="password" name="check_pass" id="check_pass">
                 <?php
                 if (isset($errors['change']['dual'])) {
                     echo '<span>' . $errors['change']['dual'] . '</span>';
                 }
                 ?>
-                <br><br>
-                <label for="password">Introduce tu contraseña actual:</label><br>
+                <br>
+                <label for="password">Introduce tu contraseña actual:</label>
                 <input type="password" name="password" id="password">
                 <?php
                 if (isset($errors['change']['password'])) {
                     echo '<span>' . $errors['change']['password'] . '</span>';
                 }
                 ?>
-                <br><br>
-                <input type="submit" value="Actualiza">
-            </fieldset>
+                <input class="m-4 p-4 btn btn-warning" type="submit" value="Actualiza">
         </form>
+    </div>
+    </div>
+    <?php
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footer.inc.php');
+    ?>
+    </div>
     </div>
 </body>
 

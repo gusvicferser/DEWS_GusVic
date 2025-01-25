@@ -117,6 +117,8 @@ if (!isset($_SESSION['user_name'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?= CSS_LINK ?>
+    <?= BOOT_LINK ?>
     <title>Trolleadas</title>
 </head>
 
@@ -124,37 +126,45 @@ if (!isset($_SESSION['user_name'])) {
     <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
 
+    echo '<div class="container">';
+    echo '<div class="row">';
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/latscroll.inc.php');
-
+    
     if (isset($entry)) {
-        echo '<div class="post">';
-        echo '<div>';
-        echo '<a href="user/' . $entry->u_id . '">' . $entry->user . '</a>';
+        echo '<div class="col-lg-6 post">';
+        echo '<div class="my-3">';
+        echo '<a href="/user/' . $entry->u_id . '">' . $entry->user . '</a>';
         echo '</div>';
-        echo '<div>' . $entry->text . ' </div>';
+        echo '<div class="p-4">' . $entry->text . ' </div>';
         echo '<span>Likes: ' . $entry->likes . ' </span>';
         echo '<span>Dislikes: ' . $entry->dislikes . ' </span>';
-        echo '<div class="comments">';
+        echo '<div class="my-2">';
         if (isset($comments) && !empty($comments)) {
+
             foreach ($comments as $comment) {
-                echo '<span>' . $comment->user . ' --</span> ';
-                echo '<span>' . $comment->comment . '</span> ';
-                echo
-                '<span>' .
-                    date_format(new DateTime($comment->date), 'd/m/y') .
-                    '</span> ';
-                echo '<br>';
+                echo '<div class="d-flex justify-content-start">';
+                echo $comment->user;
+                echo ':</div>';
+                echo '<div class="d-flex justify-content-center">';
+                echo '<span class="d-flex p-2 ms-5 flex-fill">';
+                echo $comment->comment;
+                echo '</span>';
+                echo '<span class="d-flex p-2 align-self-end">';
+                echo date_format(new DateTime($comment->date), 'd/m/y');
+                echo '</span>';
+                echo '</div>';
             }
         } else {
-            echo '<span>Esta publicación está sin trollear</span>';
+            echo '<label class="my-2" for="text">Esta publicación está sin trollear</label>';
         }
     ?>
-        <div class="form">
-            <form action="/comment/<?= $_GET['entry_id'] ?? '' ?>" method="post">
+        <div >
+            <form class="d-flex flex-column" action="/comment/<?= $_GET['entry_id'] ?? '' ?>" method="post">
                 <input
                     type="text"
                     name="text"
                     id="text"
+                    style="height:50px"
                     placeholder="Trolea, va, que lo estás deseando...">
                 <input type="submit" value="Troleo">
             </form>
@@ -169,6 +179,7 @@ if (!isset($_SESSION['user_name'])) {
 
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footer.inc.php');
     ?>
+    </div>
 </body>
 
 </html>

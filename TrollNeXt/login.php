@@ -158,6 +158,8 @@ if (isset($_SESSION['user_name'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?= CSS_LINK ?>
+    <?= BOOT_LINK ?>
     <title>Loguéate</title>
 </head>
 
@@ -165,54 +167,67 @@ if (isset($_SESSION['user_name'])) {
     <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
 
+    echo '<div class="container">';
+
+    echo '<div class="row d-flex justify-content-center">';
+
+    echo '<div class="col-lg-6">';
+
     if (isset($errors)) {
-        echo '<div class="errors">';
+        echo '<div class="d-flex justify-content-center bg-danger p-3 m-3 text-warning rounded-pill">';
         foreach ($errors as $key => $error) {
-            if ($key != 'user' && $key != 'errors') {
+            if ($key != 'user') {
                 echo '<div>' . $errors[$key] . '</div>';
             }
         }
         echo '</div>';
     }
+    echo '</div>';
+    echo '</div>';
+
+    echo '<div class="row d-flex justify-content-center">';
+    echo 
+        '<div class="col-lg-6 d-flex flex-column justify-content-center p-3 m-3">';
     if (!isset($_SESSION['error_access'])) {
     ?>
-        <div class="user_form">
-            <form action="#" method="post">
-                <fieldset>
-                    <legend>¡Entra al nido del troll!</legend>
-                    <label for="user_name">Nombre de usuario o Email:</label><br>
-                    <input
-                        type="text"
-                        name="user_name"
-                        id="user_name"
-                        value="<?= $_POST['user_name'] ?? '' ?>">
+        <div class="container-fluid">
+            <form class="form-group mx-auto rounded-4 login" action="#" method="post">
+                <div class="m-2 p-5">
+                    <h2 class="text-center text-warning">¡Entra al nido!</h2>
+                    <label for="user_name" class="form-label text-warning fw-semibold mt-5">User o Email</label>
+                    <input type="text" class="form-control" id="user_name" name="user_name" placeholder="'troll021' o 'name@example.com'" value="<?= $_POST['user_name'] ?? '' ?>">
                     <?php
                     if (isset($errors['user']['user'])) {
-                        echo '<span>' . $errors['user']['user'] . '</span>';
+                        echo '<span class="d-flex justify-content-center text-warning fw-bold"><span>' . $errors['user']['user'] . '</span></span>';
                     }
                     ?>
-                    <br><br>
-                    <label for="password">Contraseña</label><br>
-                    <input type="password" name="password" id="password">
+                    <label for="password" class="form-label text-warning fw-semibold mt-3">Password</label>
+                    <input type="password" class="form-control" id="password" name="password">
                     <?php
                     if (isset($errors['user']['pass'])) {
-                        echo '<span>' . $errors['user']['pass'] . '</span>';
+                        echo '<span class="d-flex justify-content-center text-warning fw-bold"><span>' . $errors['user']['pass'] . '</span></span>';
                     }
                     ?>
-                    <br><br>
-                    <input type="submit" value="Entra">
-                </fieldset>
+                    <input class="form-control rounded-3 p-2 mt-5 btn btn-outline-warning border-0" type="submit" value="Entra">
+                </div>
             </form>
+        </div>
+        </div>
         </div>
     <?php
     } else {
-
-        echo '<div class="errors">';
-        echo '<div>' . $_SESSION['error_access'] . '</div>';
-        echo '</div>';
+    ?>
+        <div class="errors">
+            <div><?= $_SESSION['error_access'] ?></div>
+        </div>
+    <?php
     }
+    echo '</div>';
+    echo '</div>';
+    echo '</div>';
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footer.inc.php');
     ?>
+
 </body>
 
 </html>

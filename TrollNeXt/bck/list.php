@@ -65,11 +65,13 @@ if (!isset($_SESSION['user_name'])) {
 ?>
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-bs-theme="dark">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?= CSS_LINK ?>
+    <?= BOOT_LINK ?>
     <title>Tus burradas</title>
 </head>
 
@@ -77,60 +79,72 @@ if (!isset($_SESSION['user_name'])) {
     <?php
     require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
 
+    echo '<div class="container">';
+
+    echo '<div class="row">';
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/latscroll.inc.php');
+
+    echo '<div class="col-lg-6">';
     if (isset($_SESSION['errors'])) {
-        echo '<div class="errors">';
+        echo '<div class="d-flex justify-content-center bg-danger p-3 m-3 rounded-pill">';
         foreach ($_SESSION['errors'] as $key => $error) {
-           echo '<div>' . $_SESSION['errors'][$key] . '</div>';
+            echo '<div>' . $_SESSION['errors'][$key] . '</div>';
         }
         echo '</div>';
-  
+
         // Luego para quitar los errores, una vez mostrados, los eliminamos:
         unset($_SESSION['errors']);
-     }
-  
-     if (isset($_SESSION['success'])) {
-        echo '<div class="success">';
+    }
+
+    if (isset($_SESSION['success'])) {
+        echo '<div class="d-flex justify-content-center bg-success p-3 m-3 rounded-pill">';
         echo '<div>' . $_SESSION['success'] . '</div>';
         echo '</div>';
-  
+
         // Quitamos también los avisos de éxito:
         unset($_SESSION['success']);
-     }
+    }
 
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/latscroll.inc.php');
-    
-    if(isset($entries)) {
-        echo '<div class="user">Cuenta actual:'. $_SESSION['user_name'] . '</div>';
-        echo '<div class="posts">';
-         foreach ($entries as $entry) {
-            echo '<div class="post">';
+    if (isset($entries)) {
+        echo '<div class="d-flex flex-column justify-content-center">';
+        echo '<span class="p-4">Cuenta actual: ' . $_SESSION['user_name'] .'</span>';
+        echo '</div>';
+        echo '<div class="p-4">';
+        foreach ($entries as $entry) {
+            echo '<div class="p-4">';
             echo '<div>';
-            echo 
-                '<a href="/entry/'. 
+            echo
+            '<a href="/entry/' .
                 $entry->e_id .
-                '">'. 
+                '">' .
                 trim(substr($entry->text, 0, 50)) .
                 '...</a>';
             echo '</div>';
             echo '<span>Likes: ' . $entry->likes . ' </span>';
             echo '<span>Dislikes: ' . $entry->dislikes . ' </span>';
             echo '</div>';
-            echo '<div>';
-            echo '<a href="/delete/'. $entry->e_id . '">Eliminar</a>';
+            echo '<div class="d-flex justify-content-center">';
+            echo '<a class="btn btn-danger" href="/delete/' . $entry->e_id . '">Eliminar</a>';
             echo '</div>';
             echo '<br>';
-         }
-         echo '</div>';
-      } else {
-         echo '<div class="posts">';
-         echo '<div class="post">';
-         echo '<div>';
-         echo '<h2>¡Este usuario no tiene posts!</h2>';
-         echo '</div>';
-      }
-    
-    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footer.inc.php');
+        }
+        echo '</div>';
+    } else {
     ?>
+        <div class="posts">
+            <div class="post">
+                <div>
+                    <h2>¡Este usuario no tiene posts!</h2>
+                </div>
+            <?php
+        }
+
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+
+        require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footer.inc.php');
+            ?>
 </body>
 
 </html>

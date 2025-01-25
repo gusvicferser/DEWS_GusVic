@@ -42,7 +42,7 @@ if (!isset($_SESSION['user_name'])) {
    try {
 
       foreach ($_POST as $key => $element) {
-         $_POST[$key] = trim($_POST[$key]??'');
+         $_POST[$key] = trim($_POST[$key] ?? '');
       }
 
       if (isset($_POST['new_user'])) {
@@ -172,7 +172,7 @@ if (!isset($_SESSION['user_name'])) {
       }
    } catch (Exception $exc) {
       $errors['login'] = 'No fue posible hacer el login';
-    //   $errors['login'] = $exc;
+      //   $errors['login'] = $exc;
    }
    // Ahora vamos a ver qué puede ver el usuario si está conectado:
 } else {
@@ -217,7 +217,7 @@ if (!isset($_SESSION['user_name'])) {
             WHERE 
                l.entry_id = e5.id AND 
                e5.id=e.id AND 
-               l.user_id = '. $_SESSION['user_id'] .') AS liked
+               l.user_id = ' . $_SESSION['user_id'] . ') AS liked
       FROM 
          users u, entries e 
       WHERE
@@ -262,11 +262,14 @@ if (!isset($_SESSION['user_name'])) {
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <?= CSS_LINK ?>
+   <?= BOOT_LINK ?>
    <title>TrollNeXt</title>
 </head>
 
 <body>
    <?php
+
    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/header.inc.php');
 
    //Traza:
@@ -274,139 +277,153 @@ if (!isset($_SESSION['user_name'])) {
    // var_dump($_SESSION['user_fol']);
    // echo '</pre>';
 
-
-   if (isset($errors)) {
-      echo '<div class="errors">';
-      foreach ($errors as $key => $error) {
-         if ($key != 'user' && $key != 'errors') {
-            echo '<div>' . $errors[$key] . '</div>';
-         }
-      }
-      echo '</div>';
-   }
-
-   if (isset($_SESSION['errors'])) {
-      echo '<div class="errors">';
-      foreach ($_SESSION['errors'] as $key => $error) {
-         echo '<div>' . $_SESSION['errors'][$key] . '</div>';
-      }
-      echo '</div>';
-
-      // Luego para quitar los errores, una vez mostrados, los eliminamos:
-      unset($_SESSION['errors']);
-   }
-
-   if (isset($_SESSION['success'])) {
-      echo '<div class="success">';
-      echo '<div>' . $_SESSION['success'] . '</div>';
-      echo '</div>';
-
-      // Quitamos también los avisos de éxito:
-      unset($_SESSION['success']);
-   }
+   echo '<div class="container">';
 
    if (!isset($_SESSION['user_name'])) {
    ?>
-      <div>
-         <h1>Bienvenido a TrollNeXt, donde el siguiente en ser trolleado podrías ser tú</h1>
+      <div class="d-flex flex-column text-secondary text-center pt-3 mt-3">
+         <h1>Bienvenido a TrollNeXt</h1> 
+         <h2>donde el siguiente en ser trolleado podrías ser tú</h2>
       </div>
-      <div class="new_user_form">
-         <form action="#" method="post">
-            <fieldset>
-               <legend>¡Regístrate y entra al nido del troll!</legend>
-               <label for="new_user">Nombre de usuario</label><br>
-               <input
-                  type="text"
-                  name="new_user"
-                  id="new_user"
-                  value="<?= $_POST['new_user'] ?? '' ?>">
-               <?php
-               if (isset($errors['new_user']['user'])) {
-                  echo '<span>' . $errors['new_user']['user'] . '</span>';
-               }
-               ?>
-               <br><br>
-               <label for="new_email">Email</label><br>
-               <input
-                  type="text"
-                  name="new_email"
-                  id="new_email"
-                  value="<?= $_POST['new_email'] ?? '' ?>">
-               <?php
-               if (isset($errors['new_user']['mail'])) {
-                  echo '<span>' . $errors['new_user']['mail'] . '</span>';
-               }
-               ?>
-               <br><br>
-               <label for="new_pass">Contraseña</label><br>
-               <input type="password" name="new_pass" id="new_pass">
-               <?php
-               if (isset($errors['new_user']['pass'])) {
-                  echo '<span>' . $errors['new_user']['pass'] . '</span>';
-               }
-               ?>
-               <br><br>
-               <label for="check_pass">Repita su contraseña</label><br>
-               <input type="password" name="check_pass" id="check_pass">
-               <?php
-               if (isset($errors['new_user']['dual'])) {
-                  echo '<span>' . $errors['new_user']['dual'] . '</span>';
-               }
-               ?>
-               <br><br>
-               <input type="submit" value="Entra">
-            </fieldset>
-         </form>
+      <div class="row d-flex justify-content-center">
+         <div class="col-lg-6 d-flex flex-column justify-content-center p-3 m-3">
+
+            <div class="container-fluid">
+               <form class="form-group mx-auto rounded-4 login" action="#" method="post">
+                  <div class="m-2 p-5">
+                     <h2 class="text-center text-warning">¡¡Regístrate y entra al nido del troll!!</h2>
+                     <label for="new_user" class="form-label text-warning fw-semibold mt-5">Nombre de usuario</label><br>
+                     <input
+                        type="text"
+                        name="new_user"
+                        id="new_user"
+                        class="form-control"
+                        value="<?= $_POST['new_user'] ?? '' ?>">
+                     <?php
+                     if (isset($errors['new_user']['user'])) {
+                        echo '<span class="d-flex justify-content-center text-warning fw-bold"><span>' . $errors['new_user']['user'] . '</span></span>';
+                     }
+                     ?>
+                     <label class="form-label text-warning fw-semibold mt-3" for="new_email">Email</label><br>
+                     <input
+                        type="text"
+                        name="new_email"
+                        id="new_email"
+                        class="form-control"
+                        value="<?= $_POST['new_email'] ?? '' ?>">
+                     <?php
+                     if (isset($errors['new_user']['mail'])) {
+                        echo '<span class="d-flex justify-content-center text-warning fw-bold"><span>' . $errors['new_user']['mail'] . '</span></span>';
+                     }
+                     ?>
+                     <label class="form-label text-warning fw-semibold mt-3" for="new_pass">Contraseña</label><br>
+                     <input type="password" class="form-control" name="new_pass" id="new_pass">
+                     <?php
+                     if (isset($errors['new_user']['pass'])) {
+                        echo '<span class="d-flex justify-content-center text-warning fw-bold"><span>' . $errors['new_user']['pass'] . '</span></span>';
+                     }
+                     ?>
+                     <label class="form-label text-warning fw-semibold mt-3" for="check_pass">Repita su contraseña</label><br>
+                     <input type="password" class="form-control" name="check_pass" id="check_pass">
+                     <?php
+                     if (isset($errors['new_user']['dual'])) {
+                        echo '<span class="d-flex justify-content-center text-warning fw-bold"><span>' . $errors['new_user']['dual'] . '</span></span>';
+                     }
+                     ?>
+
+                     <input class="form-control rounded-3 p-2 mt-5 btn btn-outline-warning border-0" type="submit" value="Regístrate">
+                  </div>
+               </form>
+            </div>
+         </div>
       </div>
-   <?php
+      
+      <?php
    } else {
+      echo '<div class="row">';
       require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/latscroll.inc.php');
 
+      echo '<div class="col-lg-6 posts">';
+      if (isset($errors)) {
+         echo '<div class="d-flex justify-content-center bg-danger p-3 m-3 rounded-pill">';
+         foreach ($errors as $key => $error) {
+            if ($key != 'new_user') {
+               echo '<div>' . $errors[$key] . '</div>';
+            }
+         }
+         echo '</div>';
+      }
+
+      if (isset($_SESSION['errors'])) {
+         echo '<div class="d-flex justify-content-center bg-danger p-3 m-3 rounded-pill">';
+         foreach ($_SESSION['errors'] as $key => $error) {
+            echo '<div>' . $_SESSION['errors'][$key] . '</div>';
+         }
+         echo '</div>';
+
+         // Luego para quitar los errores, una vez mostrados, los eliminamos:
+         unset($_SESSION['errors']);
+      }
+
+      if (isset($_SESSION['success'])) {
+         echo '<div class="d-flex justify-content-center bg-success p-3 m-3 rounded-pill">';
+         echo '<div>' . $_SESSION['success'] . '</div>';
+         echo '</div>';
+
+         // Quitamos también los avisos de éxito:
+         unset($_SESSION['success']);
+      }
+
       if (isset($posts)) {
-         echo '<div class="posts">';
+
+         echo '<div class="d-flex flex-column justify-content-center">';
          foreach ($posts as $post) {
-            echo '<div class="post">';
+            echo '<div class="d-flex flex-column p-4">';
             
-            echo '<div>';
+            echo '<div class="p-3">';
+            echo '<a href="entry/' . $post->e_id . '">' . $post->entry . '</a>';
+            echo '</div>';
+
+            echo '<div class="text-center">';
             echo '<a href="user/' . $post->u_id . '">' . $post->user . '</a>';
             echo '</div>';
             
-            echo '<div>';
-            echo '<a href="entry/' . $post->e_id . '">' . $post->entry . '</a>';
-            echo '</div>';
             
+            echo '<div class="d-flex justify-content-evenly align-items-center p-3">';
             echo '<span>Likes: ' . $post->likes . ' </span>';
             
             echo '<span>Dislikes: ' . $post->dislikes . ' </span>';
-
+            
             echo '<span>';
-            echo '<a href="/like/'. $post->e_id . '">';
-            if($post->liked > 0) {
+            echo '<a href="/like/' . $post->e_id . '">';
+            if ($post->liked > 0) {
                echo '<img src="img/dislike.png" alt="dislike" width="50px"></a>';
             } else {
                echo '<img src="img/like.png" alt="like" width="50px"></a>';
             }
             echo ' </span>';
-
-            echo '<span>Comentarios: ' . $post->comments . ' </span>';
             echo '</div>';
-            
-            echo '<br>';
+
+            echo '<span class="d-flex justify-content-center px-5">Comentarios: ' . $post->comments . ' </span>';
+            echo '</div>';
          }
          echo '</div>';
       } else {
-         echo '<div class="posts">';
-         
-         echo '<div class="post">';
-         echo '<h2>¡No hay post en tu feed porque no sigues a nadie!</h2>';
-         echo '</div>';
+      ?>
+         <div class="col-lg-6 posts">
+            <div class="post">
+               <h2>¡No hay post en tu feed porque no sigues a nadie!</h2>
+            </div>
 
-         echo '</div>';
+         </div>
+   <?php
       }
+      echo '</div>';
    }
-   
+
    require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/footer.inc.php');
    ?>
+   </div>
 </body>
 
 </html>

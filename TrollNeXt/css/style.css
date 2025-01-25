@@ -1,1 +1,20 @@
-/* Página para el estilo (de momento 1 de TrollNeXt): */
+/* Estilos extra: */
+
+*{
+    text-decoration: none !important;
+}
+
+nav {
+    background-image: linear-gradient(#535553, #7D7F7D 60%, #B7BBB7);
+    min-height: 100px; 
+    padding-top: 25px;
+}
+
+.login {
+    width:80%;
+    background-color: #535553;
+}
+
+
+
+

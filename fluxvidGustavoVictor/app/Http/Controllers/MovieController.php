@@ -17,6 +17,17 @@ class MovieController extends Controller
         return view('movies.index', compact('movies'));
     }
 
+     /**
+     * Display a movie by year. Not standard.
+     */
+    public function getMoviesByYear(string $year): View {
+
+        $movies = Movie::where('year', $year)
+            ->where('visibility', '=', 1)
+            ->paginate(6);
+        return view('movies.byyear', compact('movies', 'year'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */

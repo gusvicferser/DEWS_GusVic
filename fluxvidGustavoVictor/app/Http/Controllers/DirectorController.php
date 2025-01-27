@@ -13,7 +13,7 @@ class DirectorController extends Controller
      */
     public function index(): View
     {
-        $directors = Director::where('visibility', 1)->paginate(6);
+        $directors = Director::paginate(5);
         return view('directors.index', compact('directors'));
     }
 
@@ -36,9 +36,11 @@ class DirectorController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Director $director)
+    public function show(Director $director): View
     {
-        //
+        // Ya tenemos el recurso de director, si no lo encuentra,
+        // da 404 por defecto:
+        return view('directors.show', compact('director'));
     }
 
     /**

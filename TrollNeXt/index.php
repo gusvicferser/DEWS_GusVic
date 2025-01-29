@@ -28,7 +28,7 @@
  *       (HECHO)
  * 
  * @author Gustavo Víctor
- * @version 1.6
+ * @version 1.7
  */
 
 // Iniciamos la sesion:
@@ -107,7 +107,8 @@ if (!isset($_SESSION['user_name'])) {
             $query->execute();
 
             // Si lo que nos devuelve da 1 fila o más, significa que existe:
-            if ($query->rowCount() > 1) {
+            // Mod. 1.7 => faltaba el "="
+            if ($query->rowCount() >= 1) {
 
                $errors['new_user']['name_email'] =
                   'Nombre de usuario o email ya registrado';
@@ -282,9 +283,24 @@ if (!isset($_SESSION['user_name'])) {
    if (!isset($_SESSION['user_name'])) {
    ?>
       <div class="d-flex flex-column text-secondary text-center pt-3 mt-3">
-         <h1>Bienvenido a TrollNeXt</h1> 
+         <h1>Bienvenido a TrollNeXt</h1>
          <h2>donde el siguiente en ser trolleado podrías ser tú</h2>
       </div>
+
+      <?php
+      // Modificación de la 1.7
+      echo '<div class="col-lg-3><div>;';
+      echo '<div class="col-lg-6 posts">';
+      if (isset($errors['new_user']['name_email'])) {
+         echo '<div class="d-flex justify-content-center bg-danger p-3 m-3 rounded-pill">';
+
+         echo '<div>' . $errors['new_user']['name_email'] . '</div>';
+
+         echo '</div>';
+      }
+      // fin de la modificación.
+
+      ?>
       <div class="row d-flex justify-content-center">
          <div class="col-lg-6 d-flex flex-column justify-content-center p-3 m-3">
 
@@ -337,7 +353,7 @@ if (!isset($_SESSION['user_name'])) {
             </div>
          </div>
       </div>
-      
+
       <?php
    } else {
       echo '<div class="row">';
@@ -379,7 +395,7 @@ if (!isset($_SESSION['user_name'])) {
          echo '<div class="d-flex flex-column justify-content-center">';
          foreach ($posts as $post) {
             echo '<div class="d-flex flex-column p-4">';
-            
+
             echo '<div class="p-3">';
             echo '<a href="entry/' . $post->e_id . '">' . $post->entry . '</a>';
             echo '</div>';
@@ -387,13 +403,13 @@ if (!isset($_SESSION['user_name'])) {
             echo '<div class="text-center">';
             echo '<a href="user/' . $post->u_id . '">' . $post->user . '</a>';
             echo '</div>';
-            
-            
+
+
             echo '<div class="d-flex justify-content-evenly align-items-center p-3">';
             echo '<span>Likes: ' . $post->likes . ' </span>';
-            
+
             echo '<span>Dislikes: ' . $post->dislikes . ' </span>';
-            
+
             echo '<span>';
             echo '<a href="/like/' . $post->e_id . '">';
             if ($post->liked > 0) {

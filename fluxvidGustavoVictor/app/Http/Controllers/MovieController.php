@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Movie;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Str;
+use App\Models\Director;
 
 class MovieController extends Controller
 {
@@ -33,7 +35,8 @@ class MovieController extends Controller
      */
     public function create()
     {
-        //
+        $directors = Director::All();
+        return view('movies.create', compact('directors'));
     }
 
     /**
@@ -41,7 +44,18 @@ class MovieController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $movie = new Movie();
+        $movie->title = $request->get('title');
+        $movie->slug = Str::slug($movie->title);
+        $movie->year = $request->get('year');
+        $movie->plot = $request->get('plot');
+        $movie->rating = $request->get('rating');
+        $movie->visibility = $request->has('visibility') ? 1 : 0;
+        $movie->director()
+        ->associate(Director::findOrFail($request->get('director')));
+        $movie->save();
+
+        return view('movies.stored', compact('movie'));
     }
 
     /**
@@ -61,7 +75,8 @@ class MovieController extends Controller
      */
     public function edit(Movie $movie)
     {
-        //
+        $directors = Director::All();
+        return view('movies.edit', compact('movie', 'directors'));
     }
 
     /**
@@ -69,7 +84,17 @@ class MovieController extends Controller
      */
     public function update(Request $request, Movie $movie)
     {
-        //
+        $movie->title = $request->get('title');
+        $movie->slug = Str::slug($movie->title);
+        $movie->year = $request->get('year');
+        $movie->plot = $request->get('plot');
+        $movie->rating = $request->get('rating');
+        $movie->visibility = $request->has('visibility') ? 1 : 0;
+        $movie->director()
+        ->associate(Director::findOrFail($request->get('director')));
+        $movie->save();
+
+        return view('movies.edited', compact('movie'));
     }
 
     /**

@@ -1,3 +1,3 @@
 <div>
-    <!-- Walk as if you are kissing the Earth with your feet. - Thich Nhat Hanh -->
+    <!-- Waste no more time arguing what a good man should be, be one. - Marcus Aurelius -->
 </div>

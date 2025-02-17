@@ -12,16 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('players', function (Blueprint $table) {
-            $table->id();
+            $table->id()->autoIncrement();
+            $table->string('name', 30)->unique();
             $table->string('twitter');
             $table->string('instagram');
             $table->string('twitch');
             $table->string('avatar')->nullable();
+            $table->boolean('visible')->default(false);
             $table->string('position');
             $table->integer('age');
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
-            $table->boolean('visible');
             $table->timestamps();
         });
     }

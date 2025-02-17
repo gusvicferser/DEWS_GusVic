@@ -12,24 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('events', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
+            $table->id()->autoIncrement();
+            $table->string('name', 30)->unique();
             $table->string('description');
             $table->string('location');
-            // Hay que cambiar los tipos de eventos:
-            $table->enum(
-                            'type',
-                            [
-                                'official',
-                                'charity',
-                                'exhibition',
-                                'final'
-                            ]
-                        );
+            $table->date('date');
+            $table->time('hour');
+            $table->enum('type', ['official', 'exhibition', 'charity'])->default('official');
             $table->string('tags');
-            $table->boolean('visible');
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
+            $table->boolean('visible')->default(false);
             $table->timestamps();
         });
     }

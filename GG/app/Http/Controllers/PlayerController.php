@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use App\Models\Player;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class PlayerController extends Controller
@@ -12,7 +14,8 @@ class PlayerController extends Controller
      */
     public function index()
     {
-        //
+        $players = Player::all();
+        return view('players.index', compact('players'));
     }
 
     /**
@@ -20,7 +23,8 @@ class PlayerController extends Controller
      */
     public function create()
     {
-        //
+        $player = Player::All();
+        return view('players.add', compact('player'));
     }
 
     /**
@@ -28,7 +32,24 @@ class PlayerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $player = new Player();
+        $player->name = $request->get('name');
+        $player->slug = Str::slug($player->name);
+        $player->age = $request->get('age');
+        $player->position = $request->get('position');
+        $player->twitter = $request->get('twitter');
+        $player->instagram = $request->get('instagram');
+        $player->twitch = $request->get('twitch');
+        $player->position = $request->get('position');
+        $player->avatar = $request->has('avatar') ? $request->get('avatar') : null;
+        $player->visible = $request->has('visible') ? 1 : 0;
+
+        $player->events()
+        ->associate(Event::findOrFail($request->get('event')));
+
+        $player->save();
+
+        return view('players.show', compact('player'));
     }
 
     /**
@@ -36,7 +57,11 @@ class PlayerController extends Controller
      */
     public function show(Player $player)
     {
-        //
+        Player::findOrFail($player->id);
+        if($player->visible == 0) {
+            return redirect()->route('players.index');
+        }
+        return view('players.show', compact('player'));
     }
 
     /**
@@ -44,7 +69,8 @@ class PlayerController extends Controller
      */
     public function edit(Player $player)
     {
-        //
+        $players = Player::All();
+        return view('players.edit', compact('player', 'players'));
     }
 
     /**
@@ -52,7 +78,23 @@ class PlayerController extends Controller
      */
     public function update(Request $request, Player $player)
     {
-        //
+        $player->name = $request->get('name');
+        $player->slug = Str::slug($player->name);
+        $player->age = $request->get('age');
+        $player->position = $request->get('position');
+        $player->twitter = $request->get('twitter');
+        $player->instagram = $request->get('instagram');
+        $player->twitch = $request->get('twitch');
+        $player->position = $request->get('position');
+        $player->avatar = $request->has('avatar') ? $request->get('avatar') : null;
+        $player->visible = $request->has('visible') ? 1 : 0;
+
+        $player->events()
+        ->associate(Event::findOrFail($request->get('event')));
+
+        $player->save();
+
+        return view('players.edit', compact('player'));
     }
 
     /**
@@ -60,6 +102,7 @@ class PlayerController extends Controller
      */
     public function destroy(Player $player)
     {
-        //
+        Player::findOrFail($player->id)->delete();
+        return redirect()->route('players.index');
     }
 }

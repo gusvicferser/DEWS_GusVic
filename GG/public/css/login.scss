@@ -1,0 +1,123 @@
+/* Ajustes para el login form de login */
+input {
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.flex-col {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+}
+
+.login {
+    min-height: 70vh;
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.login-form {
+    background: rgba(29, 41, 57, 0.5);
+    border-radius: 15px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    width: 100%;
+    height: auto;
+    margin-bottom: 3rem;
+    padding: 5rem 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    a {
+        text-decoration: none;
+        color: yellow;
+    }
+
+    a:hover {
+        color: purple;
+    }
+
+    &__input {
+        width: 85%;
+        padding: 10px 14px 10px 14px;
+        border: none;
+        margin-bottom: 20px;
+        border: 1px solid #d0d5dd;
+        border-radius: 10px;
+    }
+
+    &__input-error {
+        border: 1px solid #fd6f8e;
+        margin-bottom: 0;
+    }
+
+    &__span-error {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 10px;
+        visibility: visible;
+        font-size: 1rem;
+        color: #fd6f8e;
+        padding-left: 2.8rem;
+        text-align: left;
+        font-weight: normal;
+        margin-bottom: 0rem;
+    }
+
+    &-links {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.login-text {
+    margin: 0;
+    margin-top: 10px;
+    margin-bottom: 40px;
+    font-size: 2rem;
+    background: linear-gradient(44.85deg, #7a5af8 0%, #f63d68 94.38%);
+    background-clip: text;
+}
+
+@media (max-width: 1440px) {
+    .login-form {
+        margin-top: 4rem;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .mt-lg-6rem {
+        margin-top: 6rem;
+    }
+    .container-fluid {
+        max-width: 1216px;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .container-fluid {
+        max-width: 704px;
+    }
+}
+
+@media screen and (min-width: 640px) {
+    .container-fluid {
+        max-width: 576px;
+    }
+}

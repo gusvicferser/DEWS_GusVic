@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 use App\Models\User;
 // use App\Rules\ValidEmail;
-// use Illuminate\Http\Request;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 // use Illuminate\Support\Facades\Hash;
 // use Illuminate\View\View;
 
@@ -17,6 +18,22 @@ class UserController extends Controller
     {
         User::findOrFail($user->id());
         return view('users.profile');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $user = new User();
+        $user->name = $request->get('username');
+        $user->slug = Str::slug($user->username);
+        $user->password = $request->get('password');
+        $user->birthdate = $request->get('birthdate');
+
+        $user->save();
+
+        return view('users.profile', compact('user'));
     }
 
     // /**

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Player;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -12,7 +14,8 @@ class EventController extends Controller
      */
     public function index()
     {
-        //
+        $events = Event::all();
+        return view('events.index', compact('events'));
     }
 
     /**
@@ -20,7 +23,8 @@ class EventController extends Controller
      */
     public function create()
     {
-        //
+        $events = Event::All();
+        return view('events.add', compact('events'));
     }
 
     /**
@@ -28,7 +32,24 @@ class EventController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $event = new Event();
+        $event->name = $request->get('name');
+        $event->slug = Str::slug($event->name);
+        $event->description = $request->get('description');
+        $event->location = $request->get('location');
+        $event->date = $request->get('date');
+        $event->time = $request->get('time');
+        $event->type = $request->get('type');
+        $event->tags = $request->get('tags');
+        $event->visible = $request->has('visible') ? 1 : 0;
+
+        $event->events()
+        ->associate(Player::findOrFail($request->get('event')));
+
+        $event->save();
+
+        return view('events.show', compact('event'));
     }
 
     /**
@@ -36,7 +57,11 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        //
+        Event::findOrFail($event->id);
+        if($event->visible == 0) {
+            return redirect()->route('events.index');
+        }
+        return view('events.show', compact('event'));
     }
 
     /**
@@ -44,7 +69,8 @@ class EventController extends Controller
      */
     public function edit(Event $event)
     {
-        //
+        $events = Event::All();
+        return view('events.edit', compact('event', 'events'));
     }
 
     /**
@@ -52,7 +78,22 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event)
     {
-        //
+        $event->name = $request->get('name');
+        $event->slug = Str::slug($event->name);
+        $event->description = $request->get('description');
+        $event->location = $request->get('location');
+        $event->date = $request->get('date');
+        $event->time = $request->get('time');
+        $event->type = $request->get('type');
+        $event->tags = $request->get('tags');
+        $event->visible = $request->has('visible') ? 1 : 0;
+
+        $event->events()
+        ->associate(Player::findOrFail($request->get('event')));
+
+        $event->save();
+
+        return view('events.show', compact('event'));
     }
 
     /**
@@ -60,6 +101,7 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
-        //
+        Event::findOrFail($event->id)->delete();
+        return redirect()->route('events.index');
     }
 }

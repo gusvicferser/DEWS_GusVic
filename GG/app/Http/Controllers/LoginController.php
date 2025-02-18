@@ -24,6 +24,7 @@ class LoginController extends Controller
         $user->username = $request->get('username');
         $user->name = $request->get('name');
         $user->email = $request->get('email');
+        $user->birthday = $request->get('birthday');
         $user->password = Hash::make($request->get('password'));
         $user->save();
 
@@ -46,8 +47,9 @@ class LoginController extends Controller
     public function login(Request $request): View
     {
         $credentials = $request->only('username', 'password');
+        $rememberLogin = ($request->get('remember')) ? true : false;
 
-        if (Auth::guard('web')->attempt($credentials)) {
+        if (Auth::guard('web')->attempt($credentials, $rememberLogin)) {
             $request->session()->regenerate();
             return redirect()->route('users.profile');
         } else {

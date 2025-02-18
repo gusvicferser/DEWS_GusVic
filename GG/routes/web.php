@@ -10,7 +10,12 @@ use Illuminate\Support\Facades\Route;
 Route::resource('user', UserController::class)
     ->only(['show', 'destroy'])
     ->middleware('auth');
-Route::resource('events', EventController::class);
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::resource('events', EventController::class);
+    Route::resource('players', PlayerController::class);
+});
+Route::resource('events', EventController::class)
+    ->only('index', 'show');
 Route::resource('players', PlayerController::class);
 Route::resource('messages', MessageController::class);
 
@@ -35,6 +40,10 @@ Route::get('terms', function() {
 Route::get('privacy', function() {
     return view('politics.privacy');
 })->name('privacy');
+
+Route::get('cookies', function() {
+    return view('politics.cookies');
+})->name('cookies');
 
 Route::get('contact', function() {
     return view('politics.contact');

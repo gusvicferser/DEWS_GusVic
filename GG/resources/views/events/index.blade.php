@@ -66,5 +66,8 @@
             </div>
         @endforelse
     </div>
+@endsection
 
-    @endsection
+@section('script')
+    <script src="{{ asset('js/events.js')}}"></script>
+@endsection

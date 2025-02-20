@@ -15,17 +15,16 @@
             </ul>
             @auth
                 <div class="dropdown text-end">
-                    <a href="{{ route('users.profile') }}" class="d-block link-dark text-decoration-none dropdown-toggle"
+                    <a href="{{ route('user.index') }}" class="d-block link-dark text-decoration-none dropdown-toggle"
                         id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32"
-                            class="rounded-circle">
+                        <img src="img/GG_Icon.png" alt="mdo" width="32" height="32" class="rounded-circle">
                     </a>
                     <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                        <li><a class="dropdown-item" href="{{ route() }}">Perfil</a></li>
+                        <li><a class="dropdown-item" href="{{ route('user.index') }}">Perfil</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item" href="#">Cerrar sesión</a></li>
+                        <li><a class="dropdown-item" href=" {{ route('logout') }}">Cerrar sesión</a></li>
                     </ul>
                 </div>
             @else

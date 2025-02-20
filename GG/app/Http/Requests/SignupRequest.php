@@ -4,8 +4,6 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
-// Regla para los emails creada con chatGPT
-use App\Rules\ValidEmail;
 
 class SignupRequest extends FormRequest
 {
@@ -27,7 +25,8 @@ class SignupRequest extends FormRequest
         return [
             'username' => ['required', 'string', 'min:5', 'max:30', 'unique:users'],
             'name' => ['required', 'string', 'min:5', 'max:255'],
-            'email' => ['required', 'string', new ValidEmail() , 'unique:users'],
+            'email' => ['required', 'string', 'email' , 'unique:users'],
+            'birthday' => ['required', 'date', 'before:today'],
             'password' => ['required', 'confirmed', Password::defaults()]
         ];
     }

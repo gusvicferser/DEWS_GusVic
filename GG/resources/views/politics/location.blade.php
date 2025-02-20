@@ -5,7 +5,7 @@
 @section('content')
     <div class="container-fluid">
         <div class="container-fluid d-flex m-auto align-items-center justify-content-center">
-            <img src="img/GG_Icon.png" alt="GG_Logo">
+            <img width="200" height="200" src="img/GG_Icon.png" alt="GG_Logo">
         </div>
         <div class="container-fluid d-flex m-auto align-items-center justify-content-center p-3">
             <h1>Donde nos encontramos</h1>

@@ -7,31 +7,23 @@ use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::resource('user', UserController::class)
-    ->only(['show', 'destroy'])
+Route::resource('/user', UserController::class)
+    ->only(['index', 'destroy'])
     ->middleware('auth');
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::resource('events', EventController::class);
-    Route::resource('players', PlayerController::class);
+    Route::resource('/events', EventController::class);
+    Route::resource('/players', PlayerController::class);
 });
-Route::resource('events', EventController::class)
+Route::resource('/events', EventController::class)
     ->only('index', 'show');
-Route::resource('players', PlayerController::class);
-Route::resource('messages', MessageController::class);
+Route::resource('/players', PlayerController::class);
+Route::resource('/messages', MessageController::class);
 
-Route::get('signup', [LoginController::class, 'signupForm'])->name('signupForm');
-Route::post('signup', [LoginController::class, 'signup'])->name('signup');
-Route::get('login', [LoginController::class, 'loginForm'])->name('loginForm');
-Route::post('login', [LoginController::class, 'login'])->name('login');
-Route::get('logout', [LoginController::class, 'logout'])->name('logout');
-
-// Route::get('signup', function() {
-//     return view('auth.signup');
-// })->name('signup');
-
-// Route::get('login', function() {
-//     return view('auth.login');
-// })->name('login');
+Route::get('/signup', [LoginController::class, 'signupForm'])->name('signupForm');
+Route::post('/signup', [LoginController::class, 'signup'])->name('signup');
+Route::get('/login', [LoginController::class, 'loginForm'])->name('loginForm');
+Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('terms', function() {
     return view('politics.terms');

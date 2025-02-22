@@ -10,13 +10,14 @@ use Illuminate\Support\Facades\Route;
 Route::resource('/user', UserController::class)
     ->only(['index', 'destroy'])
     ->middleware('auth');
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::resource('/events', EventController::class);
-    Route::resource('/players', PlayerController::class);
+
+Route::get('/events', function() {
+    return view('events.index');
 });
-Route::resource('/events', EventController::class)
-    ->only('index', 'show');
-Route::resource('/players', PlayerController::class);
+
+Route::resource('/players', PlayerController::class)->only('index', 'show');
+Route::resource('/players', PlayerController::class)->middleware(['auth', 'admin']);
+
 Route::resource('/messages', MessageController::class);
 
 Route::get('/signup', [LoginController::class, 'signupForm'])->name('signupForm');

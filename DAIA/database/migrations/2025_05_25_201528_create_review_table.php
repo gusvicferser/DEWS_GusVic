@@ -20,7 +20,6 @@ return new class extends Migration
             ->constrained()
             ->onDelete('cascade')
             ->onUndate('cascade');
-            $table->foreignId('user_id')->nullable();
             $table->timestamps();
         });
     }

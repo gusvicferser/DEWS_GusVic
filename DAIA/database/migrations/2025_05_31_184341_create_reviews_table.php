@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comment', function (Blueprint $table) {
+        Schema::create('reviews', function (Blueprint $table) {
             $table->id();
             $table->string('msg_content');
             $table->boolean('visibility')->default(true);
-            $table->string('msg_user_name');
-            $table->foreignId('event_id')
+            $table->foreignId('user_id')
+                ->constrained()
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table->foreignId('product_id')
                 ->constrained()
                 ->onDelete('cascade')
                 ->onUndate('cascade');
@@ -29,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comment');
+        Schema::dropIfExists('reviews');
     }
 };

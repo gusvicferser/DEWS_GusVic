@@ -11,15 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('review', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->string('msg_content');
             $table->boolean('visibility')->default(true);
-            $table->string('msg_user_name');
-            $table->foreignId('product_id')
-            ->constrained()
-            ->onDelete('cascade')
-            ->onUndate('cascade');
+            $table->foreignId('user_id')
+                ->constrained()
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
+            $table->foreignId('event_id')
+                ->constrained()
+                ->onDelete('cascade')
+                ->onUndate('cascade');
             $table->timestamps();
         });
     }
@@ -29,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('review');
+        Schema::dropIfExists('comments');
     }
 };

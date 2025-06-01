@@ -7,12 +7,10 @@
         <div class="">
             <div class="">
                 <div class="">
-                    <!-- Avatar -->
                     <div class="">
 
                     </div>
 
-                    <!-- Información del Jugador -->
                     <div class="">
                         <h1>Bienvenido a DAIA</h1>
 

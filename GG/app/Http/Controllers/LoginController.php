@@ -39,7 +39,7 @@ class LoginController extends Controller
         return redirect()->route('user.index');
     }
 
-    public function loginForm(): View
+    public function loginForm()
     {
         if(Auth::viaRemember()) {
             return 'Bienvenid@ de nuevo';

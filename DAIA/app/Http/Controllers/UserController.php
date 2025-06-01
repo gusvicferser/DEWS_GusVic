@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display the specified resource.
      */
-    public function index()
+    public function index(): View
     {
-        //
+        return view('user.index', ['user' => Auth::user()]);
     }
 
     /**
@@ -57,8 +60,13 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(User $user)
     {
-        //
+        $user = User::findOrFail($user->id);
+        $user->user_active = false;
+        $user->email = now().$user->email;
+        $user->save();
+
+        return redirect()->route('logout');
     }
 }

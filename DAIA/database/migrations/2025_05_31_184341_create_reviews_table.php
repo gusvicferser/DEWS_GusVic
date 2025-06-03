@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reviews', function (Blueprint $table) {
-            $table->id();
+            $table->id()->autoIncrement();
             $table->string('msg_content');
             $table->boolean('visibility')->default(true);
             $table->foreignId('user_id')

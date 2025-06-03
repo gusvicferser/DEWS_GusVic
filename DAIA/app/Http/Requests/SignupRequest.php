@@ -44,7 +44,6 @@ class SignupRequest extends FormRequest
             'password.required' => 'El campo password es obligatorio',
             'password.confirmed' => 'Las contraseñas han de coincidir',
             'password.min' => 'Su contraseña ha de tener, como mínimo, 8 caracteres',
-            'password.character' => 'Su contraseña ha de incluir al menos un caracter especial(~, @, #, _, ^, *, %, /, , +, :, ;, =)'
         ];
     }
 }

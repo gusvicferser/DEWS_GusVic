@@ -7,6 +7,10 @@ use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use LengthException;
+
+use function Laravel\Prompts\search;
 
 class UserController extends Controller
 {
@@ -15,7 +19,12 @@ class UserController extends Controller
      */
     public function index(): View
     {
-        return view('users.index', ['user' => Auth::user()]);
+        if(Auth::user()->role === 'admin') {
+            $users = User::all();
+            return view('users.index', compact('users'));
+        } else {
+            return view('users.index', ['user' => Auth::user()]);
+        }
     }
 
     /**
@@ -33,13 +42,24 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $user = new User();
-        $user->prod_name = $request->get('prod_name');
-        $user->slug = Str::slug($user->prod_name);
-        $user->prod_desc = $request->get('prod_desc');
-        $user->prod_stock = $request->get('prod_stock');
-        $user->prod_price = $request->get('prod_price');
-        $user->save();
+        $fileName = Auth::user()->user_name . '.png';
+        $user->address = $request->string('address');
+        $user->first_name = $request->string('first_name');
+        $user->last_name = $request->string('last_name');
 
+        if ($request->file('avatar')) {
+            $request->file('avatar')->storeAs('avatars', $fileName);
+            $user->user_avatar = 'storage/avatars/' . $fileName;
+        }
+        $user->telephone = $request->integer('telephone');
+        $user->save();
+        // Si no se regenera la sesión no se puede ver el cambio de foto:
+        session()->regenerate();
+
+         if(Auth::user()->role === 'admin'){
+            $users = User::all();
+            return view('users.index', compact('users'));
+        }
         return view('users.all', compact('$user'));
     }
 
@@ -66,14 +86,33 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $user->prod_name = $request->get('prod_name');
-        $user->slug = Str::slug($user->prod_name);
-        $user->prod_desc = $request->get('prod_desc');
-        $user->prod_stock = $request->get('prod_stock');
-        $user->prod_price = $request->get('prod_price');
-        $user->save();
 
-        return view('users.all', compact('$user'));
+        // dd($request); // Traza
+        $fileName = $request->user()->user_name . '.png';
+        $user->address = $request->get('address');
+        $user->first_name = $request->get('first_name');
+        $user->last_name = $request->get('last_name');
+        // dd($request->file('avatar') ? '1' : '0'); // Trace
+        if ($request->file('avatar')) {
+            $request->file('avatar')->storeAs('avatars', $fileName);
+            $user->user_avatar = 'storage/avatars/' . $fileName;
+        }
+
+        if(Auth::user()->role === 'admin' && $request->get('')) {
+            $role = $request->get('user_name'. '_' . $user->role);
+
+
+        }
+        $user->telephone = $request->integer('telephone');
+        $user->save();
+        session()->regenerate();
+
+        if(Auth::user()->role === 'admin'){
+            $users = User::all();
+            return view('users.index', compact('users'));
+        }
+
+        return view('users.index', compact('user'));
     }
 
     /**
@@ -82,6 +121,8 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
+        session()->invalidate();
+        session()->regenerateToken();
         return redirect()->route('logout');
     }
 
@@ -95,6 +136,9 @@ class UserController extends Controller
         $user->user_active = false;
         $user->email = now() . $user->email;
         $user->save();
+
+        session()->invalidate();
+        session()->regenerateToken();
 
         return redirect()->route('logout');
     }

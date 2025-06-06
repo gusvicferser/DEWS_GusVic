@@ -23,7 +23,7 @@ class EventController extends Controller
     public function create()
     {
         $events = Event::all();
-        return view('events.add', compact('events'));
+        return view('events.create', compact('events'));
     }
 
     /**
@@ -32,14 +32,16 @@ class EventController extends Controller
     public function store(Request $request)
     {
         $event = new Event();
-        $event->prod_name = $request->get('prod_name');
-        $event->slug = Str::slug($event->prod_name);
-        $event->prod_desc = $request->get('prod_desc');
-        $event->prod_stock = $request->get('prod_stock');
-        $event->prod_price = $request->get('prod_price');
+        $fileName = $request->get('event_img') . '.jpg';
+        $event->event_name = $request->get('event_name');
+        $event->slug = Str::slug($event->event_name);
+        $event->event_desc = $request->get('event_desc');
+        $request->file('event_img')->storeAs('events', $fileName);
+        $event->event_img = 'storage/events/'. $fileName;
+        $event->external_url = $request->get('external_url');
         $event->save();
 
-        return view('events.show', compact('$event'));
+        return view('events.show', compact('event'));
     }
 
     /**
@@ -65,11 +67,13 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event)
     {
-        $event->prod_name = $request->get('prod_name');
-        $event->slug = Str::slug($event->prod_name);
-        $event->prod_desc = $request->get('prod_desc');
-        $event->prod_stock = $request->get('prod_stock');
-        $event->prod_price = $request->get('prod_price');
+        $fileName = $request->get('event_img') . '.jpg';
+        $event->event_name = $request->get('event_name');
+        $event->slug = Str::slug($event->event_name);
+        $event->event_desc = $request->get('event_desc');
+        $request->file('event_img')->storeAs('events', $fileName);
+        $event->event_img = 'storage/events/'. $fileName;
+        $event->external_url = $request->get('external_url');
         $event->save();
 
         return view('events.show', compact('$event'));

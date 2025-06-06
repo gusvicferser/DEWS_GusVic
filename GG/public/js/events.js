@@ -4,6 +4,10 @@
  * Se supone que a través de un fetch, podemos mostrar los eventos que hay en la base de datos:
  */
 
+$('button[data-slide-to]').on('click', function(){
+    $('#carouselExampleControls').carousel($(this).data('slide-to'));
+});
+
 /**
  * Función para crear un elemento y sus atributos:
  *

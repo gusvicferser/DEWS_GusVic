@@ -44,15 +44,15 @@ class LoginController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('user.index');
+        return redirect()->route('users.index');
     }
 
     public function loginForm(): View
     {
         if (Auth::viaRemember()) {
-            return view('user.index');
+            return view('users.index');
         } else if (Auth::check()) {
-            return view('user.index');
+            return view('users.index');
         } else {
             return view('auth.login');
         }
@@ -74,7 +74,7 @@ class LoginController extends Controller
         $credentials = $request->only('user_name', 'password');
         $rememberLogin = ($request->get('remember')) ? true : false;
 
-        if ($user->user_active) {
+        if ($user->user_active ?? true) {
             if (Auth::guard('web')->attempt($credentials, $rememberLogin)) {
                 $request->session()->regenerate();
                 return redirect()->route('index');

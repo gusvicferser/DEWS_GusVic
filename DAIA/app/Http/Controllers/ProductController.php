@@ -23,7 +23,7 @@ class ProductController extends Controller
     public function create()
     {
         $products = Product::all();
-        return view('products.add', compact('products'));
+        return view('products.create', compact('products'));
     }
 
     /**
@@ -32,9 +32,12 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $product = new Product();
+        $fileName = $request->get('prod_img') . '.jpg';
         $product->prod_name = $request->get('prod_name');
         $product->slug = Str::slug($product->prod_name);
         $product->prod_desc = $request->get('prod_desc');
+        $request->file('prod_img')->storeAs('products', $fileName);
+        $product->prod_img = 'storage/products/' . $fileName;
         $product->prod_stock = $request->get('prod_stock');
         $product->prod_price = $request->get('prod_price');
         $product->save();
@@ -48,7 +51,7 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         Product::findOrFail($product->id);
-        if($product->visibility !== true) {
+        if ($product->visibility !== true) {
             return redirect()->route('products.index');
         }
         return view('products.show', compact('product'));
@@ -68,9 +71,12 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        $fileName = $request->get('prod_img') . '.jpg';
         $product->prod_name = $request->get('prod_name');
         $product->slug = Str::slug($product->prod_name);
         $product->prod_desc = $request->get('prod_desc');
+        $request->file('prod_img')->storeAs('products', $fileName);
+        $product->prod_img = 'storage/products/' . $fileName;
         $product->prod_stock = $request->get('prod_stock');
         $product->prod_price = $request->get('prod_price');
         $product->save();

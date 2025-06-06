@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
+use PhpParser\Node\Expr\BinaryOp\BooleanOr;
 
 class User extends Authenticatable
 {
@@ -30,6 +32,12 @@ class User extends Authenticatable
     public function events(): BelongsToMany
     {
         return $this->belongsToMany(Event::class);
+    }
+
+    public function hasRole(string $role)
+    {
+        if (Auth::user()->role === $role) return true;
+        else return false;
     }
 
     /** @use HasFactory<\Database\Factories\UserFactory> */

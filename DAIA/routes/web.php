@@ -4,14 +4,31 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\EventController;
+use App\Http\Middleware\EnsureUserHasRole;
 
 // Accounts:
-Route::resource('/user', UserController::class)
-    ->only(['index', 'update', 'destroy'])
+Route::resource('users', UserController::class)
+    ->only(['index', 'update', 'inhabilitate'])
     ->middleware('auth');
 
-// Shop route:
-Route::resource('shop', ProductController::class);
+Route::resource('users', UserController::class)
+    ->middleware(EnsureUserHasRole::class.':admin')
+    ->only(['create', 'edit', 'destroy']);
+
+// Products:
+Route::resource('products', ProductController::class)
+    ->middleware(EnsureUserHasRole::class.':admin')
+    ->except('index', 'show');
+
+Route::resource('products', ProductController::class);
+
+//Events:
+Route::resource('events', EventController::class)
+->middleware(EnsureUserHasRole::class.':admin')
+->except('index', 'show');
+
+Route::resource('events', EventController::class);
 
 // Login features:
 Route::get('signup', [LoginController::class, 'signupForm'])->name('signupForm');

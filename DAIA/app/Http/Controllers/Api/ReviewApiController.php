@@ -40,7 +40,7 @@ class ReviewApiController extends Controller
      */
     public function show(Review $review)
     {
-        return Review::findOrFail($review->id)->where('visibility', true)->get();
+        return response()->json(Review::findOrFail($review->id)->where('visibility', true)->get(), 200);
     }
 
     /**

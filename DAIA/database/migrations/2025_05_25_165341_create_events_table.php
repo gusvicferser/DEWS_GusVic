@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('event_name');
             $table->string('event_desc');
-            $table->string('event_img');
-            $table->string('external_url');
+            $table->string('event_img')->nullable();
+            $table->string('external_url')->nullable();
             $table->timestamps();
         });
     }

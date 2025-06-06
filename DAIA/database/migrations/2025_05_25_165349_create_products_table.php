@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('prod_name');
             $table->string('prod_desc');
-            $table->string('prod_img');
+            $table->string('prod_img')->nullable();
             $table->integer('prod_stock');
             $table->float('prod_price', 5, 2);
             $table->timestamps();

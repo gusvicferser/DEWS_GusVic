@@ -1,12 +1,4 @@
-# Class exercises
-
-These are some of the applications' examples made on my bachelors' degree. There is a little comment about each one.
-
-> [!NOTE]
-> These exercises are not deployed on any online server. Only developed on a local environment.  
-
-
-## DAIA
+# DAIA
 
 My complete project, made entirely on __Laravel__ with __blade__ templates with it's own database made by me from scratch usign __mariadb__ and using __Bootstrap 4.0__ and __JavaScript__ vanilla on client's side. 
 
@@ -22,7 +14,7 @@ The platform has to enable the **__creation of messages__** from users identifie
 >[!IMPORTANT]
 > **Key words**: creation, stories, adventures, world, characters, objects, platform, awareness, account, events, products, e-commerce, commentaries.
 
-### UML Model
+## UML Model
 
 <img width="1920" height="1080" alt="UseCaseDiagramDAIA" src="https://github.com/user-attachments/assets/6d6a8e51-8f0a-459e-bef8-8ecd47f781e3" />
 
@@ -38,27 +30,37 @@ There are five main agents: **Guest**, **Player**, **Moderator**, **Administrato
 
   + **System**: Can search products and create shipments.
 
-### DAIA Database
+## DAIA Database
 <img width="1920" height="1080" alt="DAIA_DDBB" src="https://github.com/user-attachments/assets/e6b15dcd-8983-41b2-b3c6-0eb6118f9963" />
 
-DAIA's database works with four entities; **User**, **Message**, **Product** and **Event**. Message has two especializations; Review and Comment. 
-Reviews are the messages that are linked with Products and Comments are the messages linked with Events. Once you erase a product, erases its messages. Erasing events deletes also the reviews. Erasing an user deletes
+DAIA's database works with four entities; **User**, **Message**, **Product** and **Event**. Message has two especializations; __Review__ and __Comment__. 
+__Reviews__ are the messages that are linked with Products and __Comments__ are the messages linked with Events. Once you erase a product, it erases its messages. Erasing events deletes also the reviews. Erasing an user deletes
 its messages.
 
 The relation between User and Product creates a table named Orders. The relation between User and Event creates a table name Subscriptions. 
 
-### APIS 
+## APIs {Server Side}
 
-DAIA uses four APIS. Events, Products, Login and Users are managing from an API. Here's a small fragment of them:
+DAIA uses four APIs. **Events**, **Products**, **Login** and **Users** are managed from an API service. Here's a small fragment of them as a showcase:
 
   + Storage on Events:
 <img width="655" height="469" alt="API_Event_Store" src="https://github.com/user-attachments/assets/c3e69c4f-276d-49be-8783-590452aa36b3" />
 
   + Login:
-<img width="863" height="659" alt="API_Login" src="https://github.com/user-attachments/assets/987eafd3-ed78-49a1-8870-fedac980de8f" />
+<img width="690" height="527" alt="API_Login" src="https://github.com/user-attachments/assets/987eafd3-ed78-49a1-8870-fedac980de8f" />
 
   + User inhabilitation:
 <img width="494" height="431" alt="API_Inhabilitate" src="https://github.com/user-attachments/assets/1cbb5738-0d16-48df-8dde-37d077ee2d31" />
+
+## API fetch {Client side}
+
++ Products:
+<img width="572" height="1362" alt="API_fetch_JS_products" src="https://github.com/user-attachments/assets/ad3ce009-2866-4235-9390-0df2b9c0c5db" />
+
+
+## SCREENSHOTS
+
+
 
 
 
